@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>消除竞态之分布式锁 - johnny 写字的地方</title><meta name="Description" content="johnny 写字的地方"><meta property="og:title" content="消除竞态之分布式锁" />
+<meta property="og:description" content="什么是竞态 竞争冒险（race hazard）又名竞态条件、竞争条件（race condition），它旨在描述一个系统或者进程的输出依赖于不受控" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/redis/%E6%B6%88%E9%99%A4%E7%AB%9E%E6%80%81%E4%B9%8B%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-02-25T13:51:40+08:00" />
+<meta property="article:modified_time" content="2022-02-25T13:51:40+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="消除竞态之分布式锁"/>
+<meta name="twitter:description" content="什么是竞态 竞争冒险（race hazard）又名竞态条件、竞争条件（race condition），它旨在描述一个系统或者进程的输出依赖于不受控"/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://example.org/posts/redis/%E6%B6%88%E9%99%A4%E7%AB%9E%E6%80%81%E4%B9%8B%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "消除竞态之分布式锁",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/example.org\/posts\/redis\/%E6%B6%88%E9%99%A4%E7%AB%9E%E6%80%81%E4%B9%8B%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81\/"
+        },"genre": "posts","keywords": "Java, Redis, Lock","wordcount":  1755 ,
+        "url": "http:\/\/example.org\/posts\/redis\/%E6%B6%88%E9%99%A4%E7%AB%9E%E6%80%81%E4%B9%8B%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81\/","datePublished": "2022-02-25T13:51:40+08:00","dateModified": "2022-02-25T13:51:40+08:00","publisher": {
+            "@type": "Organization",
+            "name": "johnny"},"author": {
+                "@type": "Person",
+                "name": "johnny"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="" header-mobile=""><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="johnny 写字的地方">johnny 写字的地方</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="johnny 写字的地方">johnny 写字的地方</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">消除竞态之分布式锁</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/yongqiangG" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>johnny</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/redis/"><i class="far fa-folder fa-fw"></i>Redis</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-02-25">2022-02-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1755 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ol>
+    <li><a href="#什么是竞态">什么是竞态</a>
+      <ol>
+        <li><a href="#举个例子">举个例子</a></li>
+      </ol>
+    </li>
+    <li><a href="#分布式锁的实现">分布式锁的实现</a>
+      <ol>
+        <li><a href="#相关redis命令">相关Redis命令</a></li>
+        <li><a href="#java实现">Java实现</a></li>
+        <li><a href="#超时问题">超时问题</a></li>
+        <li><a href="#集群问题">集群问题</a></li>
+      </ol>
+    </li>
+    <li><a href="#扩展之redlock算法">扩展之Redlock算法</a>
+      <ol>
+        <li><a href="#redisson">Redisson</a></li>
+        <li><a href="#trylock">TryLock</a></li>
+        <li><a href="#额外拓展redlock">额外拓展RedLock</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="什么是竞态">什么是竞态</h2>
+<blockquote>
+<p>竞争冒险（race hazard）又名竞态条件、竞争条件（race condition），它旨在描述一个系统或者进程的输出依赖于不受控制的事件出现顺序或者出现时机。此词源自于两个信号试着彼此竞争，来影响谁先输出。
+举例来说，如果计算机中的两个进程同时试图修改一个共享内存的内容，在没有并发控制的情况下，最后的结果依赖于两个进程的执行顺序与时机。而且如果发生了并发访问冲突，则最后的结果是不正确的。
+竞争冒险常见于不良设计的电子系统，尤其是逻辑电路。但它们在<a href="https://zh.wikipedia.org/wiki/%E8%BB%9F%E9%AB%94" title="软件" target="_blank" rel="noopener noreffer">软件</a>中也比较常见，尤其是有采用<a href="https://zh.wikipedia.org/wiki/%E5%A4%9A%E7%BA%BF%E7%A8%8B" title="多线程" target="_blank" rel="noopener noreffer">多线程</a>技术的软件。</p>
+</blockquote>
+<h3 id="举个例子">举个例子</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134839888.png"
+        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134839888.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134839888.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134839888.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134839888.png"
+        title="image-20220225134839888" /></p>
+<h2 id="分布式锁的实现">分布式锁的实现</h2>
+<h3 id="相关redis命令">相关Redis命令</h3>
+<ul>
+<li>setnx（set if not exist）</li>
+<li>expire</li>
+<li>del</li>
+</ul>
+<h3 id="java实现">Java实现</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">if (jedis.setnx(&#34;lock&#34;, &#34;1&#34;) == 1) {  
+    try {  
+        System.out.println(Thread.currentThread().getId() + &#34;:抢到了锁，可以执行业务&#34;);  
+        jedis.expire(&#34;lock&#34;, 3);// 可能死锁
+        Thread.sleep(1000);  
+    } catch (Exception e) {  
+        e.printStackTrace();  
+    } finally {  
+        jedis.del(&#34;lock&#34;);  
+    }  
+} else {  
+    System.out.println(Thread.currentThread().getId() + &#34;:没抢到锁&#34;);  
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>存在问题</strong></p>
+<ul>
+<li>
+<p>setnx和expire之间不具备原子性，可能出现死锁</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134903304.png"
+        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134903304.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134903304.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134903304.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134903304.png"
+        title="image-20220225134903304" /></p>
+<p><strong>解决方案</strong>
+在Redis 2.8版本增加setnx和expire组合在一起的原子指令<strong>setex</strong></p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">if (&#34;OK&#34;.equals(jedis.set(&#34;lock&#34;,&#34;1&#34;,new SetParams().nx().ex(3L)))) {  
+    try {  
+        System.out.println(Thread.currentThread().getId() + &#34;:抢到了锁，可以执行业务&#34;);  
+        Thread.sleep(6000);  
+    } catch (Exception e) {  
+        e.printStackTrace();  
+    } finally {  
+        jedis.del(&#34;lock&#34;);  
+    }  
+} else {  
+    System.out.println(Thread.currentThread().getId() + &#34;:没抢到锁&#34;);  
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="超时问题">超时问题</h3>
+<ol>
+<li>业务未执行完，锁的超时时间已到。导致锁被释放后，存在并发执行问题。</li>
+<li>在1问题的基础上，将其他线程的锁释放了，导致更加的混乱。</li>
+</ol>
+<p>因此，不要将Redis分布锁用于长时间的事务。
+另外可以将锁的value设置成一个随机数，在释放之前比较随机数，这样子就避免了释放其他线程的锁的问题。</p>
+<p><strong>Java实现</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">String uuid = UUID.randomUUID().toString();  
+if (&#34;OK&#34;.equals(jedis.set(&#34;lock&#34;, uuid, new SetParams().nx().ex(1L)))) {  
+    try {  
+        System.out.println(Thread.currentThread().getId() + &#34;:抢到了锁，可以执行业务&#34;);  
+        Thread.sleep(2000);  
+    } catch (Exception e) {  
+        e.printStackTrace();  
+    } finally {  
+        if (uuid.equals(jedis.get(&#34;lock&#34;))) {  // 不具备原子性
+            jedis.del(&#34;lock&#34;);  
+        }  
+    }  
+} else {  
+    System.out.println(Thread.currentThread().getId() + &#34;:没抢到锁&#34;);  
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="集群问题">集群问题</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134931045.png"
+        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134931045.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134931045.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134931045.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225134931045.png"
+        title="image-20220225134931045" /></p>
+<p>在集群中，当主节点挂掉时，从节点会取而代之，但是客户端并没有感知。这时候如果原先一个客户端在主节点申请到了一把锁，但是还没来得及同步到从节点时突然挂掉，这时候从节点升级成了主节点，但是并没有之前那把锁，这时候又有一个客户端来申请锁，会申请成功。这时候就会出现不安全的情况了。</p>
+<h2 id="扩展之redlock算法">扩展之Redlock算法</h2>
+<h3 id="redisson">Redisson</h3>
+<p><a href="https://github.com/redisson/redisson" target="_blank" rel="noopener noreffer">Redisson Github 首页</a></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225135002225.png"
+        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225135002225.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225135002225.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225135002225.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220225135002225.png"
+        title="image-20220225135002225" /></p>
+<h3 id="trylock">TryLock</h3>
+<p>Java实现</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Config config = new Config();  
+config.useSingleServer().setAddress(&#34;redis://127.0.0.1:6379&#34;).setPassword(&#34;123456&#34;);  
+RedissonClient client = Redisson.create(config);  
+RLock lock = client.getLock(&#34;lock&#34;);  
+try {  
+    boolean res = lock.tryLock(2L, 4L, TimeUnit.SECONDS);  
+    if (res) {  
+        // 拿到锁，执行业务  
+ System.out.println(Thread.currentThread().getId() + &#34;: 拿到了锁&#34;);  
+        Thread.sleep(3000);  
+    } else {  
+        System.out.println(Thread.currentThread().getId() + &#34;: 没拿到锁&#34;);  
+    }  
+} catch (Exception ex) {  
+    ex.printStackTrace();  
+} finally {  
+    lock.unlock();  
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>tryLock源码</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">// 三个参数分别是等待时间，锁过期时间，时间单位
+public boolean tryLock(long waitTime, long leaseTime, TimeUnit unit) throws InterruptedException {  
+        long time = unit.toMillis(waitTime);  // 取得最大等待时间
+        long current = System.currentTimeMillis();  // 当前时间
+        final long threadId = Thread.currentThread().getId(); // 当前线程ID（实现可重入锁） 
+        Long ttl = tryAcquire(leaseTime, unit, threadId);  // 尝试获取锁，会返回一个过期时间
+        // lock acquired  
+ if (ttl == null) {  // 没有过期时间，表示获取锁成功
+            return true;  
+        }  
+          
+        time -= (System.currentTimeMillis() - current);  
+        if (time &lt;= 0) {  // 表示过期时间大于等待时间，直接获取失败
+            acquireFailed(threadId);  
+            return false;  
+        }  
+          
+        current = System.currentTimeMillis();  
+        final RFuture&lt;RedissonLockEntry&gt; subscribeFuture = subscribe(threadId);  // 订阅锁释放事件消息
+        if (!await(subscribeFuture, time, TimeUnit.MILLISECONDS)) {  
+            if (!subscribeFuture.cancel(false)) {  
+                subscribeFuture.addListener(new FutureListener&lt;RedissonLockEntry&gt;() {  
+                    @Override  
+ public void operationComplete(Future&lt;RedissonLockEntry&gt; future) throws Exception {  
+                        if (subscribeFuture.isSuccess()) {  // 监听解锁消息，释放许可
+                            unsubscribe(subscribeFuture, threadId);  
+                        }  
+                    }  
+                });  
+            }  
+            acquireFailed(threadId);  
+            return false;  
+        }  
+  
+        try {  
+            time -= (System.currentTimeMillis() - current);  
+            if (time &lt;= 0) {  // 等待是否超时
+                acquireFailed(threadId);  
+                return false;  
+            }  
+          
+            while (true) {  
+                long currentTime = System.currentTimeMillis();  
+                ttl = tryAcquire(leaseTime, unit, threadId);  // 尝试获取锁
+                // lock acquired  
+ if (ttl == null) {  
+                    return true;  
+                }  
+  
+                time -= (System.currentTimeMillis() - currentTime);  
+                if (time &lt;= 0) {  
+                    acquireFailed(threadId);  
+                    return false;  
+                }  
+  
+                // waiting for message  
+				// 通过信号量阻塞等待锁释放的消息
+ currentTime = System.currentTimeMillis();  
+                if (ttl &gt;= 0 &amp;&amp; ttl &lt; time) {  
+                    getEntry(threadId).getLatch().tryAcquire(ttl, TimeUnit.MILLISECONDS);  
+                } else {  
+                    getEntry(threadId).getLatch().tryAcquire(time, TimeUnit.MILLISECONDS);  
+                }  
+  
+                time -= (System.currentTimeMillis() - currentTime);  
+                if (time &lt;= 0) {  
+                    acquireFailed(threadId);  
+                    return false;  
+                }  
+            }  
+        } finally {  
+            unsubscribe(subscribeFuture, threadId);  // 取消订阅
+        }  
+//        return get(tryLockAsync(waitTime, leaseTime, unit));  
+ }
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>tryAcquire源码</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">&lt;T&gt; RFuture&lt;T&gt; tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId, RedisStrictCommand&lt;T&gt; command) {  
+    internalLockLeaseTime = unit.toMillis(leaseTime);  
+  
+    return commandExecutor.evalWriteAsync(getName(), LongCodec.INSTANCE, command,  
+              &#34;if (redis.call(&#39;exists&#39;, KEYS[1]) == 0) then &#34; +  // 判断key释放存在
+                  &#34;redis.call(&#39;hset&#39;, KEYS[1], ARGV[2], 1); &#34; +  // 不存在就将key放入Hash结构，field为&#34;UUID:线程ID&#34;
+                  &#34;redis.call(&#39;pexpire&#39;, KEYS[1], ARGV[1]); &#34; +  
+                  &#34;return nil; &#34; +  
+              &#34;end; &#34; +  
+              &#34;if (redis.call(&#39;hexists&#39;, KEYS[1], ARGV[2]) == 1) then &#34; +  
+                  &#34;redis.call(&#39;hincrby&#39;, KEYS[1], ARGV[2], 1); &#34; +  // 锁被占据了，如果是当前线程占据的，计数加一，可以重入
+                  &#34;redis.call(&#39;pexpire&#39;, KEYS[1], ARGV[1]); &#34; +  
+                  &#34;return nil; &#34; +  
+              &#34;end; &#34; +  
+              &#34;return redis.call(&#39;pttl&#39;, KEYS[1]);&#34;,  // 不是当前线程的锁，返回过期时间
+                Collections.&lt;Object&gt;singletonList(getName()), internalLockLeaseTime, getLockName(threadId));  
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="额外拓展redlock">额外拓展RedLock</h3>
+<p>解决集群模式下的Redis分布式锁的漏洞。
+依次从多个节点获取锁，只有N/2+1节点的成功，才算成功获取到锁。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-02-25</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/redis/">Redis</a>,&nbsp;<a href="/tags/lock/">Lock</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.92.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/yongqiangG" target="_blank">johnny</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
