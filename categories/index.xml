@@ -4,10 +4,10 @@
         <link>http://example.org/categories/</link>
         <description>Categories - 分类 - johnny 写字的地方</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>johnny.gor10@gmail.com (johnny)</managingEditor>
-            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Fri, 25 Feb 2022 13:51:40 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/" rel="self" type="application/rss+xml" /><item>
-    <title>Redis</title>
+            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Mon, 28 Feb 2022 10:15:08 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/" rel="self" type="application/rss+xml" /><item>
+    <title>redis</title>
     <link>http://example.org/categories/redis/</link>
-    <pubDate>Fri, 25 Feb 2022 13:51:40 &#43;0800</pubDate>
+    <pubDate>Mon, 28 Feb 2022 10:15:08 &#43;0800</pubDate>
     <author>作者</author>
     <guid>http://example.org/categories/redis/</guid>
     <description><![CDATA[]]></description>
