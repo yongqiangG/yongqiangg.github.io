@@ -5,30 +5,30 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-        <title>Bitmap之二值统计 - johnny 写字的地方</title><meta name="Description" content="johnny 写字的地方"><meta property="og:title" content="Bitmap之二值统计" />
-<meta property="og:description" content="什么是Bitmap 首先需要说明Bitmap并不是Redis的5大数据结构之一，其实现底层是Redis的String类型。 String的实现是" />
+        <title>UV统计之HyperLogLog - johnny 写字的地方</title><meta name="Description" content="johnny 写字的地方"><meta property="og:title" content="UV统计之HyperLogLog" />
+<meta property="og:description" content="场景 统计页面的UV 方案一： 利用set的去重特性，存储空间占用大 方案二： HyperLogLog，存在一定的误差（0.81%），但是内存占用相比" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://example.org/posts/redis/bitmap%E4%B9%8B%E4%BA%8C%E5%80%BC%E7%BB%9F%E8%AE%A1/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-03-01T10:16:49+08:00" />
-<meta property="article:modified_time" content="2022-03-01T10:16:49+08:00" />
+<meta property="og:url" content="http://example.org/posts/redis/uv%E7%BB%9F%E8%AE%A1%E4%B9%8Bhyperloglog/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-01T20:27:00+08:00" />
+<meta property="article:modified_time" content="2022-03-01T20:27:00+08:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Bitmap之二值统计"/>
-<meta name="twitter:description" content="什么是Bitmap 首先需要说明Bitmap并不是Redis的5大数据结构之一，其实现底层是Redis的String类型。 String的实现是"/>
+<meta name="twitter:title" content="UV统计之HyperLogLog"/>
+<meta name="twitter:description" content="场景 统计页面的UV 方案一： 利用set的去重特性，存储空间占用大 方案二： HyperLogLog，存在一定的误差（0.81%），但是内存占用相比"/>
 <meta name="application-name" content="LoveIt">
 <meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://example.org/posts/redis/bitmap%E4%B9%8B%E4%BA%8C%E5%80%BC%E7%BB%9F%E8%AE%A1/" /><link rel="prev" href="http://example.org/posts/redis/%E5%A6%99%E7%94%A8redis%E5%AE%9E%E7%8E%B0%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97/" /><link rel="next" href="http://example.org/posts/redis/uv%E7%BB%9F%E8%AE%A1%E4%B9%8Bhyperloglog/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://example.org/posts/redis/uv%E7%BB%9F%E8%AE%A1%E4%B9%8Bhyperloglog/" /><link rel="prev" href="http://example.org/posts/redis/bitmap%E4%B9%8B%E4%BA%8C%E5%80%BC%E7%BB%9F%E8%AE%A1/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
-        "headline": "Bitmap之二值统计",
+        "headline": "UV统计之HyperLogLog",
         "inLanguage": "zh-CN",
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": "http:\/\/example.org\/posts\/redis\/bitmap%E4%B9%8B%E4%BA%8C%E5%80%BC%E7%BB%9F%E8%AE%A1\/"
-        },"genre": "posts","keywords": "Java, Redis, Bitmap","wordcount":  706 ,
-        "url": "http:\/\/example.org\/posts\/redis\/bitmap%E4%B9%8B%E4%BA%8C%E5%80%BC%E7%BB%9F%E8%AE%A1\/","datePublished": "2022-03-01T10:16:49+08:00","dateModified": "2022-03-01T10:16:49+08:00","publisher": {
+            "@id": "http:\/\/example.org\/posts\/redis\/uv%E7%BB%9F%E8%AE%A1%E4%B9%8Bhyperloglog\/"
+        },"genre": "posts","keywords": "Java, Redis, HyperLogLog, 基数估算","wordcount":  604 ,
+        "url": "http:\/\/example.org\/posts\/redis\/uv%E7%BB%9F%E8%AE%A1%E4%B9%8Bhyperloglog\/","datePublished": "2022-03-01T20:27:00+08:00","dateModified": "2022-03-01T20:27:00+08:00","publisher": {
             "@type": "Organization",
             "name": "johnny"},"author": {
                 "@type": "Person",
@@ -77,10 +77,10 @@
 		    <div class="toc" id="toc-auto">
             <h2 class="toc-title">目录</h2>
             <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animated flipInX">Bitmap之二值统计</h1><div class="post-meta">
+        </div><article class="page single"><h1 class="single-title animated flipInX">UV统计之HyperLogLog</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/yongqiangG" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>johnny</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/redis/"><i class="far fa-folder fa-fw"></i>redis</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar fa-fw"></i>&nbsp;<time datetime="2022-03-01">2022-03-01</time>&nbsp;<i class="far fa-calendar-plus fa-fw"></i>&nbsp;<time datetime="2022-03-01">2022-03-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 706 字&nbsp;
-                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 2 分钟&nbsp;<span id="/posts/redis/bitmap%E4%B9%8B%E4%BA%8C%E5%80%BC%E7%BB%9F%E8%AE%A1/" class="leancloud_visitors" data-flag-title="Bitmap之二值统计">
+            <div class="post-meta-line"><i class="far fa-calendar fa-fw"></i>&nbsp;<time datetime="2022-03-01">2022-03-01</time>&nbsp;<i class="far fa-calendar-plus fa-fw"></i>&nbsp;<time datetime="2022-03-01">2022-03-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 604 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 2 分钟&nbsp;<span id="/posts/redis/uv%E7%BB%9F%E8%AE%A1%E4%B9%8Bhyperloglog/" class="leancloud_visitors" data-flag-title="UV统计之HyperLogLog">
                         <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
         </div><div class="details toc" id="toc-static"  kept="">
@@ -90,179 +90,70 @@
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ol>
-    <li><a href="#什么是bitmap">什么是Bitmap</a></li>
-    <li><a href="#基础api">基础API</a></li>
     <li><a href="#场景">场景</a></li>
-    <li><a href="#扩展">扩展</a>
-      <ol>
-        <li><a href="#如何一次操作多个位">如何一次操作多个位</a></li>
-        <li><a href="#incrby的策略">incrby的策略</a></li>
-      </ol>
-    </li>
+    <li><a href="#api">API</a></li>
+    <li><a href="#场景实现">场景实现</a></li>
+    <li><a href="#原理相关">原理相关</a></li>
   </ol>
 </nav></div>
-            </div><div class="content" id="content"><h2 id="什么是bitmap">什么是Bitmap</h2>
-<p>首先需要说明Bitmap并不是Redis的5大数据结构之一，其实现底层是Redis的String类型。
-String的实现是<strong>SDS简单字符串</strong>，额外包含了一些长度之类的信息。</p>
-<p><img
-        class="lazyload"
-        src="/svg/loading.min.svg"
-        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115216083.png"
-        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115216083.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115216083.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115216083.png 2x"
-        data-sizes="auto"
-        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115216083.png"
-        title="image-20220228115216083" /></p>
-<p>Bitmap可以看作以bit作为单位的数组，每个bit里面存储的值就是0和1，正是因为使用bit作为基本单位，因此可以极大的节省空间占用。例如12MB就可以表达一亿个01状态。</p>
-<p><img
-        class="lazyload"
-        src="/svg/loading.min.svg"
-        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115155402.png"
-        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115155402.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115155402.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115155402.png 2x"
-        data-sizes="auto"
-        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115155402.png"
-        title="image-20220228115155402" /></p>
-<h2 id="基础api">基础API</h2>
+            </div><div class="content" id="content"><h2 id="场景">场景</h2>
+<p>统计页面的UV</p>
+<p>方案一：</p>
+<p>利用set的去重特性，存储空间占用大</p>
+<p>方案二：</p>
+<p><strong>HyperLogLog</strong>，存在一定的误差（0.81%），但是内存占用相比较set低很多</p>
+<h2 id="api">API</h2>
 <blockquote>
-<p>设置值</p>
-<p>setbit key offset value</p>
-<p>获取值</p>
-<p>getbit key offset</p>
-<p>统计指定范围内1的个数（需要注意指定范围的单位为<strong>字节</strong>）</p>
-<p>bitcount [key] [start] [end]</p>
-<p>逻辑运算 AND OR XOR NOT</p>
-<p>bitop [operations] [result] [key1] [keyn…]</p>
-<p>查找第一次出现1或者0的偏移量</p>
-<p>bitpos [key] [value]</p>
+<p>增加计数</p>
+<p>pfadd [key] [val]</p>
+<p>获取计数</p>
+<p>pfcount [key]</p>
+<p>合并后再计数</p>
+<p>pfmerge</p>
 </blockquote>
-<h2 id="场景">场景</h2>
-<ol>
-<li>
-<p>用户登录状态记录，快速判断用户是否登录</p>
-</li>
-<li>
-<p>统计用户的连续签到次数</p>
-<ol>
-<li>将日期作为key，例如20220222</li>
-<li>用户id作为offset</li>
-<li>统计连续两天签到的用户</li>
-</ol>
+<h2 id="场景实现">场景实现</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">bitop and result <span class="m">20220222</span> <span class="m">20220223</span>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">IRedisPool</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">jedis</span> <span class="o">-&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">1000</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 测试插入1000个用户id，可以重复执行，验证Hyperloglog的去重特性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">jedis</span><span class="o">.</span><span class="na">pfadd</span><span class="o">(</span><span class="s">&#34;uv&#34;</span><span class="o">,</span><span class="s">&#34;uid&#34;</span><span class="o">+</span><span class="n">i</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 统计uv
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">jedis</span><span class="o">.</span><span class="na">pfcount</span><span class="o">(</span><span class="s">&#34;uv&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">    <span class="o">});</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="4">
-<li>统计一周内签到过的用户</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">bitop or result <span class="m">20220222</span> <span class="m">20220223</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>统计用户每个月的签到情况</p>
-<ol>
-<li>
-<p>可以将key设计成uid:sign:{userid}{yyyyMM}</p>
-</li>
-<li>
-<p>记录用户在2022-02-15号的打卡</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">SETBIT uid:sign:123:202202 <span class="m">15</span> <span class="m">1</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>判断用户在2022-02-15号的打卡情况</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">GETBIT uid:sign:123:202202 <span class="m">15</span> <span class="m">1</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>查询用户在二月份的打卡次数</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">BITCOUNT uid:sign:123:202202
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ol>
-</li>
-</ol>
-<h2 id="扩展">扩展</h2>
-<h3 id="如何一次操作多个位">如何一次操作多个位</h3>
-<p>答案是<strong>bitfield</strong></p>
-<blockquote>
-<p>bitfield [key] [get/set/incr] [u/i]size offset</p>
-</blockquote>
-<p>示例</p>
+</div><h2 id="原理相关">原理相关</h2>
+<p><strong>基数估算算法</strong></p>
+<p>基本思想来自于<strong>伯努利方程</strong></p>
+<p>伯努利过程就是一个抛硬币实验的过程。抛一枚正常硬币，落地可能是正面，也可能是反面，二者的概率都是 1/2 。伯努利过程就是一直抛硬币，直到落地时出现正面位置，并记录下抛掷次数k。比如说，抛一次硬币就出现正面了，此时 k 为 1; 第一次抛硬币是反面，则继续抛，直到第三次才出现正面，此时 k 为 3。</p>
+<p>那么如何通过<strong>伯努利过程</strong>来估算抛了多少次硬币呢？还是假设 1 代表抛出正面，0 代表反面。连续出现两次 0 的序列应该为“001”，那么它出现的概率应该是三个二分之一相乘，即八分之一。那么可以估计大概抛了 8 次硬币。</p>
+<p>HyperLogLog 原理思路是通过给定 n 个的元素集合，记录集合中数字的比特串第一个1出现位置的最大值k，也可以理解为统计二进制低位连续为零（前导零）的最大个数。通过k值可以估算集合中不重复元素的数量m，m近似等于 2^k。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
-        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220301145800568.png"
-        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220301145800568.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220301145800568.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220301145800568.png 2x"
+        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220301201854805.png"
+        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220301201854805.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220301201854805.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220301201854805.png 2x"
         data-sizes="auto"
-        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220301145800568.png"
-        title="image-20220301145800568" /></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">&gt; <span class="nb">set</span> w hello
-</span></span><span class="line"><span class="cl">OK
-</span></span><span class="line"><span class="cl">&gt; bitfield w get u4 <span class="m">0</span>
-</span></span><span class="line"><span class="cl"><span class="m">6</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>表示从第1位开始取4位，结果是<strong>无符号数</strong></p>
-<p>需要注意的是：最多连续处理<strong>64位</strong>，如果超过64位，就要使用<strong>多个子指令</strong></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">&gt; bitfield w get u4 <span class="m">0</span> get u3 <span class="m">2</span> get i4 <span class="m">0</span>
-</span></span><span class="line"><span class="cl"><span class="m">6</span>
-</span></span><span class="line"><span class="cl"><span class="m">5</span>
-</span></span><span class="line"><span class="cl"><span class="m">6</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="incrby的策略">incrby的策略</h3>
-<ol>
-<li>wrap（折返）（<strong>default</strong>）</li>
-<li>fail（失败）</li>
-<li>sat（饱和截断）</li>
-</ol>
-<p>举个栗子</p>
-<p>默认的<strong>wrap</strong>情况下：</p>
-<p>如果是 8 位无符号数 255，加 1 后就会溢出，会全部变0。</p>
-<p>如果是 8 位有符号数 127，加1 后就会溢出变成-128。</p>
+        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220301201854805.png"
+        title="image-20220301201854805" /></p>
+<p><strong>空间占用</strong></p>
+<p>由于hyperloglog采用了16384个分桶，每个桶占用6bit，因此需要占用12kb（16384*6/8）。</p>
 <div class="post-reward">
 	  <input type="checkbox" name="reward" id="reward" hidden />
 	    <label class="reward-button" for="reward">赞赏支持</label>
@@ -295,14 +186,13 @@ String的实现是<strong>SDS简单字符串</strong>，额外包含了一些长
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/redis/">Redis</a>,&nbsp;<a href="/tags/bitmap/">Bitmap</a></section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/redis/">Redis</a>,&nbsp;<a href="/tags/hyperloglog/">HyperLogLog</a>,&nbsp;<a href="/tags/%E5%9F%BA%E6%95%B0%E4%BC%B0%E7%AE%97/">基数估算</a></section>
         <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/posts/redis/%E5%A6%99%E7%94%A8redis%E5%AE%9E%E7%8E%B0%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97/" class="prev" rel="prev" title="妙用Redis实现延时队列"><i class="fas fa-angle-left fa-fw"></i>妙用Redis实现延时队列</a>
-            <a href="/posts/redis/uv%E7%BB%9F%E8%AE%A1%E4%B9%8Bhyperloglog/" class="next" rel="next" title="UV统计之HyperLogLog">UV统计之HyperLogLog<i class="fas fa-angle-right fa-fw"></i></a></div>
+    <div class="post-nav"><a href="/posts/redis/bitmap%E4%B9%8B%E4%BA%8C%E5%80%BC%E7%BB%9F%E8%AE%A1/" class="prev" rel="prev" title="Bitmap之二值统计"><i class="fas fa-angle-left fa-fw"></i>Bitmap之二值统计</a></div>
 </div>
 <div id="comments"><div id="valine" class="comment"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
