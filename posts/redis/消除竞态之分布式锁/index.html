@@ -152,20 +152,20 @@
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">if (jedis.setnx(&#34;lock&#34;, &#34;1&#34;) == 1) {  
-    try {  
-        System.out.println(Thread.currentThread().getId() + &#34;:抢到了锁，可以执行业务&#34;);  
-        jedis.expire(&#34;lock&#34;, 3);// 可能死锁
-        Thread.sleep(1000);  
-    } catch (Exception e) {  
-        e.printStackTrace();  
-    } finally {  
-        jedis.del(&#34;lock&#34;);  
-    }  
-} else {  
-    System.out.println(Thread.currentThread().getId() + &#34;:没抢到锁&#34;);  
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">if (jedis.setnx(&#34;lock&#34;, &#34;1&#34;) == 1) {  
+</span></span><span class="line"><span class="cl">    try {  
+</span></span><span class="line"><span class="cl">        System.out.println(Thread.currentThread().getId() + &#34;:抢到了锁，可以执行业务&#34;);  
+</span></span><span class="line"><span class="cl">        jedis.expire(&#34;lock&#34;, 3);// 可能死锁
+</span></span><span class="line"><span class="cl">        Thread.sleep(1000);  
+</span></span><span class="line"><span class="cl">    } catch (Exception e) {  
+</span></span><span class="line"><span class="cl">        e.printStackTrace();  
+</span></span><span class="line"><span class="cl">    } finally {  
+</span></span><span class="line"><span class="cl">        jedis.del(&#34;lock&#34;);  
+</span></span><span class="line"><span class="cl">    }  
+</span></span><span class="line"><span class="cl">} else {  
+</span></span><span class="line"><span class="cl">    System.out.println(Thread.currentThread().getId() + &#34;:没抢到锁&#34;);  
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>存在问题</strong></p>
 <ul>
@@ -199,19 +199,19 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">if (&#34;OK&#34;.equals(jedis.set(&#34;lock&#34;,&#34;1&#34;,new SetParams().nx().ex(3L)))) {  
-    try {  
-        System.out.println(Thread.currentThread().getId() + &#34;:抢到了锁，可以执行业务&#34;);  
-        Thread.sleep(6000);  
-    } catch (Exception e) {  
-        e.printStackTrace();  
-    } finally {  
-        jedis.del(&#34;lock&#34;);  
-    }  
-} else {  
-    System.out.println(Thread.currentThread().getId() + &#34;:没抢到锁&#34;);  
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">if (&#34;OK&#34;.equals(jedis.set(&#34;lock&#34;,&#34;1&#34;,new SetParams().nx().ex(3L)))) {  
+</span></span><span class="line"><span class="cl">    try {  
+</span></span><span class="line"><span class="cl">        System.out.println(Thread.currentThread().getId() + &#34;:抢到了锁，可以执行业务&#34;);  
+</span></span><span class="line"><span class="cl">        Thread.sleep(6000);  
+</span></span><span class="line"><span class="cl">    } catch (Exception e) {  
+</span></span><span class="line"><span class="cl">        e.printStackTrace();  
+</span></span><span class="line"><span class="cl">    } finally {  
+</span></span><span class="line"><span class="cl">        jedis.del(&#34;lock&#34;);  
+</span></span><span class="line"><span class="cl">    }  
+</span></span><span class="line"><span class="cl">} else {  
+</span></span><span class="line"><span class="cl">    System.out.println(Thread.currentThread().getId() + &#34;:没抢到锁&#34;);  
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="超时问题">超时问题</h3>
 <ol>
@@ -240,22 +240,22 @@
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">String uuid = UUID.randomUUID().toString();  
-if (&#34;OK&#34;.equals(jedis.set(&#34;lock&#34;, uuid, new SetParams().nx().ex(1L)))) {  
-    try {  
-        System.out.println(Thread.currentThread().getId() + &#34;:抢到了锁，可以执行业务&#34;);  
-        Thread.sleep(2000);  
-    } catch (Exception e) {  
-        e.printStackTrace();  
-    } finally {  
-        if (uuid.equals(jedis.get(&#34;lock&#34;))) {  // 不具备原子性
-            jedis.del(&#34;lock&#34;);  
-        }  
-    }  
-} else {  
-    System.out.println(Thread.currentThread().getId() + &#34;:没抢到锁&#34;);  
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">String uuid = UUID.randomUUID().toString();  
+</span></span><span class="line"><span class="cl">if (&#34;OK&#34;.equals(jedis.set(&#34;lock&#34;, uuid, new SetParams().nx().ex(1L)))) {  
+</span></span><span class="line"><span class="cl">    try {  
+</span></span><span class="line"><span class="cl">        System.out.println(Thread.currentThread().getId() + &#34;:抢到了锁，可以执行业务&#34;);  
+</span></span><span class="line"><span class="cl">        Thread.sleep(2000);  
+</span></span><span class="line"><span class="cl">    } catch (Exception e) {  
+</span></span><span class="line"><span class="cl">        e.printStackTrace();  
+</span></span><span class="line"><span class="cl">    } finally {  
+</span></span><span class="line"><span class="cl">        if (uuid.equals(jedis.get(&#34;lock&#34;))) {  // 不具备原子性
+</span></span><span class="line"><span class="cl">            jedis.del(&#34;lock&#34;);  
+</span></span><span class="line"><span class="cl">        }  
+</span></span><span class="line"><span class="cl">    }  
+</span></span><span class="line"><span class="cl">} else {  
+</span></span><span class="line"><span class="cl">    System.out.println(Thread.currentThread().getId() + &#34;:没抢到锁&#34;);  
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="集群问题">集群问题</h3>
 <p><img
@@ -302,25 +302,25 @@ if (&#34;OK&#34;.equals(jedis.set(&#34;lock&#34;, uuid, new SetParams().nx().ex(
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Config config = new Config();  
-config.useSingleServer().setAddress(&#34;redis://127.0.0.1:6379&#34;).setPassword(&#34;123456&#34;);  
-RedissonClient client = Redisson.create(config);  
-RLock lock = client.getLock(&#34;lock&#34;);  
-try {  
-    boolean res = lock.tryLock(2L, 4L, TimeUnit.SECONDS);  
-    if (res) {  
-        // 拿到锁，执行业务  
- System.out.println(Thread.currentThread().getId() + &#34;: 拿到了锁&#34;);  
-        Thread.sleep(3000);  
-    } else {  
-        System.out.println(Thread.currentThread().getId() + &#34;: 没拿到锁&#34;);  
-    }  
-} catch (Exception ex) {  
-    ex.printStackTrace();  
-} finally {  
-    lock.unlock();  
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Config config = new Config();  
+</span></span><span class="line"><span class="cl">config.useSingleServer().setAddress(&#34;redis://127.0.0.1:6379&#34;).setPassword(&#34;123456&#34;);  
+</span></span><span class="line"><span class="cl">RedissonClient client = Redisson.create(config);  
+</span></span><span class="line"><span class="cl">RLock lock = client.getLock(&#34;lock&#34;);  
+</span></span><span class="line"><span class="cl">try {  
+</span></span><span class="line"><span class="cl">    boolean res = lock.tryLock(2L, 4L, TimeUnit.SECONDS);  
+</span></span><span class="line"><span class="cl">    if (res) {  
+</span></span><span class="line"><span class="cl">        // 拿到锁，执行业务  
+</span></span><span class="line"><span class="cl"> System.out.println(Thread.currentThread().getId() + &#34;: 拿到了锁&#34;);  
+</span></span><span class="line"><span class="cl">        Thread.sleep(3000);  
+</span></span><span class="line"><span class="cl">    } else {  
+</span></span><span class="line"><span class="cl">        System.out.println(Thread.currentThread().getId() + &#34;: 没拿到锁&#34;);  
+</span></span><span class="line"><span class="cl">    }  
+</span></span><span class="line"><span class="cl">} catch (Exception ex) {  
+</span></span><span class="line"><span class="cl">    ex.printStackTrace();  
+</span></span><span class="line"><span class="cl">} finally {  
+</span></span><span class="line"><span class="cl">    lock.unlock();  
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>tryLock源码</strong></p>
 <div class="highlight"><div class="chroma">
@@ -402,82 +402,82 @@ try {
 </span><span class="lnt">75
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">// 三个参数分别是等待时间，锁过期时间，时间单位
-public boolean tryLock(long waitTime, long leaseTime, TimeUnit unit) throws InterruptedException {  
-        long time = unit.toMillis(waitTime);  // 取得最大等待时间
-        long current = System.currentTimeMillis();  // 当前时间
-        final long threadId = Thread.currentThread().getId(); // 当前线程ID（实现可重入锁） 
-        Long ttl = tryAcquire(leaseTime, unit, threadId);  // 尝试获取锁，会返回一个过期时间
-        // lock acquired  
- if (ttl == null) {  // 没有过期时间，表示获取锁成功
-            return true;  
-        }  
-          
-        time -= (System.currentTimeMillis() - current);  
-        if (time &lt;= 0) {  // 表示过期时间大于等待时间，直接获取失败
-            acquireFailed(threadId);  
-            return false;  
-        }  
-          
-        current = System.currentTimeMillis();  
-        final RFuture&lt;RedissonLockEntry&gt; subscribeFuture = subscribe(threadId);  // 订阅锁释放事件消息
-        if (!await(subscribeFuture, time, TimeUnit.MILLISECONDS)) {  
-            if (!subscribeFuture.cancel(false)) {  
-                subscribeFuture.addListener(new FutureListener&lt;RedissonLockEntry&gt;() {  
-                    @Override  
- public void operationComplete(Future&lt;RedissonLockEntry&gt; future) throws Exception {  
-                        if (subscribeFuture.isSuccess()) {  // 监听解锁消息，释放许可
-                            unsubscribe(subscribeFuture, threadId);  
-                        }  
-                    }  
-                });  
-            }  
-            acquireFailed(threadId);  
-            return false;  
-        }  
-  
-        try {  
-            time -= (System.currentTimeMillis() - current);  
-            if (time &lt;= 0) {  // 等待是否超时
-                acquireFailed(threadId);  
-                return false;  
-            }  
-          
-            while (true) {  
-                long currentTime = System.currentTimeMillis();  
-                ttl = tryAcquire(leaseTime, unit, threadId);  // 尝试获取锁
-                // lock acquired  
- if (ttl == null) {  
-                    return true;  
-                }  
-  
-                time -= (System.currentTimeMillis() - currentTime);  
-                if (time &lt;= 0) {  
-                    acquireFailed(threadId);  
-                    return false;  
-                }  
-  
-                // waiting for message  
-				// 通过信号量阻塞等待锁释放的消息
- currentTime = System.currentTimeMillis();  
-                if (ttl &gt;= 0 &amp;&amp; ttl &lt; time) {  
-                    getEntry(threadId).getLatch().tryAcquire(ttl, TimeUnit.MILLISECONDS);  
-                } else {  
-                    getEntry(threadId).getLatch().tryAcquire(time, TimeUnit.MILLISECONDS);  
-                }  
-  
-                time -= (System.currentTimeMillis() - currentTime);  
-                if (time &lt;= 0) {  
-                    acquireFailed(threadId);  
-                    return false;  
-                }  
-            }  
-        } finally {  
-            unsubscribe(subscribeFuture, threadId);  // 取消订阅
-        }  
-//        return get(tryLockAsync(waitTime, leaseTime, unit));  
- }
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">// 三个参数分别是等待时间，锁过期时间，时间单位
+</span></span><span class="line"><span class="cl">public boolean tryLock(long waitTime, long leaseTime, TimeUnit unit) throws InterruptedException {  
+</span></span><span class="line"><span class="cl">        long time = unit.toMillis(waitTime);  // 取得最大等待时间
+</span></span><span class="line"><span class="cl">        long current = System.currentTimeMillis();  // 当前时间
+</span></span><span class="line"><span class="cl">        final long threadId = Thread.currentThread().getId(); // 当前线程ID（实现可重入锁） 
+</span></span><span class="line"><span class="cl">        Long ttl = tryAcquire(leaseTime, unit, threadId);  // 尝试获取锁，会返回一个过期时间
+</span></span><span class="line"><span class="cl">        // lock acquired  
+</span></span><span class="line"><span class="cl"> if (ttl == null) {  // 没有过期时间，表示获取锁成功
+</span></span><span class="line"><span class="cl">            return true;  
+</span></span><span class="line"><span class="cl">        }  
+</span></span><span class="line"><span class="cl">          
+</span></span><span class="line"><span class="cl">        time -= (System.currentTimeMillis() - current);  
+</span></span><span class="line"><span class="cl">        if (time &lt;= 0) {  // 表示过期时间大于等待时间，直接获取失败
+</span></span><span class="line"><span class="cl">            acquireFailed(threadId);  
+</span></span><span class="line"><span class="cl">            return false;  
+</span></span><span class="line"><span class="cl">        }  
+</span></span><span class="line"><span class="cl">          
+</span></span><span class="line"><span class="cl">        current = System.currentTimeMillis();  
+</span></span><span class="line"><span class="cl">        final RFuture&lt;RedissonLockEntry&gt; subscribeFuture = subscribe(threadId);  // 订阅锁释放事件消息
+</span></span><span class="line"><span class="cl">        if (!await(subscribeFuture, time, TimeUnit.MILLISECONDS)) {  
+</span></span><span class="line"><span class="cl">            if (!subscribeFuture.cancel(false)) {  
+</span></span><span class="line"><span class="cl">                subscribeFuture.addListener(new FutureListener&lt;RedissonLockEntry&gt;() {  
+</span></span><span class="line"><span class="cl">                    @Override  
+</span></span><span class="line"><span class="cl"> public void operationComplete(Future&lt;RedissonLockEntry&gt; future) throws Exception {  
+</span></span><span class="line"><span class="cl">                        if (subscribeFuture.isSuccess()) {  // 监听解锁消息，释放许可
+</span></span><span class="line"><span class="cl">                            unsubscribe(subscribeFuture, threadId);  
+</span></span><span class="line"><span class="cl">                        }  
+</span></span><span class="line"><span class="cl">                    }  
+</span></span><span class="line"><span class="cl">                });  
+</span></span><span class="line"><span class="cl">            }  
+</span></span><span class="line"><span class="cl">            acquireFailed(threadId);  
+</span></span><span class="line"><span class="cl">            return false;  
+</span></span><span class="line"><span class="cl">        }  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">        try {  
+</span></span><span class="line"><span class="cl">            time -= (System.currentTimeMillis() - current);  
+</span></span><span class="line"><span class="cl">            if (time &lt;= 0) {  // 等待是否超时
+</span></span><span class="line"><span class="cl">                acquireFailed(threadId);  
+</span></span><span class="line"><span class="cl">                return false;  
+</span></span><span class="line"><span class="cl">            }  
+</span></span><span class="line"><span class="cl">          
+</span></span><span class="line"><span class="cl">            while (true) {  
+</span></span><span class="line"><span class="cl">                long currentTime = System.currentTimeMillis();  
+</span></span><span class="line"><span class="cl">                ttl = tryAcquire(leaseTime, unit, threadId);  // 尝试获取锁
+</span></span><span class="line"><span class="cl">                // lock acquired  
+</span></span><span class="line"><span class="cl"> if (ttl == null) {  
+</span></span><span class="line"><span class="cl">                    return true;  
+</span></span><span class="line"><span class="cl">                }  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">                time -= (System.currentTimeMillis() - currentTime);  
+</span></span><span class="line"><span class="cl">                if (time &lt;= 0) {  
+</span></span><span class="line"><span class="cl">                    acquireFailed(threadId);  
+</span></span><span class="line"><span class="cl">                    return false;  
+</span></span><span class="line"><span class="cl">                }  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">                // waiting for message  
+</span></span><span class="line"><span class="cl">				// 通过信号量阻塞等待锁释放的消息
+</span></span><span class="line"><span class="cl"> currentTime = System.currentTimeMillis();  
+</span></span><span class="line"><span class="cl">                if (ttl &gt;= 0 &amp;&amp; ttl &lt; time) {  
+</span></span><span class="line"><span class="cl">                    getEntry(threadId).getLatch().tryAcquire(ttl, TimeUnit.MILLISECONDS);  
+</span></span><span class="line"><span class="cl">                } else {  
+</span></span><span class="line"><span class="cl">                    getEntry(threadId).getLatch().tryAcquire(time, TimeUnit.MILLISECONDS);  
+</span></span><span class="line"><span class="cl">                }  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">                time -= (System.currentTimeMillis() - currentTime);  
+</span></span><span class="line"><span class="cl">                if (time &lt;= 0) {  
+</span></span><span class="line"><span class="cl">                    acquireFailed(threadId);  
+</span></span><span class="line"><span class="cl">                    return false;  
+</span></span><span class="line"><span class="cl">                }  
+</span></span><span class="line"><span class="cl">            }  
+</span></span><span class="line"><span class="cl">        } finally {  
+</span></span><span class="line"><span class="cl">            unsubscribe(subscribeFuture, threadId);  // 取消订阅
+</span></span><span class="line"><span class="cl">        }  
+</span></span><span class="line"><span class="cl">//        return get(tryLockAsync(waitTime, leaseTime, unit));  
+</span></span><span class="line"><span class="cl"> }
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>tryAcquire源码</strong></p>
 <div class="highlight"><div class="chroma">
@@ -501,24 +501,24 @@ public boolean tryLock(long waitTime, long leaseTime, TimeUnit unit) throws Inte
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">&lt;T&gt; RFuture&lt;T&gt; tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId, RedisStrictCommand&lt;T&gt; command) {  
-    internalLockLeaseTime = unit.toMillis(leaseTime);  
-  
-    return commandExecutor.evalWriteAsync(getName(), LongCodec.INSTANCE, command,  
-              &#34;if (redis.call(&#39;exists&#39;, KEYS[1]) == 0) then &#34; +  // 判断key释放存在
-                  &#34;redis.call(&#39;hset&#39;, KEYS[1], ARGV[2], 1); &#34; +  // 不存在就将key放入Hash结构，field为&#34;UUID:线程ID&#34;
-                  &#34;redis.call(&#39;pexpire&#39;, KEYS[1], ARGV[1]); &#34; +  
-                  &#34;return nil; &#34; +  
-              &#34;end; &#34; +  
-              &#34;if (redis.call(&#39;hexists&#39;, KEYS[1], ARGV[2]) == 1) then &#34; +  
-                  &#34;redis.call(&#39;hincrby&#39;, KEYS[1], ARGV[2], 1); &#34; +  // 锁被占据了，如果是当前线程占据的，计数加一，可以重入
-                  &#34;redis.call(&#39;pexpire&#39;, KEYS[1], ARGV[1]); &#34; +  
-                  &#34;return nil; &#34; +  
-              &#34;end; &#34; +  
-              &#34;return redis.call(&#39;pttl&#39;, KEYS[1]);&#34;,  // 不是当前线程的锁，返回过期时间
-                Collections.&lt;Object&gt;singletonList(getName()), internalLockLeaseTime, getLockName(threadId));  
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&lt;T&gt; RFuture&lt;T&gt; tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId, RedisStrictCommand&lt;T&gt; command) {  
+</span></span><span class="line"><span class="cl">    internalLockLeaseTime = unit.toMillis(leaseTime);  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">    return commandExecutor.evalWriteAsync(getName(), LongCodec.INSTANCE, command,  
+</span></span><span class="line"><span class="cl">              &#34;if (redis.call(&#39;exists&#39;, KEYS[1]) == 0) then &#34; +  // 判断key释放存在
+</span></span><span class="line"><span class="cl">                  &#34;redis.call(&#39;hset&#39;, KEYS[1], ARGV[2], 1); &#34; +  // 不存在就将key放入Hash结构，field为&#34;UUID:线程ID&#34;
+</span></span><span class="line"><span class="cl">                  &#34;redis.call(&#39;pexpire&#39;, KEYS[1], ARGV[1]); &#34; +  
+</span></span><span class="line"><span class="cl">                  &#34;return nil; &#34; +  
+</span></span><span class="line"><span class="cl">              &#34;end; &#34; +  
+</span></span><span class="line"><span class="cl">              &#34;if (redis.call(&#39;hexists&#39;, KEYS[1], ARGV[2]) == 1) then &#34; +  
+</span></span><span class="line"><span class="cl">                  &#34;redis.call(&#39;hincrby&#39;, KEYS[1], ARGV[2], 1); &#34; +  // 锁被占据了，如果是当前线程占据的，计数加一，可以重入
+</span></span><span class="line"><span class="cl">                  &#34;redis.call(&#39;pexpire&#39;, KEYS[1], ARGV[1]); &#34; +  
+</span></span><span class="line"><span class="cl">                  &#34;return nil; &#34; +  
+</span></span><span class="line"><span class="cl">              &#34;end; &#34; +  
+</span></span><span class="line"><span class="cl">              &#34;return redis.call(&#39;pttl&#39;, KEYS[1]);&#34;,  // 不是当前线程的锁，返回过期时间
+</span></span><span class="line"><span class="cl">                Collections.&lt;Object&gt;singletonList(getName()), internalLockLeaseTime, getLockName(threadId));  
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="额外拓展redlock">额外拓展RedLock</h3>
 <p>解决集群模式下的Redis分布式锁的漏洞。
@@ -571,7 +571,7 @@ public boolean tryLock(long waitTime, long leaseTime, TimeUnit unit) throws Inte
         <div class="footer-container">
 	    <div class="footer-line">
 		    	<span id="run-time"></span>
-	    </div><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.92.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+	    </div><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
                 </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/yongqiangG" target="_blank">johnny</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer>

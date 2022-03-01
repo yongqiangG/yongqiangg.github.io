@@ -18,7 +18,7 @@
 <meta name="application-name" content="LoveIt">
 <meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://example.org/posts/redis/%E5%A6%99%E7%94%A8redis%E5%AE%9E%E7%8E%B0%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97/" /><link rel="prev" href="http://example.org/posts/redis/%E6%B6%88%E9%99%A4%E7%AB%9E%E6%80%81%E4%B9%8B%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://example.org/posts/redis/%E5%A6%99%E7%94%A8redis%E5%AE%9E%E7%8E%B0%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97/" /><link rel="prev" href="http://example.org/posts/redis/%E6%B6%88%E9%99%A4%E7%AB%9E%E6%80%81%E4%B9%8B%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" /><link rel="next" href="http://example.org/posts/redis/bitmap%E4%B9%8B%E4%BA%8C%E5%80%BC%E7%BB%9F%E8%AE%A1/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -159,36 +159,36 @@
 </span><span class="lnt">29
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">    public static void produce() {  // 消息生产
-        new IRedisPool().execute(jedis -&gt; {  
-            jedis.rpush(&#34;mq&#34;, &#34;a&#34;, &#34;b&#34;, &#34;c&#34;);  
-        });  
-  
-    }  
-  
-    public static void consume() {  // 消息消费
-        while (!Thread.interrupted()) {  
-            new IRedisPool().execute(jedis -&gt; {  
-                String msg = jedis.lpop(&#34;mq&#34;);  
-                System.out.println(Thread.currentThread().getId() + &#34; consume msg = &#34; + msg);  
-            });  
-//            try {  // 简单的休眠，降低空轮询，降低客户端CPU使用，降低Redis QPS
-//                Thread.sleep(1000);  
-//            } catch (InterruptedException e) {  
-//                e.printStackTrace();  
-//            }  
- }  
-    }  
-  
-    public static void main(String[] args) throws InterruptedException {  
-        Thread producer = new Thread(() -&gt; {  
- produce(); });  
-        Thread consumer = new Thread(demo00::consume);  
-        producer.start();  
-        consumer.start();  
-        consumer.join();  
-    }
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    public static void produce() {  // 消息生产
+</span></span><span class="line"><span class="cl">        new IRedisPool().execute(jedis -&gt; {  
+</span></span><span class="line"><span class="cl">            jedis.rpush(&#34;mq&#34;, &#34;a&#34;, &#34;b&#34;, &#34;c&#34;);  
+</span></span><span class="line"><span class="cl">        });  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">    }  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">    public static void consume() {  // 消息消费
+</span></span><span class="line"><span class="cl">        while (!Thread.interrupted()) {  
+</span></span><span class="line"><span class="cl">            new IRedisPool().execute(jedis -&gt; {  
+</span></span><span class="line"><span class="cl">                String msg = jedis.lpop(&#34;mq&#34;);  
+</span></span><span class="line"><span class="cl">                System.out.println(Thread.currentThread().getId() + &#34; consume msg = &#34; + msg);  
+</span></span><span class="line"><span class="cl">            });  
+</span></span><span class="line"><span class="cl">//            try {  // 简单的休眠，降低空轮询，降低客户端CPU使用，降低Redis QPS
+</span></span><span class="line"><span class="cl">//                Thread.sleep(1000);  
+</span></span><span class="line"><span class="cl">//            } catch (InterruptedException e) {  
+</span></span><span class="line"><span class="cl">//                e.printStackTrace();  
+</span></span><span class="line"><span class="cl">//            }  
+</span></span><span class="line"><span class="cl"> }  
+</span></span><span class="line"><span class="cl">    }  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">    public static void main(String[] args) throws InterruptedException {  
+</span></span><span class="line"><span class="cl">        Thread producer = new Thread(() -&gt; {  
+</span></span><span class="line"><span class="cl"> produce(); });  
+</span></span><span class="line"><span class="cl">        Thread consumer = new Thread(demo00::consume);  
+</span></span><span class="line"><span class="cl">        producer.start();  
+</span></span><span class="line"><span class="cl">        consumer.start();  
+</span></span><span class="line"><span class="cl">        consumer.join();  
+</span></span><span class="line"><span class="cl">    }
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>问题</strong></p>
 <ol>
@@ -229,34 +229,34 @@
 </span><span class="lnt">27
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">public static void produce() {  
-    new IRedisPool().execute(jedis -&gt; {  
-        jedis.rpush(&#34;mq&#34;, &#34;a&#34;, &#34;b&#34;, &#34;c&#34;);  
-    });  
-  
-}  
-  
-public static void consume() {  
-    while (!Thread.interrupted()) {  
-        new IRedisPool().execute(jedis -&gt; {  
-            List&lt;String&gt; msgs = jedis.blpop(2, &#34;mq&#34;);// 当没有消息的时候最长阻塞2秒  
- if (msgs != null) {  
-                System.out.println(Thread.currentThread().getId() + &#34; consume msg = &#34; + Arrays.toString(msgs.toArray()));  
-            }else{  
-                System.out.println(&#34;no any message&#34;);  
-            }  
-        });  
-    }  
-}  
-  
-public static void main(String[] args) throws InterruptedException {  
-    Thread producer = new Thread(demo01::produce);  
-    Thread consumer = new Thread(demo01::consume);  
-    producer.start();  
-    consumer.start();  
-    consumer.join();  
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">public static void produce() {  
+</span></span><span class="line"><span class="cl">    new IRedisPool().execute(jedis -&gt; {  
+</span></span><span class="line"><span class="cl">        jedis.rpush(&#34;mq&#34;, &#34;a&#34;, &#34;b&#34;, &#34;c&#34;);  
+</span></span><span class="line"><span class="cl">    });  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">}  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">public static void consume() {  
+</span></span><span class="line"><span class="cl">    while (!Thread.interrupted()) {  
+</span></span><span class="line"><span class="cl">        new IRedisPool().execute(jedis -&gt; {  
+</span></span><span class="line"><span class="cl">            List&lt;String&gt; msgs = jedis.blpop(2, &#34;mq&#34;);// 当没有消息的时候最长阻塞2秒  
+</span></span><span class="line"><span class="cl"> if (msgs != null) {  
+</span></span><span class="line"><span class="cl">                System.out.println(Thread.currentThread().getId() + &#34; consume msg = &#34; + Arrays.toString(msgs.toArray()));  
+</span></span><span class="line"><span class="cl">            }else{  
+</span></span><span class="line"><span class="cl">                System.out.println(&#34;no any message&#34;);  
+</span></span><span class="line"><span class="cl">            }  
+</span></span><span class="line"><span class="cl">        });  
+</span></span><span class="line"><span class="cl">    }  
+</span></span><span class="line"><span class="cl">}  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">public static void main(String[] args) throws InterruptedException {  
+</span></span><span class="line"><span class="cl">    Thread producer = new Thread(demo01::produce);  
+</span></span><span class="line"><span class="cl">    Thread consumer = new Thread(demo01::consume);  
+</span></span><span class="line"><span class="cl">    producer.start();  
+</span></span><span class="line"><span class="cl">    consumer.start();  
+</span></span><span class="line"><span class="cl">    consumer.join();  
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="延时队列">延时队列</h2>
 <h2 id="zset结构">ZSET结构</h2>
@@ -349,37 +349,37 @@ zrangebyscore key min max [withscore] // 支持翻页
 </span><span class="lnt">30
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">public static void produce() {  
-    IRedisPool.execute(jedis -&gt; {// 提交一个1分钟后执行的任务  
- jedis.zadd(&#34;delay_task&#34;, Instant.now().getEpochSecond() + 60, new DelayMessage(UUID.randomUUID().toString(), &#34;取消外卖任务&#34;).toString());  
-    });  
-}  
-  
-public static void consume() {  
-    while (!Thread.interrupted()) {  
-        IRedisPool.execute(jedis -&gt; {  
-            Set&lt;String&gt; tasks = jedis.zrangeByScore(&#34;delay_task&#34;, 0, Instant.now().getEpochSecond(), 0, 1);  
-            if (tasks != null &amp;&amp; tasks.size() &gt; 0) {  
-                String task = tasks.iterator().next();
-                Long success = jedis.zrem(&#34;delay_task&#34;, task);  // 利用Zrem限制并发
-                if (1 == success) {  
-                    // 抢到消息，在这里处理业务  
- System.out.println(Thread.currentThread().getId() + &#34;抢到消息：&#34; + task);  
-                } else {  
-                    System.out.println(Thread.currentThread().getId() + &#34;没有抢到消息 TAT&#34;);  
-                }  
-            } else {  
-                System.out.println(Thread.currentThread().getId() + &#34;没有发现消息&#34;);  
-            }  
-        });  
-        try {  
-            Thread.sleep(1000);// 扫描间隔  
- } catch (InterruptedException e) {  
-            e.printStackTrace();  
-        }  
-    }  
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">public static void produce() {  
+</span></span><span class="line"><span class="cl">    IRedisPool.execute(jedis -&gt; {// 提交一个1分钟后执行的任务  
+</span></span><span class="line"><span class="cl"> jedis.zadd(&#34;delay_task&#34;, Instant.now().getEpochSecond() + 60, new DelayMessage(UUID.randomUUID().toString(), &#34;取消外卖任务&#34;).toString());  
+</span></span><span class="line"><span class="cl">    });  
+</span></span><span class="line"><span class="cl">}  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">public static void consume() {  
+</span></span><span class="line"><span class="cl">    while (!Thread.interrupted()) {  
+</span></span><span class="line"><span class="cl">        IRedisPool.execute(jedis -&gt; {  
+</span></span><span class="line"><span class="cl">            Set&lt;String&gt; tasks = jedis.zrangeByScore(&#34;delay_task&#34;, 0, Instant.now().getEpochSecond(), 0, 1);  
+</span></span><span class="line"><span class="cl">            if (tasks != null &amp;&amp; tasks.size() &gt; 0) {  
+</span></span><span class="line"><span class="cl">                String task = tasks.iterator().next();
+</span></span><span class="line"><span class="cl">                Long success = jedis.zrem(&#34;delay_task&#34;, task);  // 利用Zrem限制并发
+</span></span><span class="line"><span class="cl">                if (1 == success) {  
+</span></span><span class="line"><span class="cl">                    // 抢到消息，在这里处理业务  
+</span></span><span class="line"><span class="cl"> System.out.println(Thread.currentThread().getId() + &#34;抢到消息：&#34; + task);  
+</span></span><span class="line"><span class="cl">                } else {  
+</span></span><span class="line"><span class="cl">                    System.out.println(Thread.currentThread().getId() + &#34;没有抢到消息 TAT&#34;);  
+</span></span><span class="line"><span class="cl">                }  
+</span></span><span class="line"><span class="cl">            } else {  
+</span></span><span class="line"><span class="cl">                System.out.println(Thread.currentThread().getId() + &#34;没有发现消息&#34;);  
+</span></span><span class="line"><span class="cl">            }  
+</span></span><span class="line"><span class="cl">        });  
+</span></span><span class="line"><span class="cl">        try {  
+</span></span><span class="line"><span class="cl">            Thread.sleep(1000);// 扫描间隔  
+</span></span><span class="line"><span class="cl"> } catch (InterruptedException e) {  
+</span></span><span class="line"><span class="cl">            e.printStackTrace();  
+</span></span><span class="line"><span class="cl">        }  
+</span></span><span class="line"><span class="cl">    }  
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>关键点</strong></p>
 <ol>
@@ -433,7 +433,8 @@ public static void consume() {
         </section>
     </div>
 
-    <div class="post-nav"><a href="/posts/redis/%E6%B6%88%E9%99%A4%E7%AB%9E%E6%80%81%E4%B9%8B%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="prev" rel="prev" title="消除竞态之分布式锁"><i class="fas fa-angle-left fa-fw"></i>消除竞态之分布式锁</a></div>
+    <div class="post-nav"><a href="/posts/redis/%E6%B6%88%E9%99%A4%E7%AB%9E%E6%80%81%E4%B9%8B%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="prev" rel="prev" title="消除竞态之分布式锁"><i class="fas fa-angle-left fa-fw"></i>消除竞态之分布式锁</a>
+            <a href="/posts/redis/bitmap%E4%B9%8B%E4%BA%8C%E5%80%BC%E7%BB%9F%E8%AE%A1/" class="next" rel="next" title="Bitmap之二值统计">Bitmap之二值统计<i class="fas fa-angle-right fa-fw"></i></a></div>
 </div>
 <div id="comments"><div id="valine" class="comment"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
@@ -442,7 +443,7 @@ public static void consume() {
         <div class="footer-container">
 	    <div class="footer-line">
 		    	<span id="run-time"></span>
-	    </div><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.92.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+	    </div><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
                 </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/yongqiangG" target="_blank">johnny</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer>
