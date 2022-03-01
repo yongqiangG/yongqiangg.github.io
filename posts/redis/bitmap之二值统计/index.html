@@ -103,17 +103,17 @@
 </nav></div>
             </div><div class="content" id="content"><h2 id="什么是bitmap">什么是Bitmap</h2>
 <p>首先需要说明Bitmap并不是Redis的5大数据结构之一，其实现底层是Redis的String类型。
-String的实现是<strong>SDS简单字符串</strong>，额外包含了一些长度之类的信息。
-<img
+String的实现是<strong>SDS简单字符串</strong>，额外包含了一些长度之类的信息。</p>
+<p><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115216083.png"
         data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115216083.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115216083.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115216083.png 2x"
         data-sizes="auto"
         alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115216083.png"
-        title="image-20220228115216083" />
-Bitmap可以看作以bit作为单位的数组，每个bit里面存储的值就是0和1，正是因为使用bit作为基本单位，因此可以极大的节省空间占用。例如12MB就可以表达一亿个01状态。
-<img
+        title="image-20220228115216083" /></p>
+<p>Bitmap可以看作以bit作为单位的数组，每个bit里面存储的值就是0和1，正是因为使用bit作为基本单位，因此可以极大的节省空间占用。例如12MB就可以表达一亿个01状态。</p>
+<p><img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220228115155402.png"
