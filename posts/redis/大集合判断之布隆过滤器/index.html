@@ -5,30 +5,30 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-        <title> - johnny 写字的地方</title><meta name="Description" content="johnny 写字的地方"><meta property="og:title" content="" />
-<meta property="og:description" content="1 2 3 4 5 title: &#34;大集合判断之布隆过滤器&#34; date: 2022-03-02T16:00:00&#43;08:00 draft: false tags: [&#34;Java&#34;,&#34;Redis&#34;,&#34;BloomFilter&#34;,&#34;Redisson&#34;] categories: [&#34;redis&#34;] 场景 新闻客户端推送新闻，它不会推送重复的内容，这意味着每次刷新的时候，" />
+        <title>大集合判断之布隆过滤器 - johnny 写字的地方</title><meta name="Description" content="johnny 写字的地方"><meta property="og:title" content="大集合判断之布隆过滤器" />
+<meta property="og:description" content="场景 新闻客户端推送新闻，它不会推送重复的内容，这意味着每次刷新的时候，它都要进行一次去重 方案 很容易想到通过DB保存用户的历史记录，每次推送时" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://example.org/posts/redis/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" /><meta property="article:section" content="posts" />
-
-
+<meta property="article:published_time" content="2022-03-02T16:00:00+08:00" />
+<meta property="article:modified_time" content="2022-03-02T16:00:00+08:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="1 2 3 4 5 title: &#34;大集合判断之布隆过滤器&#34; date: 2022-03-02T16:00:00&#43;08:00 draft: false tags: [&#34;Java&#34;,&#34;Redis&#34;,&#34;BloomFilter&#34;,&#34;Redisson&#34;] categories: [&#34;redis&#34;] 场景 新闻客户端推送新闻，它不会推送重复的内容，这意味着每次刷新的时候，"/>
+<meta name="twitter:title" content="大集合判断之布隆过滤器"/>
+<meta name="twitter:description" content="场景 新闻客户端推送新闻，它不会推送重复的内容，这意味着每次刷新的时候，它都要进行一次去重 方案 很容易想到通过DB保存用户的历史记录，每次推送时"/>
 <meta name="application-name" content="LoveIt">
 <meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://example.org/posts/redis/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" /><link rel="next" href="http://example.org/posts/redis/%E6%B6%88%E9%99%A4%E7%AB%9E%E6%80%81%E4%B9%8B%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://example.org/posts/redis/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" /><link rel="prev" href="http://example.org/posts/redis/uv%E7%BB%9F%E8%AE%A1%E4%B9%8Bhyperloglog/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
-        "headline": "",
+        "headline": "大集合判断之布隆过滤器",
         "inLanguage": "zh-CN",
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "http:\/\/example.org\/posts\/redis\/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8\/"
-        },"genre": "posts","wordcount":  990 ,
-        "url": "http:\/\/example.org\/posts\/redis\/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8\/","publisher": {
+        },"genre": "posts","keywords": "Java, Redis, BloomFilter, Redisson","wordcount":  955 ,
+        "url": "http:\/\/example.org\/posts\/redis\/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8\/","datePublished": "2022-03-02T16:00:00+08:00","dateModified": "2022-03-02T16:00:00+08:00","publisher": {
             "@type": "Organization",
             "name": "johnny"},"author": {
                 "@type": "Person",
@@ -77,10 +77,10 @@
 		    <div class="toc" id="toc-auto">
             <h2 class="toc-title">目录</h2>
             <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animated flipInX"></h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/yongqiangG" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>johnny</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar fa-fw"></i>&nbsp;<time datetime="0001-01-01">0001-01-01</time>&nbsp;<i class="far fa-calendar-plus fa-fw"></i>&nbsp;<time datetime="0001-01-01">0001-01-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 990 字&nbsp;
-                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 2 分钟&nbsp;<span id="/posts/redis/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" class="leancloud_visitors" data-flag-title="">
+        </div><article class="page single"><h1 class="single-title animated flipInX">大集合判断之布隆过滤器</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/yongqiangG" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>johnny</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/redis/"><i class="far fa-folder fa-fw"></i>redis</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar fa-fw"></i>&nbsp;<time datetime="2022-03-02">2022-03-02</time>&nbsp;<i class="far fa-calendar-plus fa-fw"></i>&nbsp;<time datetime="2022-03-02">2022-03-02</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 955 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 2 分钟&nbsp;<span id="/posts/redis/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" class="leancloud_visitors" data-flag-title="大集合判断之布隆过滤器">
                         <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
         </div><div class="details toc" id="toc-static"  kept="">
@@ -103,23 +103,7 @@
     <li><a href="#布隆过滤器的其他应用">布隆过滤器的其他应用</a></li>
   </ol>
 </nav></div>
-            </div><div class="content" id="content"><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">title: &#34;大集合判断之布隆过滤器&#34;
-</span></span><span class="line"><span class="cl">date: 2022-03-02T16:00:00+08:00
-</span></span><span class="line"><span class="cl">draft: false
-</span></span><span class="line"><span class="cl">tags: [&#34;Java&#34;,&#34;Redis&#34;,&#34;BloomFilter&#34;,&#34;Redisson&#34;]
-</span></span><span class="line"><span class="cl">categories: [&#34;redis&#34;]
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="场景">场景</h2>
+            </div><div class="content" id="content"><h2 id="场景">场景</h2>
 <p>新闻客户端推送新闻，它不会推送重复的内容，这意味着每次刷新的时候，它都要进行一次去重</p>
 <p><strong>方案</strong></p>
 <ol>
@@ -246,7 +230,7 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 0001-01-01</span>
+                <span>更新于 2022-03-02</span>
             </div>
             <div class="post-info-license"></div>
         </div>
@@ -259,14 +243,13 @@
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"></section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/redis/">Redis</a>,&nbsp;<a href="/tags/bloomfilter/">BloomFilter</a>,&nbsp;<a href="/tags/redisson/">Redisson</a></section>
         <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
         </section>
     </div>
 
-    <div class="post-nav">
-            <a href="/posts/redis/%E6%B6%88%E9%99%A4%E7%AB%9E%E6%80%81%E4%B9%8B%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="next" rel="next" title="消除竞态之分布式锁">消除竞态之分布式锁<i class="fas fa-angle-right fa-fw"></i></a></div>
+    <div class="post-nav"><a href="/posts/redis/uv%E7%BB%9F%E8%AE%A1%E4%B9%8Bhyperloglog/" class="prev" rel="prev" title="UV统计之HyperLogLog"><i class="fas fa-angle-left fa-fw"></i>UV统计之HyperLogLog</a></div>
 </div>
 <div id="comments"><div id="valine" class="comment"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.

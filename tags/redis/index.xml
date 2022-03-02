@@ -4,7 +4,14 @@
         <link>http://example.org/tags/redis/</link>
         <description>Redis - 标签 - johnny 写字的地方</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>johnny.gor10@gmail.com (johnny)</managingEditor>
-            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Tue, 01 Mar 2022 20:27:00 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/redis/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Wed, 02 Mar 2022 16:00:00 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/redis/" rel="self" type="application/rss+xml" /><item>
+    <title>大集合判断之布隆过滤器</title>
+    <link>http://example.org/posts/redis/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</link>
+    <pubDate>Wed, 02 Mar 2022 16:00:00 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://example.org/posts/redis/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</guid>
+    <description><![CDATA[场景 新闻客户端推送新闻，它不会推送重复的内容，这意味着每次刷新的时候，它都要进行一次去重 方案 很容易想到通过DB保存用户的历史记录，每次推送时]]></description>
+</item><item>
     <title>UV统计之HyperLogLog</title>
     <link>http://example.org/posts/redis/uv%E7%BB%9F%E8%AE%A1%E4%B9%8Bhyperloglog/</link>
     <pubDate>Tue, 01 Mar 2022 20:27:00 &#43;0800</pubDate>
