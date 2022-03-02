@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title> - johnny 写字的地方</title><meta name="Description" content="johnny 写字的地方"><meta property="og:title" content="" />
+<meta property="og:description" content="1 2 3 4 5 title: &#34;大集合判断之布隆过滤器&#34; date: 2022-03-02T16:00:00&#43;08:00 draft: false tags: [&#34;Java&#34;,&#34;Redis&#34;,&#34;BloomFilter&#34;,&#34;Redisson&#34;] categories: [&#34;redis&#34;] 场景 新闻客户端推送新闻，它不会推送重复的内容，这意味着每次刷新的时候，" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/redis/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" /><meta property="article:section" content="posts" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="1 2 3 4 5 title: &#34;大集合判断之布隆过滤器&#34; date: 2022-03-02T16:00:00&#43;08:00 draft: false tags: [&#34;Java&#34;,&#34;Redis&#34;,&#34;BloomFilter&#34;,&#34;Redisson&#34;] categories: [&#34;redis&#34;] 场景 新闻客户端推送新闻，它不会推送重复的内容，这意味着每次刷新的时候，"/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://example.org/posts/redis/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" /><link rel="next" href="http://example.org/posts/redis/%E6%B6%88%E9%99%A4%E7%AB%9E%E6%80%81%E4%B9%8B%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/example.org\/posts\/redis\/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8\/"
+        },"genre": "posts","wordcount":  990 ,
+        "url": "http:\/\/example.org\/posts\/redis\/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8\/","publisher": {
+            "@type": "Organization",
+            "name": "johnny"},"author": {
+                "@type": "Person",
+                "name": "johnny"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="" header-mobile=""><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+	<a href="https://github.com/yongqiangG" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="3.5rem" height="3.5rem" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+        <div class="header-title">
+            <a href="/" title="johnny 写字的地方">johnny 写字的地方</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/hot/"> 热榜 </a><a class="menu-item" href="/friends/"><i class='fas fa-fw fa-fan fa-spin'></i> 友链 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="johnny 写字的地方">johnny 写字的地方</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/hot/" title="">热榜</a><a class="menu-item" href="/friends/" title=""><i class='fas fa-fw fa-fan fa-spin'></i>友链</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container">
+		    <div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX"></h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/yongqiangG" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>johnny</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar fa-fw"></i>&nbsp;<time datetime="0001-01-01">0001-01-01</time>&nbsp;<i class="far fa-calendar-plus fa-fw"></i>&nbsp;<time datetime="0001-01-01">0001-01-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 990 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 2 分钟&nbsp;<span id="/posts/redis/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" class="leancloud_visitors" data-flag-title="">
+                        <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ol>
+    <li><a href="#场景">场景</a></li>
+    <li><a href="#什么是布隆过滤器">什么是布隆过滤器</a></li>
+    <li><a href="#如何使用">如何使用</a>
+      <ol>
+        <li><a href="#基础api">基础api</a></li>
+        <li><a href="#redisson示例代码">Redisson示例代码</a></li>
+      </ol>
+    </li>
+    <li><a href="#布隆过滤器的原理">布隆过滤器的原理</a></li>
+    <li><a href="#空间占用估算">空间占用估算</a></li>
+    <li><a href="#布隆过滤器的其他应用">布隆过滤器的其他应用</a></li>
+  </ol>
+</nav></div>
+            </div><div class="content" id="content"><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">title: &#34;大集合判断之布隆过滤器&#34;
+</span></span><span class="line"><span class="cl">date: 2022-03-02T16:00:00+08:00
+</span></span><span class="line"><span class="cl">draft: false
+</span></span><span class="line"><span class="cl">tags: [&#34;Java&#34;,&#34;Redis&#34;,&#34;BloomFilter&#34;,&#34;Redisson&#34;]
+</span></span><span class="line"><span class="cl">categories: [&#34;redis&#34;]
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="场景">场景</h2>
+<p>新闻客户端推送新闻，它不会推送重复的内容，这意味着每次刷新的时候，它都要进行一次去重</p>
+<p><strong>方案</strong></p>
+<ol>
+<li>很容易想到通过DB保存用户的历史记录，每次推送时判断是否存在于记录中。但是随着用户量和历史记录的膨胀，一方面磁盘空间占用，另一方面去重的性能跟不上。</li>
+<li>缓存。比如使用Hash或者SET，性能解决了，但是内存占用还是会很大。</li>
+<li><strong>Bloom Filter</strong></li>
+</ol>
+<h2 id="什么是布隆过滤器">什么是布隆过滤器</h2>
+<p>简单来说，可以理解成一个set结构。</p>
+<p>它有两个<strong>特点</strong>：</p>
+<ol>
+<li>它判断某个元素不存在，那么一定不存在</li>
+<li>他判断某个元素存在，那么这个元素可能不存在，也即存在一定的<strong>误判</strong>概率（<strong>可调节</strong>）</li>
+</ol>
+<p>那么根据这个特点，正好符合我们需要在推送前判断是否已经推送过。</p>
+<h2 id="如何使用">如何使用</h2>
+<ol>
+<li>lettuce客户端</li>
+<li>redisson</li>
+</ol>
+<h3 id="基础api">基础api</h3>
+<blockquote>
+<p>添加元素</p>
+<p>bf.add</p>
+<p>判断元素是否存在</p>
+<p>bf.exists</p>
+</blockquote>
+<h3 id="redisson示例代码">Redisson示例代码</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RBloomFilter</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">newsFilter</span> <span class="o">=</span> <span class="n">IRedisson</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getBloomFilter</span><span class="o">(</span><span class="s">&#34;newsFilter&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 第1个参数为预期插入数据数量，第二个参数为预期误判率
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">newsFilter</span><span class="o">.</span><span class="na">tryInit</span><span class="o">(</span><span class="n">100000000L</span><span class="o">,</span> <span class="n">0</span><span class="o">.</span><span class="na">01</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 循环插入10000条数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">10000</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">newsFilter</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 获取数据量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;count: &#34;</span><span class="o">+</span><span class="n">newsFilter</span><span class="o">.</span><span class="na">count</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 判断数据是否存在
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;is 1000 exist? &#34;</span> <span class="o">+</span> <span class="n">newsFilter</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">1000</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;is 2000 exist? &#34;</span> <span class="o">+</span> <span class="n">newsFilter</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">1000</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>需要注意</strong></p>
+<ul>
+<li>当插入数据量大于预期设置的插入数量，那么误判率会上升</li>
+<li>误判率设置越低，占用空间越大</li>
+<li>默认的插入数量100，误判率0.01</li>
+</ul>
+<p><strong>这也提示我们当插入元素数量超过预期时，需要重建布隆过滤器，再将旧的元素批量add进去。</strong></p>
+<h2 id="布隆过滤器的原理">布隆过滤器的原理</h2>
+<p>本质上是一个位数组和若干个hash函数。新增元素时通过几个hash函数得到一个整数，然后用这个整数对数组长度取模，获得一个数组下标，然后将下标对应的位置一，这样就完成了将元素映射到位数组中的几个位置。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302161133081.png"
+        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302161133081.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302161133081.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302161133081.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302161133081.png"
+        title="image-20220302161133081" /></p>
+<p>因此，当需要判断某个元素是否存在于布隆过滤器时，同样经过hash计算出元素映射到位数组的下标。只要其中有一位下标为0，就意味着<strong>这个元素一定不存在</strong>，这个判断是绝对准确的。</p>
+<p>但是如果hash计算出的所有下标都为1，<strong>并不能说明这个元素一定存在</strong>。只能说大概率可能存在，因为有可能其中某些下标的1是其他的元素经过hash计算得到。</p>
+<h2 id="空间占用估算">空间占用估算</h2>
+<ul>
+<li>预期插入数量越大，占用位数组越大，所需要的hash函数越多（影响计算效率）</li>
+<li>预期的错误率越低，每个元素需要的空间越大</li>
+</ul>
+<p><a href="https://krisives.github.io/bloom-calculator/" target="_blank" rel="noopener noreffer">https://krisives.github.io/bloom-calculator/</a></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302162422169.png"
+        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302162422169.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302162422169.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302162422169.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302162422169.png"
+        title="image-20220302162422169" /></p>
+<h2 id="布隆过滤器的其他应用">布隆过滤器的其他应用</h2>
+<ul>
+<li>
+<p>爬虫的URL去重</p>
+</li>
+<li>
+<p>邮箱的垃圾邮件过滤</p>
+</li>
+<li>
+<p>防止<strong>缓存穿透</strong>，降低数据库的IO请求数量，当用户来查询某个row时，可以先通过过滤器过滤掉大量不存在的请求，再请求到数据库。</p>
+</li>
+</ul>
+<div class="post-reward">
+	  <input type="checkbox" name="reward" id="reward" hidden />
+	    <label class="reward-button" for="reward">赞赏支持</label>
+	      <div class="qr-code">
+		          <label class="qr-code-image" for="reward">
+						          <img class="image" src="/images/wechat.JPG">
+							          <span>微信打赏</span>
+								        </label>
+									        <label class="qr-code-image" for="reward">
+											              <img class="image" src="/images/alipay.JPG">
+												              <span>支付宝打赏</span>
+													            </label>
+															  </div>
+</div>
+
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 0001-01-01</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav">
+            <a href="/posts/redis/%E6%B6%88%E9%99%A4%E7%AB%9E%E6%80%81%E4%B9%8B%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="next" rel="next" title="消除竞态之分布式锁">消除竞态之分布式锁<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container">
+	    <div class="footer-line">
+		    	<span id="run-time"></span>
+	    </div><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/yongqiangG" target="_blank">johnny</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer>
+        </div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><script type="text/javascript" src="/lib/valine/Valine.min.js"></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"rEc5ExBWC7GI72VauUMy2H6T-MdYXbMMI","appKey":"TnzQwGYo2KSwLt3Qy5wypVDk","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-cn","pageSize":10,"placeholder":"说点什么吧...","recordIP":true,"serverURLs":"https://rEc5ExBW.api.lncldglobal.com","visitor":true}}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@2.1.3/dist/jquery.min.js"></script><script type="text/javascript" src="/js/custom.js"></script></body>
+</html>
