@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>redis限流的演进 - johnny 写字的地方</title><meta name="Description" content="johnny 写字的地方"><meta property="og:title" content="redis限流的演进" />
+<meta property="og:description" content="场景 限制用户的接口请求流量，保护服务器 控制用户行为，比如发帖、回复 简单限流之ZSET 利用zset的结构，可以用score圈出一个固定的时间窗" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/redis/redis%E9%99%90%E6%B5%81%E7%9A%84%E6%BC%94%E8%BF%9B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-05T18:45:00+08:00" />
+<meta property="article:modified_time" content="2022-03-05T18:45:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="redis限流的演进"/>
+<meta name="twitter:description" content="场景 限制用户的接口请求流量，保护服务器 控制用户行为，比如发帖、回复 简单限流之ZSET 利用zset的结构，可以用score圈出一个固定的时间窗"/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://example.org/posts/redis/redis%E9%99%90%E6%B5%81%E7%9A%84%E6%BC%94%E8%BF%9B/" /><link rel="prev" href="http://example.org/posts/redis/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "redis限流的演进",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/example.org\/posts\/redis\/redis%E9%99%90%E6%B5%81%E7%9A%84%E6%BC%94%E8%BF%9B\/"
+        },"genre": "posts","keywords": "Java, Redis, ZSET, 漏斗限流, 令牌桶限流, Lua, 源码","wordcount":  2493 ,
+        "url": "http:\/\/example.org\/posts\/redis\/redis%E9%99%90%E6%B5%81%E7%9A%84%E6%BC%94%E8%BF%9B\/","datePublished": "2022-03-05T18:45:00+08:00","dateModified": "2022-03-05T18:45:00+08:00","publisher": {
+            "@type": "Organization",
+            "name": "johnny"},"author": {
+                "@type": "Person",
+                "name": "johnny"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="" header-mobile=""><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+	<a href="https://github.com/yongqiangG" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="3.5rem" height="3.5rem" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+        <div class="header-title">
+            <a href="/" title="johnny 写字的地方">johnny 写字的地方</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/hot/"> 热榜 </a><a class="menu-item" href="/friends/"><i class='fas fa-fw fa-fan fa-spin'></i> 友链 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="johnny 写字的地方">johnny 写字的地方</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/hot/" title="">热榜</a><a class="menu-item" href="/friends/" title=""><i class='fas fa-fw fa-fan fa-spin'></i>友链</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container">
+		    <div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">redis限流的演进</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/yongqiangG" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>johnny</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/redis/"><i class="far fa-folder fa-fw"></i>redis</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar fa-fw"></i>&nbsp;<time datetime="2022-03-05">2022-03-05</time>&nbsp;<i class="far fa-calendar-plus fa-fw"></i>&nbsp;<time datetime="2022-03-05">2022-03-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2493 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;<span id="/posts/redis/redis%E9%99%90%E6%B5%81%E7%9A%84%E6%BC%94%E8%BF%9B/" class="leancloud_visitors" data-flag-title="redis限流的演进">
+                        <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ol>
+    <li><a href="#场景">场景</a></li>
+    <li><a href="#简单限流之zset">简单限流之ZSET</a>
+      <ol>
+        <li><a href="#zset限流的缺点">ZSET限流的缺点</a></li>
+      </ol>
+    </li>
+    <li><a href="#高级限流之漏斗算法">高级限流之漏斗算法</a>
+      <ol>
+        <li><a href="#什么是漏斗算法">什么是漏斗算法</a></li>
+        <li><a href="#一个简单的漏斗算法实现">一个简单的漏斗算法实现</a></li>
+        <li><a href="#redis中的漏斗算法封装">Redis中的漏斗算法封装</a></li>
+      </ol>
+    </li>
+    <li><a href="#高级限流之令牌桶算法">高级限流之令牌桶算法</a>
+      <ol>
+        <li><a href="#什么是令牌桶算法">什么是令牌桶算法</a></li>
+        <li><a href="#如何实现令牌桶算法">如何实现令牌桶算法</a></li>
+        <li><a href="#redisson限流器源码解析">Redisson限流器源码解析</a></li>
+        <li><a href="#都是限流令牌桶与漏斗的差别">都是限流，令牌桶与漏斗的差别</a></li>
+      </ol>
+    </li>
+    <li><a href="#其他限流">其他限流</a></li>
+  </ol>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="场景">场景</h2>
+<ul>
+<li>限制用户的接口请求流量，保护服务器</li>
+<li>控制用户行为，比如发帖、回复</li>
+</ul>
+<h2 id="简单限流之zset">简单限流之ZSET</h2>
+<p>利用zset的结构，可以用score圈出一个固定的时间窗口</p>
+<ul>
+<li>一个用户加一个行为组成zset的key，例如ratelimiter:uid:addPoint</li>
+<li>当前的毫秒数作为score</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302201251385.png"
+        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302201251385.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302201251385.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302201251385.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220302201251385.png"
+        title="image-20220302201251385" /></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 一个简单的限流
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param user 用户标识
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param action 用户行为
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param period 时间窗口
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param maxCount 限制次数
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">isAllowed</span><span class="o">(</span><span class="n">String</span> <span class="n">user</span><span class="o">,</span> <span class="n">String</span> <span class="n">action</span><span class="o">,</span> <span class="kt">int</span> <span class="n">period</span><span class="o">,</span> <span class="kt">int</span> <span class="n">maxCount</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">String</span> <span class="n">key</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;ratelimit:%s:%s&#34;</span><span class="o">,</span> <span class="n">user</span><span class="o">,</span> <span class="n">action</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">nowTs</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Jedis</span> <span class="n">jedis</span> <span class="o">=</span> <span class="n">IRedisPool</span><span class="o">.</span><span class="na">jedisPool</span><span class="o">.</span><span class="na">getResource</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 针对同一个key的多次操作，通过pipeline节省网络开销，提高执行效率
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Pipeline</span> <span class="n">pipelined</span> <span class="o">=</span> <span class="n">jedis</span><span class="o">.</span><span class="na">pipelined</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pipelined</span><span class="o">.</span><span class="na">multi</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 记录行为，插入数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">pipelined</span><span class="o">.</span><span class="na">zadd</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">nowTs</span><span class="o">,</span> <span class="s">&#34;&#34;</span> <span class="o">+</span> <span class="n">nowTs</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 移除当前时间窗口之外的数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">pipelined</span><span class="o">.</span><span class="na">zremrangeByScore</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">nowTs</span> <span class="o">-</span> <span class="n">1000</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 获取行为数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Response</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">count</span> <span class="o">=</span> <span class="n">pipelined</span><span class="o">.</span><span class="na">zcard</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 设置过期时间，避免冷客户占据内存，多宽限1秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">pipelined</span><span class="o">.</span><span class="na">expire</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">period</span><span class="o">+</span><span class="n">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pipelined</span><span class="o">.</span><span class="na">exec</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pipelined</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 最后比较在指定时间窗口内是否超过限制次数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">count</span><span class="o">.</span><span class="na">get</span><span class="o">()</span> <span class="o">&lt;=</span> <span class="n">maxCount</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 使用Demo
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">2</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">boolean</span> <span class="n">allowed</span> <span class="o">=</span> <span class="n">isAllowed</span><span class="o">(</span><span class="s">&#34;johnny&#34;</span><span class="o">,</span> <span class="s">&#34;addPoint&#34;</span><span class="o">,</span> <span class="n">1000</span><span class="o">,</span> <span class="n">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">allowed</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="zset限流的缺点">ZSET限流的缺点</h3>
+<p>不适合大数据量的限流，例如限定60秒不能超过一百万次，随着请求的增加，会消耗大量内存空间</p>
+<h2 id="高级限流之漏斗算法">高级限流之漏斗算法</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305163803394.png"
+        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305163803394.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305163803394.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305163803394.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305163803394.png"
+        title="image-20220305163803394" /></p>
+<h3 id="什么是漏斗算法">什么是漏斗算法</h3>
+<p>假设我们一直往漏斗里面灌水，那么当漏水的频率小于灌水的频率时，很显然漏斗就会被灌满。</p>
+<p>这个类似于我们一个服务接口被调用的情况，假设我们有一个扣减积分的接口，我们想要这个接口被同一个客户调用的频率<strong>不超过1分钟10次</strong>，一旦超过这个频率我们就拒绝服务，对这个服务进行降级，给一个友好提示。</p>
+<p>那么，针对漏斗算法来说，我们就可以将这个出水口的漏水频率设置为10次/每分钟，同时给这个漏斗一定的容量——10，这也就意味着用户可以连续提交十次扣减积分的请求，都会将这个请求缓存在漏洞的容量内，以固定的10次每分钟，也就是6秒一个请求的速率进行处理。当用户在6秒内，提交第11次扣减积分请求时，就会触发漏斗的限流阈值，从而实现限流的目的。</p>
+<h3 id="一个简单的漏斗算法实现">一个简单的漏斗算法实现</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">static</span> <span class="kd">class</span> <span class="nc">Funnel</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">capacity</span><span class="o">;</span> <span class="c1">// 漏斗总容量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">float</span> <span class="n">leakingRate</span><span class="o">;</span> <span class="c1">// 漏水频率
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">leftQuota</span><span class="o">;</span> <span class="c1">// 漏斗剩余容量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">long</span> <span class="n">leakingTs</span><span class="o">;</span> <span class="c1">// 上一次漏水时间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">Funnel</span><span class="o">(</span><span class="kt">int</span> <span class="n">capacity</span><span class="o">,</span> <span class="kt">float</span> <span class="n">leakingRate</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">capacity</span> <span class="o">=</span> <span class="n">capacity</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">leakingRate</span> <span class="o">=</span> <span class="n">leakingRate</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">leftQuota</span> <span class="o">=</span> <span class="n">capacity</span><span class="o">;</span> <span class="c1">// 初始化剩余容量与容量相等
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">this</span><span class="o">.</span><span class="na">leakingTs</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * 每次请求前计算容量，腾出剩余容量
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">makeSpace</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">long</span> <span class="n">nowTs</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">long</span> <span class="n">deltaTs</span> <span class="o">=</span> <span class="o">(</span><span class="n">nowTs</span> <span class="o">-</span> <span class="n">leakingTs</span><span class="o">)</span> <span class="o">/</span> <span class="n">1000</span><span class="o">;</span><span class="c1">// 秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">int</span> <span class="n">deltaQuota</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">(</span><span class="n">deltaTs</span> <span class="o">*</span> <span class="n">leakingRate</span><span class="o">);</span><span class="c1">// 计算需要腾出多少容量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">deltaQuota</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// 上一次漏水时间过去太久，int溢出，变成负数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">this</span><span class="o">.</span><span class="na">leftQuota</span> <span class="o">=</span> <span class="n">capacity</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">this</span><span class="o">.</span><span class="na">leakingTs</span> <span class="o">=</span> <span class="n">nowTs</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">deltaQuota</span> <span class="o">&lt;</span> <span class="n">1</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// 上一次漏水时间太近，不需要腾出空间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">leftQuota</span> <span class="o">+=</span> <span class="n">deltaQuota</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">leakingTs</span> <span class="o">=</span> <span class="n">nowTs</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">leftQuota</span> <span class="o">&gt;</span> <span class="k">this</span><span class="o">.</span><span class="na">capacity</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">this</span><span class="o">.</span><span class="na">leftQuota</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">capacity</span><span class="o">;</span> <span class="c1">// 剩余空间不能超过最大容量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">watering</span><span class="o">(</span><span class="kt">int</span> <span class="n">quota</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">makeSpace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">leftQuota</span> <span class="o">&gt;=</span> <span class="n">quota</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// 判断剩余空间是否足够请求申请
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">this</span><span class="o">.</span><span class="na">leftQuota</span> <span class="o">-=</span> <span class="n">quota</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Funnel</span><span class="o">&gt;</span> <span class="n">funnels</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span><span class="c1">// 每个用户的行为对应一个漏斗
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isAllowed</span><span class="o">(</span><span class="n">String</span> <span class="n">user</span><span class="o">,</span> <span class="n">String</span> <span class="n">action</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">key</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;%s:%s&#34;</span><span class="o">,</span> <span class="n">user</span><span class="o">,</span> <span class="n">action</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Funnel</span> <span class="n">funnel</span> <span class="o">=</span> <span class="n">funnels</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">funnel</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">funnel</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Funnel</span><span class="o">(</span><span class="n">capacity</span><span class="o">,</span> <span class="n">leakingRate</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">funnels</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">funnel</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">funnel</span><span class="o">.</span><span class="na">watering</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 一个60秒内允许操作10次的漏斗
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Funnel</span> <span class="n">funnel</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Funnel</span><span class="o">(</span><span class="n">10</span><span class="o">,</span> <span class="n">10</span> <span class="o">/</span> <span class="n">60</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 连续操作11次，第11次会返回false，被限流了
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">11</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">boolean</span> <span class="n">allowed</span> <span class="o">=</span> <span class="n">funnel</span><span class="o">.</span><span class="na">isAllowed</span><span class="o">(</span><span class="s">&#34;johnny&#34;</span><span class="o">,</span> <span class="s">&#34;addPoint&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;allowed = &#34;</span> <span class="o">+</span> <span class="n">allowed</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>需要注意的是</strong></p>
+<p>该代码仅用于演示，存在非原子性的问题，也就是如果在多线程的环境下是<strong>不安全</strong>的，因为在计算剩余空间的时候，需要取值、计算、再赋值。需要适当的<strong>加锁</strong>来保证限流数据的正确。</p>
+<h3 id="redis中的漏斗算法封装">Redis中的漏斗算法封装</h3>
+<p>和布隆过滤器一样，需要额外安装模块<code>Redis-Cell</code>，通过它的封装，提供了<strong>具备原子性</strong>的限流指令。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305154938786.png"
+        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305154938786.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305154938786.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305154938786.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305154938786.png"
+        title="image-20220305154938786" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305155001219.png"
+        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305155001219.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305155001219.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305155001219.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305155001219.png"
+        title="image-20220305155001219" /></p>
+<p>可以看到这个模块更加完善，如果当前被限流了，多久之后可以腾出容量允许请求的<strong>重试时间</strong>都给你算好了，可以自己等待重试时间之后进行重试。</p>
+<h2 id="高级限流之令牌桶算法">高级限流之令牌桶算法</h2>
+<h3 id="什么是令牌桶算法">什么是令牌桶算法</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305164944409.png"
+        data-srcset="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305164944409.png, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305164944409.png 1.5x, https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305164944409.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/johnny777/md-pic/raw/master/img/image-20220305164944409.png"
+        title="image-20220305164944409" /></p>
+<p>维护一个令牌桶，以固定的频率往里面放置令牌。当请求到来的时候，先去获取令牌，拿到令牌才进行请求处理。</p>
+<p>如果没有拿到令牌，就等待重试或者直接拒绝服务。</p>
+<h3 id="如何实现令牌桶算法">如何实现令牌桶算法</h3>
+<p><strong>Redisson实现</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">static</span> <span class="n">RRateLimiter</span> <span class="nf">createLimiter</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="kt">int</span> <span class="n">count</span><span class="o">,</span> <span class="kt">int</span> <span class="n">period</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RRateLimiter</span> <span class="n">rateLimiter</span> <span class="o">=</span> <span class="n">IRedisson</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getRateLimiter</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 设置发放令牌的速率
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// overall表示的是全局所有实例的限制，另一个是每个实例单独限制
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">rateLimiter</span><span class="o">.</span><span class="na">trySetRate</span><span class="o">(</span><span class="n">RateType</span><span class="o">.</span><span class="na">OVERALL</span><span class="o">,</span> <span class="n">count</span><span class="o">,</span> <span class="n">period</span><span class="o">,</span> <span class="n">RateIntervalUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">rateLimiter</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 设置以每秒一个的速度往addPoint这个key发放令牌
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">RRateLimiter</span> <span class="n">limiter</span> <span class="o">=</span> <span class="n">createLimiter</span><span class="o">(</span><span class="s">&#34;addPoint&#34;</span><span class="o">,</span> <span class="n">1</span><span class="o">,</span> <span class="n">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ExecutorService</span> <span class="n">pool</span> <span class="o">=</span> <span class="n">Executors</span><span class="o">.</span><span class="na">newFixedThreadPool</span><span class="o">(</span><span class="n">10</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">pool</span><span class="o">.</span><span class="na">submit</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">limiter</span><span class="o">.</span><span class="na">acquire</span><span class="o">(</span><span class="n">1</span><span class="o">);</span> <span class="c1">// 阻塞获取令牌
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">LocalDateTime</span><span class="o">.</span><span class="na">now</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;:&#34;</span> <span class="o">+</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getId</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;拿到了令牌&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">});</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="redisson限流器源码解析">Redisson限流器源码解析</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">RFuture</span><span class="o">&lt;</span><span class="n">Boolean</span><span class="o">&gt;</span> <span class="nf">trySetRateAsync</span><span class="o">(</span><span class="n">RateType</span> <span class="n">type</span><span class="o">,</span> <span class="kt">long</span> <span class="n">rate</span><span class="o">,</span> <span class="kt">long</span> <span class="n">rateInterval</span><span class="o">,</span> <span class="n">RateIntervalUnit</span> <span class="n">unit</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">commandExecutor</span><span class="o">.</span><span class="na">evalWriteAsync</span><span class="o">(</span><span class="n">getName</span><span class="o">(),</span> <span class="n">LongCodec</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">,</span> <span class="n">RedisCommands</span><span class="o">.</span><span class="na">EVAL_BOOLEAN</span><span class="o">,</span><span class="c1">// 可以看到限流器是通过HASH结构实现的
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="s">&#34;redis.call(&#39;hsetnx&#39;, KEYS[1], &#39;rate&#39;, ARGV[1]);&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="o">+</span> <span class="s">&#34;redis.call(&#39;hsetnx&#39;, KEYS[1], &#39;interval&#39;, ARGV[2]);&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="o">+</span> <span class="s">&#34;return redis.call(&#39;hsetnx&#39;, KEYS[1], &#39;type&#39;, ARGV[3]);&#34;</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Collections</span><span class="o">.&lt;</span><span class="n">Object</span><span class="o">&gt;</span><span class="n">singletonList</span><span class="o">(</span><span class="n">getName</span><span class="o">()),</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rate</span><span class="o">,</span> <span class="n">unit</span><span class="o">.</span><span class="na">toMillis</span><span class="o">(</span><span class="n">rateInterval</span><span class="o">),</span> <span class="n">type</span><span class="o">.</span><span class="na">ordinal</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">private</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">RFuture</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">tryAcquireAsync</span><span class="o">(</span><span class="n">RedisCommand</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">command</span><span class="o">,</span> <span class="n">Long</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">commandExecutor</span><span class="o">.</span><span class="na">evalWriteAsync</span><span class="o">(</span><span class="n">getName</span><span class="o">(),</span> <span class="n">LongCodec</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">,</span> <span class="n">command</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 获取限流器的配置，rate令牌桶容量，interval间隔时间，type类型
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="s">&#34;local rate = redis.call(&#39;hget&#39;, KEYS[1], &#39;rate&#39;);&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="o">+</span> <span class="s">&#34;local interval = redis.call(&#39;hget&#39;, KEYS[1], &#39;interval&#39;);&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="o">+</span> <span class="s">&#34;local type = redis.call(&#39;hget&#39;, KEYS[1], &#39;type&#39;);&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 判断限流器是否已经初始化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="o">+</span> <span class="s">&#34;assert(rate ~= false and interval ~= false and type ~= false, &#39;RateLimiter is not initialized&#39;)&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// 全局限制 or 每个实例单独限制
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="o">+</span> <span class="s">&#34;local valueName = KEYS[2];&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="o">+</span> <span class="s">&#34;if type == &#39;1&#39; then &#34;</span>
+</span></span><span class="line"><span class="cl">              <span class="o">+</span> <span class="s">&#34;valueName = KEYS[3];&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="o">+</span> <span class="s">&#34;end;&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// 当前令牌数，第一次是拿不到的，进入else逻辑
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="o">+</span> <span class="s">&#34;local currentValue = redis.call(&#39;get&#39;, valueName); &#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="o">+</span> <span class="s">&#34;if currentValue ~= false then &#34;</span>
+</span></span><span class="line"><span class="cl">               <span class="c1">// 判断令牌数够不够用，不够用，返回时间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                 <span class="o">+</span> <span class="s">&#34;if tonumber(currentValue) &lt; tonumber(ARGV[1]) then &#34;</span>
+</span></span><span class="line"><span class="cl">                     <span class="o">+</span> <span class="s">&#34;return redis.call(&#39;pttl&#39;, valueName); &#34;</span>
+</span></span><span class="line"><span class="cl">                 <span class="o">+</span> <span class="s">&#34;else &#34;</span>
+</span></span><span class="line"><span class="cl">                  <span class="c1">// 够用，减去申请的令牌数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                     <span class="o">+</span> <span class="s">&#34;redis.call(&#39;decrby&#39;, valueName, ARGV[1]); &#34;</span>
+</span></span><span class="line"><span class="cl">                     <span class="o">+</span> <span class="s">&#34;return nil; &#34;</span>
+</span></span><span class="line"><span class="cl">                 <span class="o">+</span> <span class="s">&#34;end; &#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="o">+</span> <span class="s">&#34;else &#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 检查申请的令牌是否大于令牌桶的容量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                 <span class="o">+</span> <span class="s">&#34;assert(tonumber(rate) &gt;= tonumber(ARGV[1]), &#39;Requested permits amount could not exceed defined rate&#39;); &#34;</span>
+</span></span><span class="line"><span class="cl">                 <span class="o">+</span> <span class="s">&#34;redis.call(&#39;set&#39;, valueName, rate, &#39;px&#39;, interval); &#34;</span>
+</span></span><span class="line"><span class="cl">                 <span class="o">+</span> <span class="s">&#34;redis.call(&#39;decrby&#39;, valueName, ARGV[1]); &#34;</span>
+</span></span><span class="line"><span class="cl">                 <span class="o">+</span> <span class="s">&#34;return nil; &#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="o">+</span> <span class="s">&#34;end;&#34;</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">getName</span><span class="o">(),</span> <span class="n">getValueName</span><span class="o">(),</span> <span class="n">getClientValueName</span><span class="o">()),</span>
+</span></span><span class="line"><span class="cl">            <span class="n">value</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>另外需要补充的是</strong></p>
+<p>令牌桶发放令牌是通过<strong>ZSET</strong>结构实现的，之前在延时队列的文章<a href="https://yongqiangg.github.io/posts/redis/%E5%A6%99%E7%94%A8redis%E5%AE%9E%E7%8E%B0%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97/" target="_blank" rel="noopener noreffer">《妙用redis实现延时队列》</a>有简单分享过ZSET的使用。</p>
+<p><strong>score记录了请求的时间戳，member记录了请求的令牌数</strong>。</p>
+<p>通过ZSET实现的滑动时间窗口，记录下每个间隔内已发放的令牌数，来获得<strong>还能发放的最大令牌数</strong>。</p>
+<p>也可以通过最后一次请求的时间戳记录，计算出如果令牌数不够，<strong>还需要等待多久才能获得令牌</strong>。然后通过异步任务进行重试争抢令牌（非公平）。</p>
+<h3 id="都是限流令牌桶与漏斗的差别">都是限流，令牌桶与漏斗的差别</h3>
+<p><strong>漏斗</strong></p>
+<p>漏水概率恒定，也就意味着服务器的请求处理速度是固定的。当突发流量时，大量请求可能被拒绝。</p>
+<p><strong>令牌桶</strong></p>
+<p>只是发放令牌的速度恒定，放行速率不固定（只要桶里有令牌），应对突发流量更灵活。</p>
+<h2 id="其他限流">其他限流</h2>
+<p><strong>GUAVA（谷歌的JAVA开源库）</strong></p>
+<p><strong>Nginx限流（改进的漏桶算法，可匀速，可并发）</strong></p>
+<div class="post-reward">
+	  <input type="checkbox" name="reward" id="reward" hidden />
+	    <label class="reward-button" for="reward">赞赏支持</label>
+	      <div class="qr-code">
+		          <label class="qr-code-image" for="reward">
+						          <img class="image" src="/images/wechat.JPG">
+							          <span>微信打赏</span>
+								        </label>
+									        <label class="qr-code-image" for="reward">
+											              <img class="image" src="/images/alipay.JPG">
+												              <span>支付宝打赏</span>
+													            </label>
+															  </div>
+</div>
+
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-03-05</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/redis/">Redis</a>,&nbsp;<a href="/tags/zset/">ZSET</a>,&nbsp;<a href="/tags/%E6%BC%8F%E6%96%97%E9%99%90%E6%B5%81/">漏斗限流</a>,&nbsp;<a href="/tags/%E4%BB%A4%E7%89%8C%E6%A1%B6%E9%99%90%E6%B5%81/">令牌桶限流</a>,&nbsp;<a href="/tags/lua/">Lua</a>,&nbsp;<a href="/tags/%E6%BA%90%E7%A0%81/">源码</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/redis/%E5%A4%A7%E9%9B%86%E5%90%88%E5%88%A4%E6%96%AD%E4%B9%8B%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" class="prev" rel="prev" title="大集合判断之布隆过滤器"><i class="fas fa-angle-left fa-fw"></i>大集合判断之布隆过滤器</a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container">
+	    <div class="footer-line">
+		    	<span id="run-time"></span>
+	    </div><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/yongqiangG" target="_blank">johnny</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer>
+        </div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><script type="text/javascript" src="/lib/valine/Valine.min.js"></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"rEc5ExBWC7GI72VauUMy2H6T-MdYXbMMI","appKey":"TnzQwGYo2KSwLt3Qy5wypVDk","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-cn","pageSize":10,"placeholder":"说点什么吧...","recordIP":true,"serverURLs":"https://rEc5ExBW.api.lncldglobal.com","visitor":true}}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@2.1.3/dist/jquery.min.js"></script><script type="text/javascript" src="/js/custom.js"></script></body>
+</html>
