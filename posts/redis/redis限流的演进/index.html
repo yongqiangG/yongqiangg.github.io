@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-        <title>redis限流的演进 - johnny 写字的地方</title><meta name="Description" content="johnny 写字的地方"><meta property="og:title" content="redis限流的演进" />
+        <title>Redis限流的演进 - johnny 写字的地方</title><meta name="Description" content="johnny 写字的地方"><meta property="og:title" content="Redis限流的演进" />
 <meta property="og:description" content="场景 限制用户的接口请求流量，保护服务器 控制用户行为，比如发帖、回复 简单限流之ZSET 利用zset的结构，可以用score圈出一个固定的时间窗" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://example.org/posts/redis/redis%E9%99%90%E6%B5%81%E7%9A%84%E6%BC%94%E8%BF%9B/" /><meta property="article:section" content="posts" />
@@ -13,7 +13,7 @@
 <meta property="article:modified_time" content="2022-03-05T18:45:00+08:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="redis限流的演进"/>
+<meta name="twitter:title" content="Redis限流的演进"/>
 <meta name="twitter:description" content="场景 限制用户的接口请求流量，保护服务器 控制用户行为，比如发帖、回复 简单限流之ZSET 利用zset的结构，可以用score圈出一个固定的时间窗"/>
 <meta name="application-name" content="LoveIt">
 <meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
@@ -22,7 +22,7 @@
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
-        "headline": "redis限流的演进",
+        "headline": "Redis限流的演进",
         "inLanguage": "zh-CN",
         "mainEntityOfPage": {
             "@type": "WebPage",
@@ -77,10 +77,10 @@
 		    <div class="toc" id="toc-auto">
             <h2 class="toc-title">目录</h2>
             <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animated flipInX">redis限流的演进</h1><div class="post-meta">
+        </div><article class="page single"><h1 class="single-title animated flipInX">Redis限流的演进</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/yongqiangG" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>johnny</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/redis/"><i class="far fa-folder fa-fw"></i>redis</a></span></div>
             <div class="post-meta-line"><i class="far fa-calendar fa-fw"></i>&nbsp;<time datetime="2022-03-05">2022-03-05</time>&nbsp;<i class="far fa-calendar-plus fa-fw"></i>&nbsp;<time datetime="2022-03-05">2022-03-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2493 字&nbsp;
-                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;<span id="/posts/redis/redis%E9%99%90%E6%B5%81%E7%9A%84%E6%BC%94%E8%BF%9B/" class="leancloud_visitors" data-flag-title="redis限流的演进">
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;<span id="/posts/redis/redis%E9%99%90%E6%B5%81%E7%9A%84%E6%BC%94%E8%BF%9B/" class="leancloud_visitors" data-flag-title="Redis限流的演进">
                         <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
         </div><div class="details toc" id="toc-static"  kept="">
