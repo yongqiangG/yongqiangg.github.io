@@ -4,7 +4,14 @@
         <link>http://example.org/posts/</link>
         <description>所有文章 | johnny 写字的地方</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>johnny.gor10@gmail.com (johnny)</managingEditor>
-            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Sat, 05 Mar 2022 18:45:00 &#43;0800</lastBuildDate><atom:link href="http://example.org/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Mon, 07 Mar 2022 16:00:00 &#43;0800</lastBuildDate><atom:link href="http://example.org/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Redis翻页扫描之Scan</title>
+    <link>http://example.org/posts/redis/redis%E7%BF%BB%E9%A1%B5%E6%89%AB%E6%8F%8F%E4%B9%8Bscan/</link>
+    <pubDate>Mon, 07 Mar 2022 16:00:00 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://example.org/posts/redis/redis%E7%BF%BB%E9%A1%B5%E6%89%AB%E6%8F%8F%E4%B9%8Bscan/</guid>
+    <description><![CDATA[场景 如何从海量的key中查找我想要的前缀的keys？ 简单。直接keys prefix*行不行？ 很遗憾，这个做法在生产环境不可取。 需要考虑两个问]]></description>
+</item><item>
     <title>redis限流的演进</title>
     <link>http://example.org/posts/redis/redis%E9%99%90%E6%B5%81%E7%9A%84%E6%BC%94%E8%BF%9B/</link>
     <pubDate>Sat, 05 Mar 2022 18:45:00 &#43;0800</pubDate>
