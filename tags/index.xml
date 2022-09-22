@@ -4,12 +4,26 @@
         <link>http://example.org/tags/</link>
         <description>Tags - 标签 - johnny 写字的地方</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>johnny.gor10@gmail.com (johnny)</managingEditor>
-            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Mon, 07 Mar 2022 16:00:00 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Sun, 11 Sep 2022 14:00:00 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>class</title>
+    <link>http://example.org/tags/class/</link>
+    <pubDate>Sun, 11 Sep 2022 14:00:00 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://example.org/tags/class/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
     <title>Java</title>
     <link>http://example.org/tags/java/</link>
-    <pubDate>Mon, 07 Mar 2022 16:00:00 &#43;0800</pubDate>
+    <pubDate>Sun, 11 Sep 2022 14:00:00 &#43;0800</pubDate>
     <author>作者</author>
     <guid>http://example.org/tags/java/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
+    <title>JVM</title>
+    <link>http://example.org/tags/jvm/</link>
+    <pubDate>Sun, 11 Sep 2022 14:00:00 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://example.org/tags/jvm/</guid>
     <description><![CDATA[]]></description>
 </item><item>
     <title>Redis</title>
@@ -54,25 +68,11 @@
     <guid>http://example.org/tags/%E4%BB%A4%E7%89%8C%E6%A1%B6%E9%99%90%E6%B5%81/</guid>
     <description><![CDATA[]]></description>
 </item><item>
-    <title>源码</title>
-    <link>http://example.org/tags/%E6%BA%90%E7%A0%81/</link>
-    <pubDate>Sat, 05 Mar 2022 18:45:00 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>http://example.org/tags/%E6%BA%90%E7%A0%81/</guid>
-    <description><![CDATA[]]></description>
-</item><item>
     <title>漏斗限流</title>
     <link>http://example.org/tags/%E6%BC%8F%E6%96%97%E9%99%90%E6%B5%81/</link>
     <pubDate>Sat, 05 Mar 2022 18:45:00 &#43;0800</pubDate>
     <author>作者</author>
     <guid>http://example.org/tags/%E6%BC%8F%E6%96%97%E9%99%90%E6%B5%81/</guid>
-    <description><![CDATA[]]></description>
-</item><item>
-    <title>BloomFilter</title>
-    <link>http://example.org/tags/bloomfilter/</link>
-    <pubDate>Wed, 02 Mar 2022 16:00:00 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>http://example.org/tags/bloomfilter/</guid>
     <description><![CDATA[]]></description>
 </item></channel>
 </rss>

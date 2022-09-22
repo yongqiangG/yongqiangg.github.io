@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>JVM - 标签 - johnny 写字的地方</title>
+        <link>http://example.org/tags/jvm/</link>
+        <description>JVM - 标签 - johnny 写字的地方</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>johnny.gor10@gmail.com (johnny)</managingEditor>
+            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Sun, 11 Sep 2022 14:00:00 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/jvm/" rel="self" type="application/rss+xml" /><item>
+    <title>解析class文件</title>
+    <link>http://example.org/posts/jvm/%E8%AE%A4%E8%AF%86class%E6%96%87%E4%BB%B6/</link>
+    <pubDate>Sun, 11 Sep 2022 14:00:00 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://example.org/posts/jvm/%E8%AE%A4%E8%AF%86class%E6%96%87%E4%BB%B6/</guid>
+    <description><![CDATA[1. 拆解Class文件 1.1 一个简单的类 首先我们来看一个简单的类Company 1 2 3 4 5 6 7 8 9 10 11 12 package cn.johnny; public class Company { private String company; public String getCompany(){ return company; } public void setCompany(String company){ this.company = company;]]></description>
+</item></channel>
+</rss>

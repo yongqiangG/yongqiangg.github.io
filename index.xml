@@ -4,9 +4,16 @@
         <link>http://example.org/</link>
         <description>johnny 写字的地方</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>johnny.gor10@gmail.com (johnny)</managingEditor>
-            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Mon, 07 Mar 2022 16:00:00 &#43;0800</lastBuildDate>
+            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Sun, 11 Sep 2022 14:00:00 &#43;0800</lastBuildDate>
             <atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>解析class文件</title>
+    <link>http://example.org/posts/jvm/%E8%AE%A4%E8%AF%86class%E6%96%87%E4%BB%B6/</link>
+    <pubDate>Sun, 11 Sep 2022 14:00:00 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://example.org/posts/jvm/%E8%AE%A4%E8%AF%86class%E6%96%87%E4%BB%B6/</guid>
+    <description><![CDATA[1. 拆解Class文件 1.1 一个简单的类 首先我们来看一个简单的类Company 1 2 3 4 5 6 7 8 9 10 11 12 package cn.johnny; public class Company { private String company; public String getCompany(){ return company; } public void setCompany(String company){ this.company = company;]]></description>
+</item><item>
     <title>Redis翻页扫描之Scan</title>
     <link>http://example.org/posts/redis/redis%E7%BF%BB%E9%A1%B5%E6%89%AB%E6%8F%8F%E4%B9%8Bscan/</link>
     <pubDate>Mon, 07 Mar 2022 16:00:00 &#43;0800</pubDate>
