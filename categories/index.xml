@@ -4,12 +4,12 @@
         <link>http://example.org/categories/</link>
         <description>Categories - 分类 - johnny 写字的地方</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>johnny.gor10@gmail.com (johnny)</managingEditor>
-            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Wed, 20 Sep 2023 10:33:15 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/" rel="self" type="application/rss+xml" /><item>
-    <title>tools</title>
-    <link>http://example.org/categories/tools/</link>
-    <pubDate>Wed, 20 Sep 2023 10:33:15 &#43;0800</pubDate>
+            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Tue, 19 Sep 2023 12:00:00 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/" rel="self" type="application/rss+xml" /><item>
+    <title>redis</title>
+    <link>http://example.org/categories/redis/</link>
+    <pubDate>Tue, 19 Sep 2023 12:00:00 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>http://example.org/categories/tools/</guid>
+    <guid>http://example.org/categories/redis/</guid>
     <description><![CDATA[]]></description>
 </item><item>
     <title>JVM</title>
@@ -17,13 +17,6 @@
     <pubDate>Sun, 11 Sep 2022 14:00:00 &#43;0800</pubDate>
     <author>作者</author>
     <guid>http://example.org/categories/jvm/</guid>
-    <description><![CDATA[]]></description>
-</item><item>
-    <title>redis</title>
-    <link>http://example.org/categories/redis/</link>
-    <pubDate>Mon, 07 Mar 2022 16:00:00 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>http://example.org/categories/redis/</guid>
     <description><![CDATA[]]></description>
 </item></channel>
 </rss>

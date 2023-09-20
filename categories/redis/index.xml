@@ -4,7 +4,14 @@
         <link>http://example.org/categories/redis/</link>
         <description>redis - 分类 - johnny 写字的地方</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>johnny.gor10@gmail.com (johnny)</managingEditor>
-            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Mon, 07 Mar 2022 16:00:00 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/redis/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Tue, 19 Sep 2023 12:00:00 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/redis/" rel="self" type="application/rss+xml" /><item>
+    <title>arthas使用简明指南</title>
+    <link>http://example.org/posts/tools/arthas%E7%AE%80%E6%98%8E%E6%8C%87%E5%8D%97/</link>
+    <pubDate>Tue, 19 Sep 2023 12:00:00 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://example.org/posts/tools/arthas%E7%AE%80%E6%98%8E%E6%8C%87%E5%8D%97/</guid>
+    <description><![CDATA[什么是arthas Arthas 是一款线上监控诊断产品，通过全局视角实时查看应用 load、内存、gc、线程的状态信息，并能在不修改应用代码的情况下，对业]]></description>
+</item><item>
     <title>Redis翻页扫描之Scan</title>
     <link>http://example.org/posts/redis/redis%E7%BF%BB%E9%A1%B5%E6%89%AB%E6%8F%8F%E4%B9%8Bscan/</link>
     <pubDate>Mon, 07 Mar 2022 16:00:00 &#43;0800</pubDate>
