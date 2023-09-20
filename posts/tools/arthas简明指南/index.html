@@ -27,7 +27,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "http:\/\/example.org\/posts\/tools\/arthas%E7%AE%80%E6%98%8E%E6%8C%87%E5%8D%97\/"
-        },"genre": "posts","keywords": "Java, Tool, 监控","wordcount":  1098 ,
+        },"genre": "posts","keywords": "Java, Tool, 监控","wordcount":  1092 ,
         "url": "http:\/\/example.org\/posts\/tools\/arthas%E7%AE%80%E6%98%8E%E6%8C%87%E5%8D%97\/","datePublished": "2023-09-20T10:33:15+08:00","dateModified": "2023-09-20T10:33:15+08:00","publisher": {
             "@type": "Organization",
             "name": "johnny"},"author": {
@@ -79,7 +79,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">Arthas简明指南</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/yongqiangG" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>johnny</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tools/"><i class="far fa-folder fa-fw"></i>tools</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar fa-fw"></i>&nbsp;<time datetime="2023-09-20">2023-09-20</time>&nbsp;<i class="far fa-calendar-plus fa-fw"></i>&nbsp;<time datetime="2023-09-20">2023-09-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1098 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar fa-fw"></i>&nbsp;<time datetime="2023-09-20">2023-09-20</time>&nbsp;<i class="far fa-calendar-plus fa-fw"></i>&nbsp;<time datetime="2023-09-20">2023-09-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1092 字&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;<span id="/posts/tools/arthas%E7%AE%80%E6%98%8E%E6%8C%87%E5%8D%97/" class="leancloud_visitors" data-flag-title="Arthas简明指南">
                         <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
@@ -90,30 +90,37 @@
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ol>
-    <li><a href="#arthas阿尔萨斯能为你做什么">Arthas（阿尔萨斯）能为你做什么？</a></li>
-  </ol>
-
-  <ol>
-    <li><a href="#启动arthas">启动arthas</a></li>
-    <li><a href="#重新连接arthas端口">重新连接arthas端口</a></li>
-    <li><a href="#查看dashboard">查看dashboard</a></li>
-    <li><a href="#jad---反编译查看源码">jad - 反编译查看源码</a></li>
-    <li><a href="#watch---查看方法的出入参">watch - 查看方法的出入参</a></li>
-  </ol>
-
-  <ol>
-    <li><a href="#trace---节点耗时统计">trace - 节点耗时统计</a></li>
-    <li><a href="#thread---排查cpu占用高">thread - 排查CPU占用高</a></li>
-    <li><a href="#tt---时空隧道">tt - 时空隧道</a></li>
-    <li><a href="#stack---调用路径">stack - 调用路径</a></li>
+    <li><a href="#什么是arthas">什么是arthas</a>
+      <ol>
+        <li><a href="#arthas阿尔萨斯能为你做什么">Arthas（阿尔萨斯）能为你做什么？</a></li>
+      </ol>
+    </li>
+    <li><a href="#arthas快速入门">arthas快速入门</a>
+      <ol>
+        <li><a href="#启动arthas">启动arthas</a></li>
+        <li><a href="#重新连接arthas端口">重新连接arthas端口</a></li>
+        <li><a href="#查看dashboard">查看dashboard</a></li>
+        <li><a href="#jad---反编译查看源码">jad - 反编译查看源码</a></li>
+        <li><a href="#watch---查看方法的出入参">watch - 查看方法的出入参</a></li>
+      </ol>
+    </li>
+    <li><a href="#arthas其他使用">arthas其他使用</a>
+      <ol>
+        <li><a href="#trace---节点耗时统计">trace - 节点耗时统计</a></li>
+        <li><a href="#thread---排查cpu占用高">thread - 排查CPU占用高</a></li>
+        <li><a href="#tt---时空隧道">tt - 时空隧道</a></li>
+        <li><a href="#stack---调用路径">stack - 调用路径</a></li>
+      </ol>
+    </li>
+    <li><a href="#arthas原理">arthas原理</a></li>
+    <li><a href="#附录">附录</a></li>
   </ol>
 </nav></div>
-            </div><div class="content" id="content"><h1 id="什么是arthas">什么是arthas</h1>
+            </div><div class="content" id="content"><h2 id="什么是arthas">什么是arthas</h2>
 <blockquote>
-<p>Arthas 是一款线上监控诊断产品，通过全局视角实时查看应用
-load、内存、gc、线程的状态信息，并能在不修改应用代码的情况下，对业务问题进行诊断，包括查看方法调用的出入参、异常，监测方法执行耗时，类加载信息等，大大提升线上问题排查效率。</p>
+<p>Arthas 是一款线上监控诊断产品，通过全局视角实时查看应用 load、内存、gc、线程的状态信息，并能在不修改应用代码的情况下，对业务问题进行诊断，包括查看方法调用的出入参、异常，监测方法执行耗时，类加载信息等，大大提升线上问题排查效率。</p>
 </blockquote>
-<h2 id="arthas阿尔萨斯能为你做什么">Arthas（阿尔萨斯）能为你做什么？</h2>
+<h3 id="arthas阿尔萨斯能为你做什么">Arthas（阿尔萨斯）能为你做什么？</h3>
 <blockquote>
 <ol>
 <li>我改的代码为什么没有执行到？难道是我没 commit？分支搞错了？</li>
@@ -125,8 +132,8 @@ load、内存、gc、线程的状态信息，并能在不修改应用代码的�
 <li>怎样直接从 JVM 内查找某个类的实例？</li>
 </ol>
 </blockquote>
-<h1 id="arthas快速入门">arthas快速入门</h1>
-<h2 id="启动arthas">启动arthas</h2>
+<h2 id="arthas快速入门">arthas快速入门</h2>
+<h3 id="启动arthas">启动arthas</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -139,7 +146,7 @@ load、内存、gc、线程的状态信息，并能在不修改应用代码的�
 </span></span><span class="line"><span class="cl">java -jar arthas-boot.jar --repo-mirror aliyun --use-http
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="重新连接arthas端口">重新连接arthas端口</h2>
+</div><h3 id="重新连接arthas端口">重新连接arthas端口</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -148,7 +155,7 @@ load、内存、gc、线程的状态信息，并能在不修改应用代码的�
 <pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">telnet 127.0.0.1 3658
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="查看dashboard">查看dashboard</h2>
+</div><h3 id="查看dashboard">查看dashboard</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -157,7 +164,7 @@ load、内存、gc、线程的状态信息，并能在不修改应用代码的�
 <pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">dashboard
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="jad---反编译查看源码">jad - 反编译查看源码</h2>
+</div><h3 id="jad---反编译查看源码">jad - 反编译查看源码</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -172,7 +179,7 @@ load、内存、gc、线程的状态信息，并能在不修改应用代码的�
 </span></span><span class="line"><span class="cl">jad com.johnny.point.open.core.util.RedisClient hget
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="watch---查看方法的出入参">watch - 查看方法的出入参</h2>
+</div><h3 id="watch---查看方法的出入参">watch - 查看方法的出入参</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -194,24 +201,18 @@ load、内存、gc、线程的状态信息，并能在不修改应用代码的�
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># x指定遍历深度，默认为1，最大值是4;
 </span></span><span class="line"><span class="cl"># n指定执行次数
-</span></span><span class="line"><span class="cl">watch com.johnny.point.open.core.util.RedisClient hget &#34;{params,returnObj}&#34; -x 2
-</span></span><span class="line"><span class="cl">-n 2
+</span></span><span class="line"><span class="cl">watch com.johnny.point.open.core.util.RedisClient hget &#34;{params,returnObj}&#34; -x 2 -n 2
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"># 观察异常信息
 </span></span><span class="line"><span class="cl"># e表示抛出异常才触发
-</span></span><span class="line"><span class="cl">watch com.johnny.point.open.core.util.RedisClient hget &#34;{params,throwExp}&#34; -e -x
-</span></span><span class="line"><span class="cl">2 -n 2
+</span></span><span class="line"><span class="cl">watch com.johnny.point.open.core.util.RedisClient hget &#34;{params,throwExp}&#34; -e -x 2 -n 2
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"># 带条件表达式
-</span></span><span class="line"><span class="cl">watch com.johnny.point.open.core.util.RedisClient hget &#39;{params, returnObj}&#39;
-</span></span><span class="line"><span class="cl">&#39;#cost&gt;200&#39; -x 2 -n 2
+</span></span><span class="line"><span class="cl">watch com.johnny.point.open.core.util.RedisClient hget &#39;{params, returnObj}&#39; &#39;#cost&gt;200&#39; -x 2 -n 2
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"># 带条件表达式[过滤对象的某一字段]
 </span></span><span class="line"><span class="cl">watch com.nascent.point.open.business.point.KdGroupPointManager sendPoint &#39;{params,returnObj,throwExp}&#39; &#34;params[0].nick==&#39;id_001&#39;&#34; -n 2 -x 2
@@ -223,23 +224,21 @@ load、内存、gc、线程的状态信息，并能在不修改应用代码的�
 </span></span><span class="line"><span class="cl">watch com.demo.Test test &#39;params[0]==123456789L&#39;
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h1 id="arthas其他使用">arthas其他使用</h1>
-<h2 id="trace---节点耗时统计">trace - 节点耗时统计</h2>
+</div><h2 id="arthas其他使用">arthas其他使用</h2>
+<h3 id="trace---节点耗时统计">trace - 节点耗时统计</h3>
 <blockquote>
 <p>说明：输出方法内部调用路径和每个方法路径上的节点耗时</p>
 </blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># [n]限定trace数量
@@ -247,14 +246,12 @@ load、内存、gc、线程的状态信息，并能在不修改应用代码的�
 </span></span><span class="line"><span class="cl"># 过滤时间
 </span></span><span class="line"><span class="cl">trace -n 3 com.nascent.point.open.core.util.RedisClient hget &#39;#cost &gt; 1&#39;
 </span></span><span class="line"><span class="cl"># 过滤重载方法（通过参数长度）
-</span></span><span class="line"><span class="cl">trace -n 3 com.nascent.point.open.core.util.RedisClient hget params
-</span></span><span class="line"><span class="cl">params.length==2
+</span></span><span class="line"><span class="cl">trace -n 3 com.nascent.point.open.core.util.RedisClient hget params params.length==2
 </span></span><span class="line"><span class="cl"># 过滤重载方法（通过参数类型，注意int会被包装成Integer类型）
-</span></span><span class="line"><span class="cl">trace com.nascent.point.open.core.util.RedisClient params
-</span></span><span class="line"><span class="cl">&#39;params[0].class.name==&#34;java.lang.Integer&#34;&#39;
+</span></span><span class="line"><span class="cl">trace com.nascent.point.open.core.util.RedisClient params &#39;params[0].class.name==&#34;java.lang.Integer&#34;&#39;
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="thread---排查cpu占用高">thread - 排查CPU占用高</h2>
+</div><h3 id="thread---排查cpu占用高">thread - 排查CPU占用高</h3>
 <blockquote>
 <p>说明：查看当前线程信息</p>
 </blockquote>
@@ -272,7 +269,7 @@ load、内存、gc、线程的状态信息，并能在不修改应用代码的�
 </span></span><span class="line"><span class="cl">thread -b
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="tt---时空隧道">tt - 时空隧道</h2>
+</div><h3 id="tt---时空隧道">tt - 时空隧道</h3>
 <blockquote>
 <p>说明：方法执行数据的时空隧道，记录下方法每次调用的入参和返回信息</p>
 </blockquote>
@@ -288,7 +285,6 @@ load、内存、gc、线程的状态信息，并能在不修改应用代码的�
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># 基本使用，记录当前方法的每次调用环境现场
@@ -299,12 +295,11 @@ load、内存、gc、线程的状态信息，并能在不修改应用代码的�
 </span></span><span class="line"><span class="cl">tt -s &#39;method.name==&#34;hget&#34;&#39;
 </span></span><span class="line"><span class="cl"># 查看调用信息，1001为时间片段Index
 </span></span><span class="line"><span class="cl">tt -i 1001
-</span></span><span class="line"><span class="cl">#
-</span></span><span class="line"><span class="cl">重新调用一次，可以通过--reply-times指定调用次数，--reply-interval指定多次调用间隔（单位ms，默认1000ms）
+</span></span><span class="line"><span class="cl"># 重新调用一次，可以通过--reply-times指定调用次数，--reply-interval指定多次调用间隔（单位ms，默认1000ms）
 </span></span><span class="line"><span class="cl">tt -i 1001 -p
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="stack---调用路径">stack - 调用路径</h2>
+</div><h3 id="stack---调用路径">stack - 调用路径</h3>
 <blockquote>
 <p>输出当前方法被调用的调用路径</p>
 </blockquote>
@@ -326,8 +321,8 @@ load、内存、gc、线程的状态信息，并能在不修改应用代码的�
 </span></span><span class="line"><span class="cl">stack -n 3 com.nascent.point.open.core.util.RedisClient hget &#39;#cost&gt;5&#39;
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h1 id="arthas原理">arthas原理</h1>
-<h1 id="附录">附录</h1>
+</div><h2 id="arthas原理">arthas原理</h2>
+<h2 id="附录">附录</h2>
 <p><a href="https://arthas.aliyun.com/" target="_blank" rel="noopener noreffer">Arthas官方文档</a></p>
 <div class="post-reward">
 	  <input type="checkbox" name="reward" id="reward" hidden />
