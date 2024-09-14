@@ -5,16 +5,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-        <title>妙用Redis实现延时队列 - johnny 写字的地方</title><meta name="Description" content="johnny 写字的地方"><meta property="og:title" content="妙用Redis实现延时队列" />
-<meta property="og:description" content="简单的消息队列 与专业的消息队列中间件相比 优势 如果系统本身已经集成了Redis缓存，不需要额外引入消息中间件，增加系统和运维复杂度。 使用相对简" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="http://example.org/posts/redis/%E5%A6%99%E7%94%A8redis%E5%AE%9E%E7%8E%B0%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-02-28T10:15:08+08:00" />
-<meta property="article:modified_time" content="2022-02-28T10:15:08+08:00" />
+        <title>妙用Redis实现延时队列 - johnny 写字的地方</title><meta name="Description" content="johnny 写字的地方"><meta property="og:url" content="http://example.org/posts/redis/%E5%A6%99%E7%94%A8redis%E5%AE%9E%E7%8E%B0%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97/">
+  <meta property="og:site_name" content="johnny 写字的地方">
+  <meta property="og:title" content="妙用Redis实现延时队列">
+  <meta property="og:description" content="简单的消息队列 与专业的消息队列中间件相比 优势 如果系统本身已经集成了Redis缓存，不需要额外引入消息中间件，增加系统和运维复杂度。 使用相对简">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-02-28T10:15:08+08:00">
+    <meta property="article:modified_time" content="2022-02-28T10:15:08+08:00">
+    <meta property="article:tag" content="Java">
+    <meta property="article:tag" content="Redis">
+    <meta property="article:tag" content="Mq">
+    <meta property="article:tag" content="ZSET">
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="妙用Redis实现延时队列"/>
-<meta name="twitter:description" content="简单的消息队列 与专业的消息队列中间件相比 优势 如果系统本身已经集成了Redis缓存，不需要额外引入消息中间件，增加系统和运维复杂度。 使用相对简"/>
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="妙用Redis实现延时队列">
+  <meta name="twitter:description" content="简单的消息队列 与专业的消息队列中间件相比 优势 如果系统本身已经集成了Redis缓存，不需要额外引入消息中间件，增加系统和运维复杂度。 使用相对简">
 <meta name="application-name" content="LoveIt">
 <meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -78,7 +85,7 @@
             <h2 class="toc-title">目录</h2>
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">妙用Redis实现延时队列</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/yongqiangG" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>johnny</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/redis/"><i class="far fa-folder fa-fw"></i>redis</a></span></div>
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/yongqiangG" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>johnny</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/redis/"><i class="far fa-folder fa-fw"></i>Redis</a></span></div>
             <div class="post-meta-line"><i class="far fa-calendar fa-fw"></i>&nbsp;<time datetime="2022-02-28">2022-02-28</time>&nbsp;<i class="far fa-calendar-plus fa-fw"></i>&nbsp;<time datetime="2022-02-28">2022-02-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1139 字&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;<span id="/posts/redis/%E5%A6%99%E7%94%A8redis%E5%AE%9E%E7%8E%B0%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97/" class="leancloud_visitors" data-flag-title="妙用Redis实现延时队列">
                         <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
@@ -427,7 +434,7 @@ zrangebyscore key min max [withscore] // 支持翻页
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/redis/">Redis</a>,&nbsp;<a href="/tags/mq/">mq</a>,&nbsp;<a href="/tags/zset/">ZSET</a></section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/redis/">Redis</a>,&nbsp;<a href="/tags/mq/">Mq</a>,&nbsp;<a href="/tags/zset/">ZSET</a></section>
         <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
         </section>
@@ -443,8 +450,8 @@ zrangebyscore key min max [withscore] // 支持翻页
         <div class="footer-container">
 	    <div class="footer-line">
 		    	<span id="run-time"></span>
-	    </div><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.0-DEV">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/yongqiangG" target="_blank">johnny</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+	    </div><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.127.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2022 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/yongqiangG" target="_blank">johnny</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer>
         </div>

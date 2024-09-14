@@ -1,8 +1,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>mq - 标签 - johnny 写字的地方</title>
+        <title>Mq - 标签 - johnny 写字的地方</title>
         <link>http://example.org/tags/mq/</link>
-        <description>mq - 标签 - johnny 写字的地方</description>
+        <description>Mq - 标签 - johnny 写字的地方</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>johnny.gor10@gmail.com (johnny)</managingEditor>
             <webMaster>johnny.gor10@gmail.com (johnny)</webMaster><lastBuildDate>Mon, 28 Feb 2022 10:15:08 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/mq/" rel="self" type="application/rss+xml" /><item>
     <title>妙用Redis实现延时队列</title>

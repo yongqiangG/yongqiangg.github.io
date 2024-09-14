@@ -4,19 +4,18 @@
     <title>Posts on johnny 写字的地方</title>
     <link>http://example.org/post/</link>
     <description>Recent content in Posts on johnny 写字的地方</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>zh-CN</language>
     <managingEditor>johnny.gor10@gmail.com (johnny)</managingEditor>
     <webMaster>johnny.gor10@gmail.com (johnny)</webMaster>
-    <lastBuildDate>Fri, 20 May 2022 11:56:32 +0800</lastBuildDate><atom:link href="http://example.org/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 20 May 2022 11:56:32 +0800</lastBuildDate>
+    <atom:link href="http://example.org/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Test</title>
       <link>http://example.org/post/test/</link>
-      <pubDate>Fri, 20 May 2022 11:56:32 +0800</pubDate>
-      <author>johnny.gor10@gmail.com (johnny)</author>
+      <pubDate>Fri, 20 May 2022 11:56:32 +0800</pubDate><author>johnny.gor10@gmail.com (johnny)</author>
       <guid>http://example.org/post/test/</guid>
       <description>Test just for test </description>
     </item>
-    
   </channel>
 </rss>

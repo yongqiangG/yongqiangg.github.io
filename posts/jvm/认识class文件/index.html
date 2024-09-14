@@ -5,20 +5,26 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-        <title>解析class文件 - johnny 写字的地方</title><meta name="Description" content="johnny 写字的地方"><meta property="og:title" content="解析class文件" />
-<meta property="og:description" content="1. 拆解Class文件 1.1 一个简单的类 首先我们来看一个简单的类Company 1 2 3 4 5 6 7 8 9 10 11 12 package cn.johnny; public class Company { private String company; public String getCompany(){ return company; } public void setCompany(String company){ this.company = company;" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="http://example.org/posts/jvm/%E8%AE%A4%E8%AF%86class%E6%96%87%E4%BB%B6/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-09-11T14:00:00+08:00" />
-<meta property="article:modified_time" content="2022-09-11T14:00:00+08:00" />
+        <title>解析class文件 - johnny 写字的地方</title><meta name="Description" content="johnny 写字的地方"><meta property="og:url" content="http://example.org/posts/jvm/%E8%AE%A4%E8%AF%86class%E6%96%87%E4%BB%B6/">
+  <meta property="og:site_name" content="johnny 写字的地方">
+  <meta property="og:title" content="解析class文件">
+  <meta property="og:description" content="1. 拆解Class文件 1.1 一个简单的类 首先我们来看一个简单的类Company 1 2 3 4 5 6 7 8 9 10 11 12 package cn.johnny; public class Company { private String company; public String getCompany(){ return company; } public void setCompany(String company){ this.company = company;">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2022-09-11T14:00:00+08:00">
+    <meta property="article:modified_time" content="2022-09-11T14:00:00+08:00">
+    <meta property="article:tag" content="Java">
+    <meta property="article:tag" content="JVM">
+    <meta property="article:tag" content="Class">
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="解析class文件"/>
-<meta name="twitter:description" content="1. 拆解Class文件 1.1 一个简单的类 首先我们来看一个简单的类Company 1 2 3 4 5 6 7 8 9 10 11 12 package cn.johnny; public class Company { private String company; public String getCompany(){ return company; } public void setCompany(String company){ this.company = company;"/>
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="解析class文件">
+  <meta name="twitter:description" content="1. 拆解Class文件 1.1 一个简单的类 首先我们来看一个简单的类Company 1 2 3 4 5 6 7 8 9 10 11 12 package cn.johnny; public class Company { private String company; public String getCompany(){ return company; } public void setCompany(String company){ this.company = company;">
 <meta name="application-name" content="LoveIt">
 <meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://example.org/posts/jvm/%E8%AE%A4%E8%AF%86class%E6%96%87%E4%BB%B6/" /><link rel="prev" href="http://example.org/posts/redis/redis%E7%BF%BB%E9%A1%B5%E6%89%AB%E6%8F%8F%E4%B9%8Bscan/" /><link rel="next" href="http://example.org/posts/tools/arthas%E7%AE%80%E6%98%8E%E6%8C%87%E5%8D%97/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://example.org/posts/jvm/%E8%AE%A4%E8%AF%86class%E6%96%87%E4%BB%B6/" /><link rel="prev" href="http://example.org/posts/rule-engine/test/" /><link rel="next" href="http://example.org/posts/tools/arthas%E7%AE%80%E6%98%8E%E6%8C%87%E5%8D%97/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -187,24 +193,24 @@
 </span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ClassFile {
-</span></span><span class="line"><span class="cl">    u4             magic; //Class 文件的标志
-</span></span><span class="line"><span class="cl">    u2             minor_version;//JDK 的小版本号
-</span></span><span class="line"><span class="cl">    u2             major_version;//JDK 的大版本号
-</span></span><span class="line"><span class="cl">    u2             constant_pool_count;//常量池的数量
-</span></span><span class="line"><span class="cl">    cp_info        constant_pool[constant_pool_count-1];//常量池
-</span></span><span class="line"><span class="cl">    u2             access_flags;//Class 的访问标记
-</span></span><span class="line"><span class="cl">    u2             this_class;//当前类
-</span></span><span class="line"><span class="cl">    u2             super_class;//父类
-</span></span><span class="line"><span class="cl">    u2             interfaces_count;//接口
-</span></span><span class="line"><span class="cl">    u2             interfaces[interfaces_count];//一个类可以实现多个接口
-</span></span><span class="line"><span class="cl">    u2             fields_count;//Class 文件的字段属性
-</span></span><span class="line"><span class="cl">    field_info     fields[fields_count];//一个类可以有多个字段
-</span></span><span class="line"><span class="cl">    u2             methods_count;//Class 文件的方法数量
-</span></span><span class="line"><span class="cl">    method_info    methods[methods_count];//一个类可以有个多个方法
-</span></span><span class="line"><span class="cl">    u2             attributes_count;//此类的属性表中的属性数
-</span></span><span class="line"><span class="cl">    attribute_info attributes[attributes_count];//属性表集合
-</span></span><span class="line"><span class="cl">}
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">ClassFile</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">u4</span>             <span class="n">magic</span><span class="p">;</span> <span class="o">//</span><span class="n">Class</span> <span class="err">文件的标志</span>
+</span></span><span class="line"><span class="cl">    <span class="n">u2</span>             <span class="n">minor_version</span><span class="p">;</span><span class="o">//</span><span class="n">JDK</span> <span class="err">的小版本号</span>
+</span></span><span class="line"><span class="cl">    <span class="n">u2</span>             <span class="n">major_version</span><span class="p">;</span><span class="o">//</span><span class="n">JDK</span> <span class="err">的大版本号</span>
+</span></span><span class="line"><span class="cl">    <span class="n">u2</span>             <span class="n">constant_pool_count</span><span class="p">;</span><span class="o">//</span><span class="err">常量池的数量</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cp_info</span>        <span class="n">constant_pool</span><span class="p">[</span><span class="n">constant_pool_count</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span><span class="o">//</span><span class="err">常量池</span>
+</span></span><span class="line"><span class="cl">    <span class="n">u2</span>             <span class="n">access_flags</span><span class="p">;</span><span class="o">//</span><span class="n">Class</span> <span class="err">的访问标记</span>
+</span></span><span class="line"><span class="cl">    <span class="n">u2</span>             <span class="n">this_class</span><span class="p">;</span><span class="o">//</span><span class="err">当前类</span>
+</span></span><span class="line"><span class="cl">    <span class="n">u2</span>             <span class="n">super_class</span><span class="p">;</span><span class="o">//</span><span class="err">父类</span>
+</span></span><span class="line"><span class="cl">    <span class="n">u2</span>             <span class="n">interfaces_count</span><span class="p">;</span><span class="o">//</span><span class="err">接口</span>
+</span></span><span class="line"><span class="cl">    <span class="n">u2</span>             <span class="n">interfaces</span><span class="p">[</span><span class="n">interfaces_count</span><span class="p">];</span><span class="o">//</span><span class="err">一个类可以实现多个接口</span>
+</span></span><span class="line"><span class="cl">    <span class="n">u2</span>             <span class="n">fields_count</span><span class="p">;</span><span class="o">//</span><span class="n">Class</span> <span class="err">文件的字段属性</span>
+</span></span><span class="line"><span class="cl">    <span class="n">field_info</span>     <span class="n">fields</span><span class="p">[</span><span class="n">fields_count</span><span class="p">];</span><span class="o">//</span><span class="err">一个类可以有多个字段</span>
+</span></span><span class="line"><span class="cl">    <span class="n">u2</span>             <span class="n">methods_count</span><span class="p">;</span><span class="o">//</span><span class="n">Class</span> <span class="err">文件的方法数量</span>
+</span></span><span class="line"><span class="cl">    <span class="n">method_info</span>    <span class="n">methods</span><span class="p">[</span><span class="n">methods_count</span><span class="p">];</span><span class="o">//</span><span class="err">一个类可以有个多个方法</span>
+</span></span><span class="line"><span class="cl">    <span class="n">u2</span>             <span class="n">attributes_count</span><span class="p">;</span><span class="o">//</span><span class="err">此类的属性表中的属性数</span>
+</span></span><span class="line"><span class="cl">    <span class="n">attribute_info</span> <span class="n">attributes</span><span class="p">[</span><span class="n">attributes_count</span><span class="p">];</span><span class="o">//</span><span class="err">属性表集合</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>![[Pasted image 20220911143950.png]]</p>
@@ -393,186 +399,186 @@
 </span><span class="lnt">180
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cafe babe // 魔数，用于JVM识别class文件
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">cafe</span> <span class="n">babe</span> <span class="o">//</span> <span class="err">魔数，用于</span><span class="n">JVM识别class文件</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">0000 0034 // 次版本00，主版本52，查版本表可知52代表JDK8
+</span></span><span class="line"><span class="cl"><span class="mi">0000</span> <span class="mi">0034</span> <span class="o">//</span> <span class="err">次版本</span><span class="mi">00</span><span class="err">，主版本</span><span class="mi">52</span><span class="err">，查版本表可知</span><span class="mi">52</span><span class="err">代表</span><span class="n">JDK8</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">0015 // 常量池计数器，21个常量，实际为20个，常量池第0位空着
+</span></span><span class="line"><span class="cl"><span class="mi">0015</span> <span class="o">//</span> <span class="err">常量池计数器，</span><span class="mi">21</span><span class="err">个常量，实际为</span><span class="mi">20</span><span class="err">个，常量池第</span><span class="mi">0</span><span class="err">位空着</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">// 常量池start
-</span></span><span class="line"><span class="cl">// 第1个常量
-</span></span><span class="line"><span class="cl">0a // 查表：MethodRef_info，类中方法的符号引用
-</span></span><span class="line"><span class="cl">00 04 // u2，指向声明方法的类，类描述符，指向第4个常量 class_info：java/lang/Object
-</span></span><span class="line"><span class="cl">00 11 // u2，名称及类型描述符，指向第17个常量，是一个NameAndType类型：&lt;init&gt;和()V
-</span></span><span class="line"><span class="cl">// 第2个常量
-</span></span><span class="line"><span class="cl">09 // 查表：FieldRef_info，字段的符号引用
-</span></span><span class="line"><span class="cl">0003 // u2，声明字段的类，指向第3个常量 class_info：cn/johnny/Company
-</span></span><span class="line"><span class="cl">0012 // u2，指向第18个常量，是一个NameAndType：company，Ljava/lang/String;
-</span></span><span class="line"><span class="cl">// 第3个常量
-</span></span><span class="line"><span class="cl">07 // 查表：class_info，类或接口的符号引用
-</span></span><span class="line"><span class="cl">00 13 // 指向第19常量，cn/johnny/Company
-</span></span><span class="line"><span class="cl">// 第4个常量
-</span></span><span class="line"><span class="cl">07 // 查表：class_info
-</span></span><span class="line"><span class="cl">0014 // 指向第20个常量，java/lang/Object
-</span></span><span class="line"><span class="cl">// 第5个常量
-</span></span><span class="line"><span class="cl">01 // 查表：utf8_info
-</span></span><span class="line"><span class="cl">00 07 // 长度
-</span></span><span class="line"><span class="cl">63 6f6d 7061 6e79 // 转字符：company
-</span></span><span class="line"><span class="cl">// 第6个常量
-</span></span><span class="line"><span class="cl">01 // 查表：utf8_info
-</span></span><span class="line"><span class="cl">00 12 // 长度
-</span></span><span class="line"><span class="cl">4c 6a61 7661 2f6c 616e 672f 5374 7269 6e67 3b // 转字符：Ljava/lang/String;
-</span></span><span class="line"><span class="cl">// 第7个常量
-</span></span><span class="line"><span class="cl">01 
-</span></span><span class="line"><span class="cl">0006 
-</span></span><span class="line"><span class="cl">3c69 6e69 743e // 字符：&lt;init&gt;
-</span></span><span class="line"><span class="cl">// 第8个常量
-</span></span><span class="line"><span class="cl">01
-</span></span><span class="line"><span class="cl">00 03
-</span></span><span class="line"><span class="cl">28 2956 // 字符：()V
-</span></span><span class="line"><span class="cl">// 第9个常量
-</span></span><span class="line"><span class="cl">01
-</span></span><span class="line"><span class="cl">00 04
-</span></span><span class="line"><span class="cl">43 6f64 65 // 字符：Code
-</span></span><span class="line"><span class="cl">// 第10个常量
-</span></span><span class="line"><span class="cl">01
-</span></span><span class="line"><span class="cl">000f 
-</span></span><span class="line"><span class="cl">4c69 6e65 4e75 6d62 6572 5461 626c 65 // 字符：LineNumberTable
-</span></span><span class="line"><span class="cl">// 第11个常量
-</span></span><span class="line"><span class="cl">01 
-</span></span><span class="line"><span class="cl">000a 
-</span></span><span class="line"><span class="cl">6765 7443 6f6d 7061 6e79 // 字符：getCompany
-</span></span><span class="line"><span class="cl">// 第12个常量
-</span></span><span class="line"><span class="cl">01
-</span></span><span class="line"><span class="cl">0014
-</span></span><span class="line"><span class="cl">28 294c 6a61 7661 2f6c 616e 672f 5374 7269 6e67 3b // 字符：()Ljava/lang/String;
-</span></span><span class="line"><span class="cl">// 第13个常量
-</span></span><span class="line"><span class="cl">01 
-</span></span><span class="line"><span class="cl">000a 
-</span></span><span class="line"><span class="cl">7365 7443 6f6d 7061 6e79 // 字符：setCompany
-</span></span><span class="line"><span class="cl">// 第14个常量
-</span></span><span class="line"><span class="cl">01
-</span></span><span class="line"><span class="cl">00 15
-</span></span><span class="line"><span class="cl">28 4c6a 6176 612f 6c61 6e67 2f53 7472 696e 673b 2956 // 字符：(Ljava/lang/String;)V
-</span></span><span class="line"><span class="cl">// 第15个常量
-</span></span><span class="line"><span class="cl">01
-</span></span><span class="line"><span class="cl">00 0a
-</span></span><span class="line"><span class="cl">53 6f75 7263 6546 696c 65 // 字符：SourceFile
-</span></span><span class="line"><span class="cl">// 第16个常量
-</span></span><span class="line"><span class="cl">01 
-</span></span><span class="line"><span class="cl">000c 
-</span></span><span class="line"><span class="cl">436f 6d70 616e 792e 6a61 7661 // 字符：Company.java
-</span></span><span class="line"><span class="cl">// 第17个常量
-</span></span><span class="line"><span class="cl">0c // 查表：NameAndType
-</span></span><span class="line"><span class="cl">00 07 // 指向第7个常量 &lt;init&gt;
-</span></span><span class="line"><span class="cl">00 08 // 指向第8个常量 ()V
-</span></span><span class="line"><span class="cl">// 第18个常量
-</span></span><span class="line"><span class="cl">0c // 查表NameAndType
-</span></span><span class="line"><span class="cl">0005 // 指向第5个常量 company
-</span></span><span class="line"><span class="cl">0006 // 指向第6个常量 Ljava/lang/String;
-</span></span><span class="line"><span class="cl">// 第19个常量
-</span></span><span class="line"><span class="cl">01
-</span></span><span class="line"><span class="cl">00 11
-</span></span><span class="line"><span class="cl">63 6e2f 6a6f 686e 6e79 2f43 6f6d 7061 6e79 // 字符：cn/johnny/Company
-</span></span><span class="line"><span class="cl">// 第20个常量
-</span></span><span class="line"><span class="cl">01
-</span></span><span class="line"><span class="cl">00 10
-</span></span><span class="line"><span class="cl">6a 6176 612f 6c61 6e67 2f4f 626a 6563 74 // 字符：java/lang/Object
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">常量池</span><span class="n">start</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">1</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0</span><span class="n">a</span> <span class="o">//</span> <span class="err">查表：</span><span class="n">MethodRef_info</span><span class="err">，类中方法的符号引用</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">04</span> <span class="o">//</span> <span class="n">u2</span><span class="err">，指向声明方法的类，类描述符，指向第</span><span class="mi">4</span><span class="err">个常量</span> <span class="n">class_info</span><span class="err">：</span><span class="n">java</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">Object</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">11</span> <span class="o">//</span> <span class="n">u2</span><span class="err">，名称及类型描述符，指向第</span><span class="mi">17</span><span class="err">个常量，是一个</span><span class="n">NameAndType类型</span><span class="err">：</span><span class="o">&lt;</span><span class="n">init</span><span class="o">&gt;</span><span class="err">和</span><span class="p">()</span><span class="n">V</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">2</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">09</span> <span class="o">//</span> <span class="err">查表：</span><span class="n">FieldRef_info</span><span class="err">，字段的符号引用</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0003</span> <span class="o">//</span> <span class="n">u2</span><span class="err">，声明字段的类，指向第</span><span class="mi">3</span><span class="err">个常量</span> <span class="n">class_info</span><span class="err">：</span><span class="n">cn</span><span class="o">/</span><span class="n">johnny</span><span class="o">/</span><span class="n">Company</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0012</span> <span class="o">//</span> <span class="n">u2</span><span class="err">，指向第</span><span class="mi">18</span><span class="err">个常量，是一个</span><span class="n">NameAndType</span><span class="err">：</span><span class="n">company</span><span class="err">，</span><span class="n">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">String</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">3</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">07</span> <span class="o">//</span> <span class="err">查表：</span><span class="n">class_info</span><span class="err">，类或接口的符号引用</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">13</span> <span class="o">//</span> <span class="err">指向第</span><span class="mi">19</span><span class="err">常量，</span><span class="n">cn</span><span class="o">/</span><span class="n">johnny</span><span class="o">/</span><span class="n">Company</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">4</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">07</span> <span class="o">//</span> <span class="err">查表：</span><span class="n">class_info</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0014</span> <span class="o">//</span> <span class="err">指向第</span><span class="mi">20</span><span class="err">个常量，</span><span class="n">java</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">Object</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">5</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span> <span class="o">//</span> <span class="err">查表：</span><span class="n">utf8_info</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">07</span> <span class="o">//</span> <span class="err">长度</span>
+</span></span><span class="line"><span class="cl"><span class="mi">63</span> <span class="mi">6</span><span class="n">f6d</span> <span class="mi">7061</span> <span class="mf">6e79</span> <span class="o">//</span> <span class="err">转字符：</span><span class="n">company</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">6</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span> <span class="o">//</span> <span class="err">查表：</span><span class="n">utf8_info</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">12</span> <span class="o">//</span> <span class="err">长度</span>
+</span></span><span class="line"><span class="cl"><span class="mi">4</span><span class="n">c</span> <span class="mi">6</span><span class="n">a61</span> <span class="mi">7661</span> <span class="mi">2</span><span class="n">f6c</span> <span class="mi">616</span><span class="n">e</span> <span class="mi">672</span><span class="n">f</span> <span class="mi">5374</span> <span class="mi">7269</span> <span class="mf">6e67</span> <span class="mi">3</span><span class="n">b</span> <span class="o">//</span> <span class="err">转字符：</span><span class="n">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">String</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">7</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span> 
+</span></span><span class="line"><span class="cl"><span class="mi">0006</span> 
+</span></span><span class="line"><span class="cl"><span class="mi">3</span><span class="n">c69</span> <span class="mf">6e69</span> <span class="mi">743</span><span class="n">e</span> <span class="o">//</span> <span class="err">字符：</span><span class="o">&lt;</span><span class="n">init</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">8</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">03</span>
+</span></span><span class="line"><span class="cl"><span class="mi">28</span> <span class="mi">2956</span> <span class="o">//</span> <span class="err">字符：</span><span class="p">()</span><span class="n">V</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">9</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">04</span>
+</span></span><span class="line"><span class="cl"><span class="mi">43</span> <span class="mi">6</span><span class="n">f64</span> <span class="mi">65</span> <span class="o">//</span> <span class="err">字符：</span><span class="n">Code</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">10</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span>
+</span></span><span class="line"><span class="cl"><span class="mi">000</span><span class="n">f</span> 
+</span></span><span class="line"><span class="cl"><span class="mi">4</span><span class="n">c69</span> <span class="mf">6e65</span> <span class="mf">4e75</span> <span class="mi">6</span><span class="n">d62</span> <span class="mi">6572</span> <span class="mi">5461</span> <span class="mi">626</span><span class="n">c</span> <span class="mi">65</span> <span class="o">//</span> <span class="err">字符：</span><span class="n">LineNumberTable</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">11</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span> 
+</span></span><span class="line"><span class="cl"><span class="mi">000</span><span class="n">a</span> 
+</span></span><span class="line"><span class="cl"><span class="mi">6765</span> <span class="mi">7443</span> <span class="mi">6</span><span class="n">f6d</span> <span class="mi">7061</span> <span class="mf">6e79</span> <span class="o">//</span> <span class="err">字符：</span><span class="n">getCompany</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">12</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0014</span>
+</span></span><span class="line"><span class="cl"><span class="mi">28</span> <span class="mi">294</span><span class="n">c</span> <span class="mi">6</span><span class="n">a61</span> <span class="mi">7661</span> <span class="mi">2</span><span class="n">f6c</span> <span class="mi">616</span><span class="n">e</span> <span class="mi">672</span><span class="n">f</span> <span class="mi">5374</span> <span class="mi">7269</span> <span class="mf">6e67</span> <span class="mi">3</span><span class="n">b</span> <span class="o">//</span> <span class="err">字符：</span><span class="p">()</span><span class="n">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">String</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">13</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span> 
+</span></span><span class="line"><span class="cl"><span class="mi">000</span><span class="n">a</span> 
+</span></span><span class="line"><span class="cl"><span class="mi">7365</span> <span class="mi">7443</span> <span class="mi">6</span><span class="n">f6d</span> <span class="mi">7061</span> <span class="mf">6e79</span> <span class="o">//</span> <span class="err">字符：</span><span class="n">setCompany</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">14</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">15</span>
+</span></span><span class="line"><span class="cl"><span class="mi">28</span> <span class="mi">4</span><span class="n">c6a</span> <span class="mi">6176</span> <span class="mi">612</span><span class="n">f</span> <span class="mi">6</span><span class="n">c61</span> <span class="mf">6e67</span> <span class="mi">2</span><span class="n">f53</span> <span class="mi">7472</span> <span class="mi">696</span><span class="n">e</span> <span class="mi">673</span><span class="n">b</span> <span class="mi">2956</span> <span class="o">//</span> <span class="err">字符：</span><span class="p">(</span><span class="n">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">String</span><span class="p">;)</span><span class="n">V</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">15</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0</span><span class="n">a</span>
+</span></span><span class="line"><span class="cl"><span class="mi">53</span> <span class="mi">6</span><span class="n">f75</span> <span class="mi">7263</span> <span class="mi">6546</span> <span class="mi">696</span><span class="n">c</span> <span class="mi">65</span> <span class="o">//</span> <span class="err">字符：</span><span class="n">SourceFile</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">16</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span> 
+</span></span><span class="line"><span class="cl"><span class="mi">000</span><span class="n">c</span> 
+</span></span><span class="line"><span class="cl"><span class="mi">436</span><span class="n">f</span> <span class="mi">6</span><span class="n">d70</span> <span class="mi">616</span><span class="n">e</span> <span class="mi">792</span><span class="n">e</span> <span class="mi">6</span><span class="n">a61</span> <span class="mi">7661</span> <span class="o">//</span> <span class="err">字符：</span><span class="n">Company</span><span class="o">.</span><span class="n">java</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">17</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0</span><span class="n">c</span> <span class="o">//</span> <span class="err">查表：</span><span class="n">NameAndType</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">07</span> <span class="o">//</span> <span class="err">指向第</span><span class="mi">7</span><span class="err">个常量</span> <span class="o">&lt;</span><span class="n">init</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">08</span> <span class="o">//</span> <span class="err">指向第</span><span class="mi">8</span><span class="err">个常量</span> <span class="p">()</span><span class="n">V</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">18</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0</span><span class="n">c</span> <span class="o">//</span> <span class="err">查表</span><span class="n">NameAndType</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0005</span> <span class="o">//</span> <span class="err">指向第</span><span class="mi">5</span><span class="err">个常量</span> <span class="n">company</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0006</span> <span class="o">//</span> <span class="err">指向第</span><span class="mi">6</span><span class="err">个常量</span> <span class="n">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">String</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">19</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">11</span>
+</span></span><span class="line"><span class="cl"><span class="mi">63</span> <span class="mf">6e2</span><span class="n">f</span> <span class="mi">6</span><span class="n">a6f</span> <span class="mi">686</span><span class="n">e</span> <span class="mf">6e79</span> <span class="mi">2</span><span class="n">f43</span> <span class="mi">6</span><span class="n">f6d</span> <span class="mi">7061</span> <span class="mf">6e79</span> <span class="o">//</span> <span class="err">字符：</span><span class="n">cn</span><span class="o">/</span><span class="n">johnny</span><span class="o">/</span><span class="n">Company</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">20</span><span class="err">个常量</span>
+</span></span><span class="line"><span class="cl"><span class="mi">01</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl"><span class="mi">6</span><span class="n">a</span> <span class="mi">6176</span> <span class="mi">612</span><span class="n">f</span> <span class="mi">6</span><span class="n">c61</span> <span class="mf">6e67</span> <span class="mi">2</span><span class="n">f4f</span> <span class="mi">626</span><span class="n">a</span> <span class="mi">6563</span> <span class="mi">74</span> <span class="o">//</span> <span class="err">字符：</span><span class="n">java</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">Object</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">// 常量池end
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">常量池</span><span class="n">end</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">00 21 // 访问标志 public super
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">21</span> <span class="o">//</span> <span class="err">访问标志</span> <span class="n">public</span> <span class="n">super</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">// 确定类的继承关系
-</span></span><span class="line"><span class="cl">00 03 // 当前类索引，类的全限定名 cn/johnny/Company
-</span></span><span class="line"><span class="cl">00 04 // 父类索引，单继承，java/lang/Object。除了Object类，所有的Java类都有父类
-</span></span><span class="line"><span class="cl">00 00 // 接口计数，当前接口计数为0，所以后面不跟接口信息
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">确定类的继承关系</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">03</span> <span class="o">//</span> <span class="err">当前类索引，类的全限定名</span> <span class="n">cn</span><span class="o">/</span><span class="n">johnny</span><span class="o">/</span><span class="n">Company</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">04</span> <span class="o">//</span> <span class="err">父类索引，单继承，</span><span class="n">java</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">Object</span><span class="err">。除了</span><span class="n">Object类</span><span class="err">，所有的</span><span class="n">Java类都有父类</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">00</span> <span class="o">//</span> <span class="err">接口计数，当前接口计数为</span><span class="mi">0</span><span class="err">，所以后面不跟接口信息</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">00 01 // 字段表计数器，表示存在1个字段
-</span></span><span class="line"><span class="cl">00 02 // private，其他还有static、final、volatile、transient等
-</span></span><span class="line"><span class="cl">00 05 // 名称索引，指向索引5，表示字段名称为company
-</span></span><span class="line"><span class="cl">00 06 // 描述符索引，指向索引6，表示字段类型为String
-</span></span><span class="line"><span class="cl">00 00 // 其他属性，描述一些额外的信息，例如如果该字段是类变量，并且由final修饰，那么这里就会有一项ConstantValue的属性，指向一个常量，直接在编译期完成类变量的初始化
-</span></span><span class="line"><span class="cl">// 关于字段表需要补充的是，字段表不会列出父类或者父接口继承而来的字段。但是可能出现Java类代码中不存在的字段，例如内部类为了保持对外部类的访问，编译器会自动添加一个指向外部类实例的字段。
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">01</span> <span class="o">//</span> <span class="err">字段表计数器，表示存在</span><span class="mi">1</span><span class="err">个字段</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">02</span> <span class="o">//</span> <span class="n">private</span><span class="err">，其他还有</span><span class="k">static</span><span class="err">、</span><span class="n">final</span><span class="err">、</span><span class="n">volatile</span><span class="err">、</span><span class="n">transient等</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">05</span> <span class="o">//</span> <span class="err">名称索引，指向索引</span><span class="mi">5</span><span class="err">，表示字段名称为</span><span class="n">company</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">06</span> <span class="o">//</span> <span class="err">描述符索引，指向索引</span><span class="mi">6</span><span class="err">，表示字段类型为</span><span class="ne">String</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">00</span> <span class="o">//</span> <span class="err">其他属性，描述一些额外的信息，例如如果该字段是类变量，并且由</span><span class="n">final修饰</span><span class="err">，那么这里就会有一项</span><span class="n">ConstantValue的属性</span><span class="err">，指向一个常量，直接在编译期完成类变量的初始化</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">关于字段表需要补充的是，字段表不会列出父类或者父接口继承而来的字段。但是可能出现</span><span class="n">Java类代码中不存在的字段</span><span class="err">，例如内部类为了保持对外部类的访问，编译器会自动添加一个指向外部类实例的字段。</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">00 03 // 方法表计数器，3个方法
-</span></span><span class="line"><span class="cl">// 第1个方法
-</span></span><span class="line"><span class="cl">00 01 // 访问标志 public
-</span></span><span class="line"><span class="cl">00 07 // 名称索引，指向索引7，表示为&lt;init&gt;，该方法为编译器自动添加的实例构造方法
-</span></span><span class="line"><span class="cl">00 08 // 描述符索引，指向索引8 ()V
-</span></span><span class="line"><span class="cl">00 01 // 属性表计数器，表示有1个属性
-</span></span><span class="line"><span class="cl">00 09 // 属性名称索引，指向索引9，表示为Code属性，方法编译后的字节码就存在这里
-</span></span><span class="line"><span class="cl">00 0000 1d // 属性长度是29
-</span></span><span class="line"><span class="cl">00 01 // maxStack 最大栈深度，表示方法运行任意时刻栈深度都不会超过1
-</span></span><span class="line"><span class="cl">00 01 // maxSlot 最大局部变量表槽数量，表示局部变量数量为1，Java虚拟机会复用槽，并非多少个局部变量就分配多少个槽
-</span></span><span class="line"><span class="cl">00 0000 05 // 生成JVM指令码长度5，虽然长度为u4，但是Java虚拟机规定一个方法长度不能超过u2最大值，即65535，否则将编译失败
-</span></span><span class="line"><span class="cl">2a // aload_0指令，将第0个变量槽内的ref变量推送到栈顶
-</span></span><span class="line"><span class="cl">b7 // invokespecial指令，调用栈顶ref类型所指向的对象的实例构造方法
-</span></span><span class="line"><span class="cl">00 01 // 调用第1个方法 &lt;init&gt;
-</span></span><span class="line"><span class="cl">b1 // return
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">03</span> <span class="o">//</span> <span class="err">方法表计数器，</span><span class="mi">3</span><span class="err">个方法</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">1</span><span class="err">个方法</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">01</span> <span class="o">//</span> <span class="err">访问标志</span> <span class="n">public</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">07</span> <span class="o">//</span> <span class="err">名称索引，指向索引</span><span class="mi">7</span><span class="err">，表示为</span><span class="o">&lt;</span><span class="n">init</span><span class="o">&gt;</span><span class="err">，该方法为编译器自动添加的实例构造方法</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">08</span> <span class="o">//</span> <span class="err">描述符索引，指向索引</span><span class="mi">8</span> <span class="p">()</span><span class="n">V</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">01</span> <span class="o">//</span> <span class="err">属性表计数器，表示有</span><span class="mi">1</span><span class="err">个属性</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">09</span> <span class="o">//</span> <span class="err">属性名称索引，指向索引</span><span class="mi">9</span><span class="err">，表示为</span><span class="n">Code属性</span><span class="err">，方法编译后的字节码就存在这里</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0000</span> <span class="mi">1</span><span class="n">d</span> <span class="o">//</span> <span class="err">属性长度是</span><span class="mi">29</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">01</span> <span class="o">//</span> <span class="n">maxStack</span> <span class="err">最大栈深度，表示方法运行任意时刻栈深度都不会超过</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">01</span> <span class="o">//</span> <span class="n">maxSlot</span> <span class="err">最大局部变量表槽数量，表示局部变量数量为</span><span class="mi">1</span><span class="err">，</span><span class="n">Java虚拟机会复用槽</span><span class="err">，并非多少个局部变量就分配多少个槽</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0000</span> <span class="mi">05</span> <span class="o">//</span> <span class="err">生成</span><span class="n">JVM指令码长度5</span><span class="err">，虽然长度为</span><span class="n">u4</span><span class="err">，但是</span><span class="n">Java虚拟机规定一个方法长度不能超过u2最大值</span><span class="err">，即</span><span class="mi">65535</span><span class="err">，否则将编译失败</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2</span><span class="n">a</span> <span class="o">//</span> <span class="n">aload_0指令</span><span class="err">，将第</span><span class="mi">0</span><span class="err">个变量槽内的</span><span class="n">ref变量推送到栈顶</span>
+</span></span><span class="line"><span class="cl"><span class="n">b7</span> <span class="o">//</span> <span class="n">invokespecial指令</span><span class="err">，调用栈顶</span><span class="n">ref类型所指向的对象的实例构造方法</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">01</span> <span class="o">//</span> <span class="err">调用第</span><span class="mi">1</span><span class="err">个方法</span> <span class="o">&lt;</span><span class="n">init</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="n">b1</span> <span class="o">//</span> <span class="k">return</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">0000 // 异常表，当前异常表为空
-</span></span><span class="line"><span class="cl">0001 // 1个Code属性 
-</span></span><span class="line"><span class="cl">000a // 指向第10个常量，LineNumberTable，这个值用来描述Java源码行号和字节码行号的对应关系
-</span></span><span class="line"><span class="cl">0000 0006 // 属性长度6
-</span></span><span class="line"><span class="cl">0001 // 1个属性
-</span></span><span class="line"><span class="cl">0000 // 字节码行号
-</span></span><span class="line"><span class="cl">0002 // 代码行号
+</span></span><span class="line"><span class="cl"><span class="mi">0000</span> <span class="o">//</span> <span class="err">异常表，当前异常表为空</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0001</span> <span class="o">//</span> <span class="mi">1</span><span class="err">个</span><span class="n">Code属性</span> 
+</span></span><span class="line"><span class="cl"><span class="mi">000</span><span class="n">a</span> <span class="o">//</span> <span class="err">指向第</span><span class="mi">10</span><span class="err">个常量，</span><span class="n">LineNumberTable</span><span class="err">，这个值用来描述</span><span class="n">Java源码行号和字节码行号的对应关系</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0000</span> <span class="mi">0006</span> <span class="o">//</span> <span class="err">属性长度</span><span class="mi">6</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0001</span> <span class="o">//</span> <span class="mi">1</span><span class="err">个属性</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0000</span> <span class="o">//</span> <span class="err">字节码行号</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0002</span> <span class="o">//</span> <span class="err">代码行号</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">// 第2个方法
-</span></span><span class="line"><span class="cl">0001 // 访问标志 public 
-</span></span><span class="line"><span class="cl">000b // 索引11 名称索引 getCompany
-</span></span><span class="line"><span class="cl">000c // 索引12 描述符索引 ()Ljava/lang/String;
-</span></span><span class="line"><span class="cl">0001 // 1个属性
-</span></span><span class="line"><span class="cl">0009 // 索引9 指向Code属性
-</span></span><span class="line"><span class="cl">0000 001d // 属性长度29
-</span></span><span class="line"><span class="cl">0001 // 最大栈深度1
-</span></span><span class="line"><span class="cl">0001 // 最大局部变量表1
-</span></span><span class="line"><span class="cl">0000 0005 // 生成5条JVM指令
-</span></span><span class="line"><span class="cl">2a // aload_0指令，将第0个变量槽内的ref变量推送到栈顶
-</span></span><span class="line"><span class="cl">b4 // getField指令
-</span></span><span class="line"><span class="cl">0002 // 与getField指令配合，指向索引2，company
-</span></span><span class="line"><span class="cl">b0 // arereturn指令，返回company对象的引用
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">2</span><span class="err">个方法</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0001</span> <span class="o">//</span> <span class="err">访问标志</span> <span class="n">public</span> 
+</span></span><span class="line"><span class="cl"><span class="mi">000</span><span class="n">b</span> <span class="o">//</span> <span class="err">索引</span><span class="mi">11</span> <span class="err">名称索引</span> <span class="n">getCompany</span>
+</span></span><span class="line"><span class="cl"><span class="mi">000</span><span class="n">c</span> <span class="o">//</span> <span class="err">索引</span><span class="mi">12</span> <span class="err">描述符索引</span> <span class="p">()</span><span class="n">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">String</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0001</span> <span class="o">//</span> <span class="mi">1</span><span class="err">个属性</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0009</span> <span class="o">//</span> <span class="err">索引</span><span class="mi">9</span> <span class="err">指向</span><span class="n">Code属性</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0000</span> <span class="mi">001</span><span class="n">d</span> <span class="o">//</span> <span class="err">属性长度</span><span class="mi">29</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0001</span> <span class="o">//</span> <span class="err">最大栈深度</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0001</span> <span class="o">//</span> <span class="err">最大局部变量表</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0000</span> <span class="mi">0005</span> <span class="o">//</span> <span class="err">生成</span><span class="mi">5</span><span class="err">条</span><span class="n">JVM指令</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2</span><span class="n">a</span> <span class="o">//</span> <span class="n">aload_0指令</span><span class="err">，将第</span><span class="mi">0</span><span class="err">个变量槽内的</span><span class="n">ref变量推送到栈顶</span>
+</span></span><span class="line"><span class="cl"><span class="n">b4</span> <span class="o">//</span> <span class="n">getField指令</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0002</span> <span class="o">//</span> <span class="err">与</span><span class="n">getField指令配合</span><span class="err">，指向索引</span><span class="mi">2</span><span class="err">，</span><span class="n">company</span>
+</span></span><span class="line"><span class="cl"><span class="n">b0</span> <span class="o">//</span> <span class="n">arereturn指令</span><span class="err">，返回</span><span class="n">company对象的引用</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">00 00 // 异常表 异常信息为空
-</span></span><span class="line"><span class="cl">00 01 // 有一个Code属性
-</span></span><span class="line"><span class="cl">00 0a // 索引10，LineNumberTable
-</span></span><span class="line"><span class="cl">00 0000 06 // 属性长度
-</span></span><span class="line"><span class="cl">00 01 // 1个属性
-</span></span><span class="line"><span class="cl">00 00 // 字节码行号
-</span></span><span class="line"><span class="cl">00 06 // 代码行号
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">00</span> <span class="o">//</span> <span class="err">异常表</span> <span class="err">异常信息为空</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">01</span> <span class="o">//</span> <span class="err">有一个</span><span class="n">Code属性</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0</span><span class="n">a</span> <span class="o">//</span> <span class="err">索引</span><span class="mi">10</span><span class="err">，</span><span class="n">LineNumberTable</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0000</span> <span class="mi">06</span> <span class="o">//</span> <span class="err">属性长度</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">01</span> <span class="o">//</span> <span class="mi">1</span><span class="err">个属性</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">00</span> <span class="o">//</span> <span class="err">字节码行号</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">06</span> <span class="o">//</span> <span class="err">代码行号</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">// 第3个方法
-</span></span><span class="line"><span class="cl">00 01 // 访问标志 public
-</span></span><span class="line"><span class="cl">00 0d // 索引13 名称索引 setCompany
-</span></span><span class="line"><span class="cl">00 0e // 索引14 方法描述符索引 (Ljava/lang/String;)V
-</span></span><span class="line"><span class="cl">00 01 // 1个属性
-</span></span><span class="line"><span class="cl">00 09 // 索引9 Code属性
-</span></span><span class="line"><span class="cl">00 0000 22 // 属性长度34
-</span></span><span class="line"><span class="cl">00 02 // 最大栈深度2
-</span></span><span class="line"><span class="cl">00 02 // 最大局部变量表槽 2个 this，company
-</span></span><span class="line"><span class="cl">00 0000 06 // JVM字节码指令长度
-</span></span><span class="line"><span class="cl">2a // aload_0指令，将第0个变量槽内的ref变量推送到栈顶
-</span></span><span class="line"><span class="cl">2b // aload_1 company入栈
-</span></span><span class="line"><span class="cl">b5 // putfield
-</span></span><span class="line"><span class="cl">0002 // 指向索引2 表示company字段
-</span></span><span class="line"><span class="cl">b1 // return void
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">第</span><span class="mi">3</span><span class="err">个方法</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">01</span> <span class="o">//</span> <span class="err">访问标志</span> <span class="n">public</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0</span><span class="n">d</span> <span class="o">//</span> <span class="err">索引</span><span class="mi">13</span> <span class="err">名称索引</span> <span class="n">setCompany</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0</span><span class="n">e</span> <span class="o">//</span> <span class="err">索引</span><span class="mi">14</span> <span class="err">方法描述符索引</span> <span class="p">(</span><span class="n">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">String</span><span class="p">;)</span><span class="n">V</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">01</span> <span class="o">//</span> <span class="mi">1</span><span class="err">个属性</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">09</span> <span class="o">//</span> <span class="err">索引</span><span class="mi">9</span> <span class="n">Code属性</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0000</span> <span class="mi">22</span> <span class="o">//</span> <span class="err">属性长度</span><span class="mi">34</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">02</span> <span class="o">//</span> <span class="err">最大栈深度</span><span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">02</span> <span class="o">//</span> <span class="err">最大局部变量表槽</span> <span class="mi">2</span><span class="err">个</span> <span class="n">this</span><span class="err">，</span><span class="n">company</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0000</span> <span class="mi">06</span> <span class="o">//</span> <span class="n">JVM字节码指令长度</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2</span><span class="n">a</span> <span class="o">//</span> <span class="n">aload_0指令</span><span class="err">，将第</span><span class="mi">0</span><span class="err">个变量槽内的</span><span class="n">ref变量推送到栈顶</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2</span><span class="n">b</span> <span class="o">//</span> <span class="n">aload_1</span> <span class="n">company入栈</span>
+</span></span><span class="line"><span class="cl"><span class="n">b5</span> <span class="o">//</span> <span class="n">putfield</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0002</span> <span class="o">//</span> <span class="err">指向索引</span><span class="mi">2</span> <span class="err">表示</span><span class="n">company字段</span>
+</span></span><span class="line"><span class="cl"><span class="n">b1</span> <span class="o">//</span> <span class="k">return</span> <span class="n">void</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">00 00 // 异常表 异常信息为空
-</span></span><span class="line"><span class="cl">00 01 // 一个Code属性
-</span></span><span class="line"><span class="cl">00 0a // 索引10 LineNumberTable
-</span></span><span class="line"><span class="cl">00 0000 0a // 属性长度10
-</span></span><span class="line"><span class="cl">00 02 // 2个属性
-</span></span><span class="line"><span class="cl">00 00 // 字节码行号
-</span></span><span class="line"><span class="cl">00 0a // 代码行号
-</span></span><span class="line"><span class="cl">00 05 // 字节码行号
-</span></span><span class="line"><span class="cl">00 0b // 代码行号
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">00</span> <span class="o">//</span> <span class="err">异常表</span> <span class="err">异常信息为空</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">01</span> <span class="o">//</span> <span class="err">一个</span><span class="n">Code属性</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0</span><span class="n">a</span> <span class="o">//</span> <span class="err">索引</span><span class="mi">10</span> <span class="n">LineNumberTable</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0000</span> <span class="mi">0</span><span class="n">a</span> <span class="o">//</span> <span class="err">属性长度</span><span class="mi">10</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">02</span> <span class="o">//</span> <span class="mi">2</span><span class="err">个属性</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">00</span> <span class="o">//</span> <span class="err">字节码行号</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0</span><span class="n">a</span> <span class="o">//</span> <span class="err">代码行号</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">05</span> <span class="o">//</span> <span class="err">字节码行号</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0</span><span class="n">b</span> <span class="o">//</span> <span class="err">代码行号</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">00 01 // 属性表计数器
-</span></span><span class="line"><span class="cl">00 0f // 索引15 SourceFile
-</span></span><span class="line"><span class="cl">00 0000 02 // 长度2
-</span></span><span class="line"><span class="cl">00 10 // 文件名，Company.java
-</span></span><span class="line"><span class="cl">0a // 换行
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">01</span> <span class="o">//</span> <span class="err">属性表计数器</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0</span><span class="n">f</span> <span class="o">//</span> <span class="err">索引</span><span class="mi">15</span> <span class="n">SourceFile</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">0000</span> <span class="mi">02</span> <span class="o">//</span> <span class="err">长度</span><span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="mi">00</span> <span class="mi">10</span> <span class="o">//</span> <span class="err">文件名，</span><span class="n">Company</span><span class="o">.</span><span class="n">java</span>
+</span></span><span class="line"><span class="cl"><span class="mi">0</span><span class="n">a</span> <span class="o">//</span> <span class="err">换行</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="2-魔数">2. 魔数</h2>
@@ -777,85 +783,85 @@
 </span><span class="lnt">79
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Classfile /C:/Users/Nascent/Desktop/Company.class
-</span></span><span class="line"><span class="cl">  Last modified 2022-9-14; size 525 bytes
-</span></span><span class="line"><span class="cl">  MD5 checksum d81f497e96a3bb6c605b6b4ff6ff16bd
-</span></span><span class="line"><span class="cl">  Compiled from &#34;Company.java&#34;
-</span></span><span class="line"><span class="cl">public class cn.johnny.Company
-</span></span><span class="line"><span class="cl">  minor version: 0
-</span></span><span class="line"><span class="cl">  major version: 52
-</span></span><span class="line"><span class="cl">  flags: ACC_PUBLIC, ACC_SUPER
-</span></span><span class="line"><span class="cl">Constant pool:
-</span></span><span class="line"><span class="cl">   #1 = Methodref          #4.#20         // java/lang/Object.&#34;&lt;init&gt;&#34;:()V
-</span></span><span class="line"><span class="cl">   #2 = Fieldref           #3.#21         // cn/johnny/Company.company:Ljava/lang/String;
-</span></span><span class="line"><span class="cl">   #3 = Class              #22            // cn/johnny/Company
-</span></span><span class="line"><span class="cl">   #4 = Class              #23            // java/lang/Object
-</span></span><span class="line"><span class="cl">   #5 = Utf8               company
-</span></span><span class="line"><span class="cl">   #6 = Utf8               Ljava/lang/String;
-</span></span><span class="line"><span class="cl">   #7 = Utf8               &lt;init&gt;
-</span></span><span class="line"><span class="cl">   #8 = Utf8               ()V
-</span></span><span class="line"><span class="cl">   #9 = Utf8               Code
-</span></span><span class="line"><span class="cl">  #10 = Utf8               LineNumberTable
-</span></span><span class="line"><span class="cl">  #11 = Utf8               LocalVariableTable
-</span></span><span class="line"><span class="cl">  #12 = Utf8               this
-</span></span><span class="line"><span class="cl">  #13 = Utf8               Lcn/johnny/Company;
-</span></span><span class="line"><span class="cl">  #14 = Utf8               getCompany
-</span></span><span class="line"><span class="cl">  #15 = Utf8               ()Ljava/lang/String;
-</span></span><span class="line"><span class="cl">  #16 = Utf8               setCompany
-</span></span><span class="line"><span class="cl">  #17 = Utf8               (Ljava/lang/String;)V
-</span></span><span class="line"><span class="cl">  #18 = Utf8               SourceFile
-</span></span><span class="line"><span class="cl">  #19 = Utf8               Company.java
-</span></span><span class="line"><span class="cl">  #20 = NameAndType        #7:#8          // &#34;&lt;init&gt;&#34;:()V
-</span></span><span class="line"><span class="cl">  #21 = NameAndType        #5:#6          // company:Ljava/lang/String;
-</span></span><span class="line"><span class="cl">  #22 = Utf8               cn/johnny/Company
-</span></span><span class="line"><span class="cl">  #23 = Utf8               java/lang/Object
-</span></span><span class="line"><span class="cl">{
-</span></span><span class="line"><span class="cl">  public cn.johnny.Company();
-</span></span><span class="line"><span class="cl">    descriptor: ()V
-</span></span><span class="line"><span class="cl">    flags: ACC_PUBLIC
-</span></span><span class="line"><span class="cl">    Code:
-</span></span><span class="line"><span class="cl">      stack=1, locals=1, args_size=1
-</span></span><span class="line"><span class="cl">         0: aload_0
-</span></span><span class="line"><span class="cl">         1: invokespecial #1                  // Method java/lang/Object.&#34;&lt;init&gt;&#34;:()V
-</span></span><span class="line"><span class="cl">         4: return
-</span></span><span class="line"><span class="cl">      LineNumberTable:
-</span></span><span class="line"><span class="cl">        line 2: 0
-</span></span><span class="line"><span class="cl">      LocalVariableTable:
-</span></span><span class="line"><span class="cl">        Start  Length  Slot  Name   Signature
-</span></span><span class="line"><span class="cl">            0       5     0  this   Lcn/johnny/Company;
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">Classfile</span> <span class="o">/</span><span class="n">C</span><span class="p">:</span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Nascent</span><span class="o">/</span><span class="n">Desktop</span><span class="o">/</span><span class="n">Company</span><span class="o">.</span><span class="k">class</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Last</span> <span class="n">modified</span> <span class="mi">2022</span><span class="o">-</span><span class="mi">9</span><span class="o">-</span><span class="mi">14</span><span class="p">;</span> <span class="n">size</span> <span class="mi">525</span> <span class="n">bytes</span>
+</span></span><span class="line"><span class="cl">  <span class="n">MD5</span> <span class="n">checksum</span> <span class="n">d81f497e96a3bb6c605b6b4ff6ff16bd</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Compiled</span> <span class="n">from</span> <span class="s2">&#34;Company.java&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">public</span> <span class="k">class</span> <span class="n">cn</span><span class="o">.</span><span class="n">johnny</span><span class="o">.</span><span class="n">Company</span>
+</span></span><span class="line"><span class="cl">  <span class="n">minor</span> <span class="n">version</span><span class="p">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">  <span class="n">major</span> <span class="n">version</span><span class="p">:</span> <span class="mi">52</span>
+</span></span><span class="line"><span class="cl">  <span class="n">flags</span><span class="p">:</span> <span class="n">ACC_PUBLIC</span><span class="p">,</span> <span class="n">ACC_SUPER</span>
+</span></span><span class="line"><span class="cl"><span class="n">Constant</span> <span class="n">pool</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#1 = Methodref          #4.#20         // java/lang/Object.&#34;&lt;init&gt;&#34;:()V</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#2 = Fieldref           #3.#21         // cn/johnny/Company.company:Ljava/lang/String;</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#3 = Class              #22            // cn/johnny/Company</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#4 = Class              #23            // java/lang/Object</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#5 = Utf8               company</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#6 = Utf8               Ljava/lang/String;</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#7 = Utf8               &lt;init&gt;</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#8 = Utf8               ()V</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#9 = Utf8               Code</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#10 = Utf8               LineNumberTable</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#11 = Utf8               LocalVariableTable</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#12 = Utf8               this</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#13 = Utf8               Lcn/johnny/Company;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#14 = Utf8               getCompany</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#15 = Utf8               ()Ljava/lang/String;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#16 = Utf8               setCompany</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#17 = Utf8               (Ljava/lang/String;)V</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#18 = Utf8               SourceFile</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#19 = Utf8               Company.java</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#20 = NameAndType        #7:#8          // &#34;&lt;init&gt;&#34;:()V</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#21 = NameAndType        #5:#6          // company:Ljava/lang/String;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#22 = Utf8               cn/johnny/Company</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#23 = Utf8               java/lang/Object</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">public</span> <span class="n">cn</span><span class="o">.</span><span class="n">johnny</span><span class="o">.</span><span class="n">Company</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">descriptor</span><span class="p">:</span> <span class="p">()</span><span class="n">V</span>
+</span></span><span class="line"><span class="cl">    <span class="n">flags</span><span class="p">:</span> <span class="n">ACC_PUBLIC</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Code</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">stack</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">locals</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">args_size</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">0</span><span class="p">:</span> <span class="n">aload_0</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">1</span><span class="p">:</span> <span class="n">invokespecial</span> <span class="c1">#1                  // Method java/lang/Object.&#34;&lt;init&gt;&#34;:()V</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">4</span><span class="p">:</span> <span class="k">return</span>
+</span></span><span class="line"><span class="cl">      <span class="n">LineNumberTable</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">line</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">      <span class="n">LocalVariableTable</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Start</span>  <span class="n">Length</span>  <span class="n">Slot</span>  <span class="n">Name</span>   <span class="n">Signature</span>
+</span></span><span class="line"><span class="cl">            <span class="mi">0</span>       <span class="mi">5</span>     <span class="mi">0</span>  <span class="n">this</span>   <span class="n">Lcn</span><span class="o">/</span><span class="n">johnny</span><span class="o">/</span><span class="n">Company</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  public java.lang.String getCompany();
-</span></span><span class="line"><span class="cl">    descriptor: ()Ljava/lang/String;
-</span></span><span class="line"><span class="cl">    flags: ACC_PUBLIC
-</span></span><span class="line"><span class="cl">    Code:
-</span></span><span class="line"><span class="cl">      stack=1, locals=1, args_size=1
-</span></span><span class="line"><span class="cl">         0: aload_0
-</span></span><span class="line"><span class="cl">         1: getfield      #2                  // Field company:Ljava/lang/String;
-</span></span><span class="line"><span class="cl">         4: areturn
-</span></span><span class="line"><span class="cl">      LineNumberTable:
-</span></span><span class="line"><span class="cl">        line 6: 0
-</span></span><span class="line"><span class="cl">      LocalVariableTable:
-</span></span><span class="line"><span class="cl">        Start  Length  Slot  Name   Signature
-</span></span><span class="line"><span class="cl">            0       5     0  this   Lcn/johnny/Company;
+</span></span><span class="line"><span class="cl">  <span class="n">public</span> <span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="n">String</span> <span class="n">getCompany</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">descriptor</span><span class="p">:</span> <span class="p">()</span><span class="n">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">String</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">flags</span><span class="p">:</span> <span class="n">ACC_PUBLIC</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Code</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">stack</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">locals</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">args_size</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">0</span><span class="p">:</span> <span class="n">aload_0</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">1</span><span class="p">:</span> <span class="n">getfield</span>      <span class="c1">#2                  // Field company:Ljava/lang/String;</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">4</span><span class="p">:</span> <span class="n">areturn</span>
+</span></span><span class="line"><span class="cl">      <span class="n">LineNumberTable</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">line</span> <span class="mi">6</span><span class="p">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">      <span class="n">LocalVariableTable</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Start</span>  <span class="n">Length</span>  <span class="n">Slot</span>  <span class="n">Name</span>   <span class="n">Signature</span>
+</span></span><span class="line"><span class="cl">            <span class="mi">0</span>       <span class="mi">5</span>     <span class="mi">0</span>  <span class="n">this</span>   <span class="n">Lcn</span><span class="o">/</span><span class="n">johnny</span><span class="o">/</span><span class="n">Company</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  public void setCompany(java.lang.String);
-</span></span><span class="line"><span class="cl">    descriptor: (Ljava/lang/String;)V
-</span></span><span class="line"><span class="cl">    flags: ACC_PUBLIC
-</span></span><span class="line"><span class="cl">    Code:
-</span></span><span class="line"><span class="cl">      stack=2, locals=2, args_size=2
-</span></span><span class="line"><span class="cl">         0: aload_0
-</span></span><span class="line"><span class="cl">         1: aload_1
-</span></span><span class="line"><span class="cl">         2: putfield      #2                  // Field company:Ljava/lang/String;
-</span></span><span class="line"><span class="cl">         5: return
-</span></span><span class="line"><span class="cl">      LineNumberTable:
-</span></span><span class="line"><span class="cl">        line 10: 0
-</span></span><span class="line"><span class="cl">        line 11: 5
-</span></span><span class="line"><span class="cl">      LocalVariableTable:
-</span></span><span class="line"><span class="cl">        Start  Length  Slot  Name   Signature
-</span></span><span class="line"><span class="cl">            0       6     0  this   Lcn/johnny/Company;
-</span></span><span class="line"><span class="cl">            0       6     1 company   Ljava/lang/String;
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">SourceFile: &#34;Company.java&#34;
+</span></span><span class="line"><span class="cl">  <span class="n">public</span> <span class="n">void</span> <span class="n">setCompany</span><span class="p">(</span><span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="n">String</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">descriptor</span><span class="p">:</span> <span class="p">(</span><span class="n">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">String</span><span class="p">;)</span><span class="n">V</span>
+</span></span><span class="line"><span class="cl">    <span class="n">flags</span><span class="p">:</span> <span class="n">ACC_PUBLIC</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Code</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">stack</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">locals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">args_size</span><span class="o">=</span><span class="mi">2</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">0</span><span class="p">:</span> <span class="n">aload_0</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">1</span><span class="p">:</span> <span class="n">aload_1</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">2</span><span class="p">:</span> <span class="n">putfield</span>      <span class="c1">#2                  // Field company:Ljava/lang/String;</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">5</span><span class="p">:</span> <span class="k">return</span>
+</span></span><span class="line"><span class="cl">      <span class="n">LineNumberTable</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">line</span> <span class="mi">10</span><span class="p">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">        <span class="n">line</span> <span class="mi">11</span><span class="p">:</span> <span class="mi">5</span>
+</span></span><span class="line"><span class="cl">      <span class="n">LocalVariableTable</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Start</span>  <span class="n">Length</span>  <span class="n">Slot</span>  <span class="n">Name</span>   <span class="n">Signature</span>
+</span></span><span class="line"><span class="cl">            <span class="mi">0</span>       <span class="mi">6</span>     <span class="mi">0</span>  <span class="n">this</span>   <span class="n">Lcn</span><span class="o">/</span><span class="n">johnny</span><span class="o">/</span><span class="n">Company</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mi">0</span>       <span class="mi">6</span>     <span class="mi">1</span> <span class="n">company</span>   <span class="n">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">String</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">SourceFile</span><span class="p">:</span> <span class="s2">&#34;Company.java&#34;</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="101-解析反编译后的class文件">10.1 解析反编译后的class文件</h3>
@@ -952,95 +958,95 @@
 </span><span class="lnt">89
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Classfile /C:/Users/Nascent/Desktop/Company.class
-</span></span><span class="line"><span class="cl">  Last modified 2022-9-14; size 525 bytes
-</span></span><span class="line"><span class="cl">  MD5 checksum d81f497e96a3bb6c605b6b4ff6ff16bd
-</span></span><span class="line"><span class="cl">  Compiled from &#34;Company.java&#34;
-</span></span><span class="line"><span class="cl">public class cn.johnny.Company
-</span></span><span class="line"><span class="cl">  // 次版本号
-</span></span><span class="line"><span class="cl">  minor version: 0
-</span></span><span class="line"><span class="cl">  // 主版本号
-</span></span><span class="line"><span class="cl">  major version: 52
-</span></span><span class="line"><span class="cl">  // 访问标志
-</span></span><span class="line"><span class="cl">  flags: ACC_PUBLIC, ACC_SUPER
-</span></span><span class="line"><span class="cl">// 常量池
-</span></span><span class="line"><span class="cl">Constant pool:
-</span></span><span class="line"><span class="cl">   #1 = Methodref          #4.#20         // java/lang/Object.&#34;&lt;init&gt;&#34;:()V
-</span></span><span class="line"><span class="cl">   #2 = Fieldref           #3.#21         // cn/johnny/Company.company:Ljava/lang/String;
-</span></span><span class="line"><span class="cl">   #3 = Class              #22            // cn/johnny/Company
-</span></span><span class="line"><span class="cl">   #4 = Class              #23            // java/lang/Object
-</span></span><span class="line"><span class="cl">   #5 = Utf8               company
-</span></span><span class="line"><span class="cl">   #6 = Utf8               Ljava/lang/String;
-</span></span><span class="line"><span class="cl">   #7 = Utf8               &lt;init&gt;
-</span></span><span class="line"><span class="cl">   #8 = Utf8               ()V
-</span></span><span class="line"><span class="cl">   #9 = Utf8               Code
-</span></span><span class="line"><span class="cl">  #10 = Utf8               LineNumberTable
-</span></span><span class="line"><span class="cl">  #11 = Utf8               LocalVariableTable
-</span></span><span class="line"><span class="cl">  #12 = Utf8               this
-</span></span><span class="line"><span class="cl">  #13 = Utf8               Lcn/johnny/Company;
-</span></span><span class="line"><span class="cl">  #14 = Utf8               getCompany
-</span></span><span class="line"><span class="cl">  #15 = Utf8               ()Ljava/lang/String;
-</span></span><span class="line"><span class="cl">  #16 = Utf8               setCompany
-</span></span><span class="line"><span class="cl">  #17 = Utf8               (Ljava/lang/String;)V
-</span></span><span class="line"><span class="cl">  #18 = Utf8               SourceFile
-</span></span><span class="line"><span class="cl">  #19 = Utf8               Company.java
-</span></span><span class="line"><span class="cl">  #20 = NameAndType        #7:#8          // &#34;&lt;init&gt;&#34;:()V
-</span></span><span class="line"><span class="cl">  #21 = NameAndType        #5:#6          // company:Ljava/lang/String;
-</span></span><span class="line"><span class="cl">  #22 = Utf8               cn/johnny/Company
-</span></span><span class="line"><span class="cl">  #23 = Utf8               java/lang/Object
-</span></span><span class="line"><span class="cl">{
-</span></span><span class="line"><span class="cl">  // 默认生成的无参构造
-</span></span><span class="line"><span class="cl">  public cn.johnny.Company();
-</span></span><span class="line"><span class="cl">    descriptor: ()V
-</span></span><span class="line"><span class="cl">	// 访问标志
-</span></span><span class="line"><span class="cl">    flags: ACC_PUBLIC
-</span></span><span class="line"><span class="cl">	// 方法的Code属性
-</span></span><span class="line"><span class="cl">    Code:
-</span></span><span class="line"><span class="cl">	  // 最大栈深度1，局部变量表槽数量1，入参数量1
-</span></span><span class="line"><span class="cl">      stack=1, locals=1, args_size=1
-</span></span><span class="line"><span class="cl">         0: aload_0 // 从本地变量表加载索引为0的变量，即this，压入栈顶
-</span></span><span class="line"><span class="cl">         1: invokespecial #1                  // Method java/lang/Object.&#34;&lt;init&gt;&#34;:()V
-</span></span><span class="line"><span class="cl">         4: return
-</span></span><span class="line"><span class="cl">	  // 源代码行数与字节码的偏移对照关系
-</span></span><span class="line"><span class="cl">      LineNumberTable:
-</span></span><span class="line"><span class="cl">        line 2: 0
-</span></span><span class="line"><span class="cl">	  // 方法的局部变量描述，用来表示this变量在这个方法字节码为0，长度5的作用域
-</span></span><span class="line"><span class="cl">      LocalVariableTable:
-</span></span><span class="line"><span class="cl">        Start  Length  Slot  Name   Signature
-</span></span><span class="line"><span class="cl">            0       5     0  this   Lcn/johnny/Company;
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">Classfile</span> <span class="o">/</span><span class="n">C</span><span class="p">:</span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Nascent</span><span class="o">/</span><span class="n">Desktop</span><span class="o">/</span><span class="n">Company</span><span class="o">.</span><span class="k">class</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Last</span> <span class="n">modified</span> <span class="mi">2022</span><span class="o">-</span><span class="mi">9</span><span class="o">-</span><span class="mi">14</span><span class="p">;</span> <span class="n">size</span> <span class="mi">525</span> <span class="n">bytes</span>
+</span></span><span class="line"><span class="cl">  <span class="n">MD5</span> <span class="n">checksum</span> <span class="n">d81f497e96a3bb6c605b6b4ff6ff16bd</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Compiled</span> <span class="n">from</span> <span class="s2">&#34;Company.java&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">public</span> <span class="k">class</span> <span class="n">cn</span><span class="o">.</span><span class="n">johnny</span><span class="o">.</span><span class="n">Company</span>
+</span></span><span class="line"><span class="cl">  <span class="o">//</span> <span class="err">次版本号</span>
+</span></span><span class="line"><span class="cl">  <span class="n">minor</span> <span class="n">version</span><span class="p">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">  <span class="o">//</span> <span class="err">主版本号</span>
+</span></span><span class="line"><span class="cl">  <span class="n">major</span> <span class="n">version</span><span class="p">:</span> <span class="mi">52</span>
+</span></span><span class="line"><span class="cl">  <span class="o">//</span> <span class="err">访问标志</span>
+</span></span><span class="line"><span class="cl">  <span class="n">flags</span><span class="p">:</span> <span class="n">ACC_PUBLIC</span><span class="p">,</span> <span class="n">ACC_SUPER</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">常量池</span>
+</span></span><span class="line"><span class="cl"><span class="n">Constant</span> <span class="n">pool</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#1 = Methodref          #4.#20         // java/lang/Object.&#34;&lt;init&gt;&#34;:()V</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#2 = Fieldref           #3.#21         // cn/johnny/Company.company:Ljava/lang/String;</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#3 = Class              #22            // cn/johnny/Company</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#4 = Class              #23            // java/lang/Object</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#5 = Utf8               company</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#6 = Utf8               Ljava/lang/String;</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#7 = Utf8               &lt;init&gt;</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#8 = Utf8               ()V</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#9 = Utf8               Code</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#10 = Utf8               LineNumberTable</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#11 = Utf8               LocalVariableTable</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#12 = Utf8               this</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#13 = Utf8               Lcn/johnny/Company;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#14 = Utf8               getCompany</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#15 = Utf8               ()Ljava/lang/String;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#16 = Utf8               setCompany</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#17 = Utf8               (Ljava/lang/String;)V</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#18 = Utf8               SourceFile</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#19 = Utf8               Company.java</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#20 = NameAndType        #7:#8          // &#34;&lt;init&gt;&#34;:()V</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#21 = NameAndType        #5:#6          // company:Ljava/lang/String;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#22 = Utf8               cn/johnny/Company</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">#23 = Utf8               java/lang/Object</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="o">//</span> <span class="err">默认生成的无参构造</span>
+</span></span><span class="line"><span class="cl">  <span class="n">public</span> <span class="n">cn</span><span class="o">.</span><span class="n">johnny</span><span class="o">.</span><span class="n">Company</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">descriptor</span><span class="p">:</span> <span class="p">()</span><span class="n">V</span>
+</span></span><span class="line"><span class="cl">	<span class="o">//</span> <span class="err">访问标志</span>
+</span></span><span class="line"><span class="cl">    <span class="n">flags</span><span class="p">:</span> <span class="n">ACC_PUBLIC</span>
+</span></span><span class="line"><span class="cl">	<span class="o">//</span> <span class="err">方法的</span><span class="n">Code属性</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Code</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	  <span class="o">//</span> <span class="err">最大栈深度</span><span class="mi">1</span><span class="err">，局部变量表槽数量</span><span class="mi">1</span><span class="err">，入参数量</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">      <span class="n">stack</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">locals</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">args_size</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">0</span><span class="p">:</span> <span class="n">aload_0</span> <span class="o">//</span> <span class="err">从本地变量表加载索引为</span><span class="mi">0</span><span class="err">的变量，即</span><span class="n">this</span><span class="err">，压入栈顶</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">1</span><span class="p">:</span> <span class="n">invokespecial</span> <span class="c1">#1                  // Method java/lang/Object.&#34;&lt;init&gt;&#34;:()V</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">4</span><span class="p">:</span> <span class="k">return</span>
+</span></span><span class="line"><span class="cl">	  <span class="o">//</span> <span class="err">源代码行数与字节码的偏移对照关系</span>
+</span></span><span class="line"><span class="cl">      <span class="n">LineNumberTable</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">line</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	  <span class="o">//</span> <span class="err">方法的局部变量描述，用来表示</span><span class="n">this变量在这个方法字节码为0</span><span class="err">，长度</span><span class="mi">5</span><span class="err">的作用域</span>
+</span></span><span class="line"><span class="cl">      <span class="n">LocalVariableTable</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Start</span>  <span class="n">Length</span>  <span class="n">Slot</span>  <span class="n">Name</span>   <span class="n">Signature</span>
+</span></span><span class="line"><span class="cl">            <span class="mi">0</span>       <span class="mi">5</span>     <span class="mi">0</span>  <span class="n">this</span>   <span class="n">Lcn</span><span class="o">/</span><span class="n">johnny</span><span class="o">/</span><span class="n">Company</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  public java.lang.String getCompany();
-</span></span><span class="line"><span class="cl">    descriptor: ()Ljava/lang/String;
-</span></span><span class="line"><span class="cl">    flags: ACC_PUBLIC
-</span></span><span class="line"><span class="cl">    Code:
-</span></span><span class="line"><span class="cl">      stack=1, locals=1, args_size=1
-</span></span><span class="line"><span class="cl">         0: aload_0
-</span></span><span class="line"><span class="cl">         1: getfield      #2                  // Field company:Ljava/lang/String;
-</span></span><span class="line"><span class="cl">         4: areturn
-</span></span><span class="line"><span class="cl">      LineNumberTable:
-</span></span><span class="line"><span class="cl">        line 6: 0
-</span></span><span class="line"><span class="cl">      LocalVariableTable:
-</span></span><span class="line"><span class="cl">        Start  Length  Slot  Name   Signature
-</span></span><span class="line"><span class="cl">            0       5     0  this   Lcn/johnny/Company;
+</span></span><span class="line"><span class="cl">  <span class="n">public</span> <span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="n">String</span> <span class="n">getCompany</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">descriptor</span><span class="p">:</span> <span class="p">()</span><span class="n">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">String</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">flags</span><span class="p">:</span> <span class="n">ACC_PUBLIC</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Code</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">stack</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">locals</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">args_size</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">0</span><span class="p">:</span> <span class="n">aload_0</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">1</span><span class="p">:</span> <span class="n">getfield</span>      <span class="c1">#2                  // Field company:Ljava/lang/String;</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">4</span><span class="p">:</span> <span class="n">areturn</span>
+</span></span><span class="line"><span class="cl">      <span class="n">LineNumberTable</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">line</span> <span class="mi">6</span><span class="p">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">      <span class="n">LocalVariableTable</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Start</span>  <span class="n">Length</span>  <span class="n">Slot</span>  <span class="n">Name</span>   <span class="n">Signature</span>
+</span></span><span class="line"><span class="cl">            <span class="mi">0</span>       <span class="mi">5</span>     <span class="mi">0</span>  <span class="n">this</span>   <span class="n">Lcn</span><span class="o">/</span><span class="n">johnny</span><span class="o">/</span><span class="n">Company</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  public void setCompany(java.lang.String);
-</span></span><span class="line"><span class="cl">    descriptor: (Ljava/lang/String;)V
-</span></span><span class="line"><span class="cl">    flags: ACC_PUBLIC
-</span></span><span class="line"><span class="cl">    Code:
-</span></span><span class="line"><span class="cl">      stack=2, locals=2, args_size=2
-</span></span><span class="line"><span class="cl">         0: aload_0
-</span></span><span class="line"><span class="cl">         1: aload_1
-</span></span><span class="line"><span class="cl">         2: putfield      #2                  // Field company:Ljava/lang/String;
-</span></span><span class="line"><span class="cl">         5: return
-</span></span><span class="line"><span class="cl">      LineNumberTable:
-</span></span><span class="line"><span class="cl">        line 10: 0
-</span></span><span class="line"><span class="cl">        line 11: 5
-</span></span><span class="line"><span class="cl">      LocalVariableTable:
-</span></span><span class="line"><span class="cl">        Start  Length  Slot  Name   Signature
-</span></span><span class="line"><span class="cl">            0       6     0  this   Lcn/johnny/Company;
-</span></span><span class="line"><span class="cl">            0       6     1 company   Ljava/lang/String;
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">SourceFile: &#34;Company.java&#34;
+</span></span><span class="line"><span class="cl">  <span class="n">public</span> <span class="n">void</span> <span class="n">setCompany</span><span class="p">(</span><span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="n">String</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">descriptor</span><span class="p">:</span> <span class="p">(</span><span class="n">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">String</span><span class="p">;)</span><span class="n">V</span>
+</span></span><span class="line"><span class="cl">    <span class="n">flags</span><span class="p">:</span> <span class="n">ACC_PUBLIC</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Code</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">stack</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">locals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">args_size</span><span class="o">=</span><span class="mi">2</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">0</span><span class="p">:</span> <span class="n">aload_0</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">1</span><span class="p">:</span> <span class="n">aload_1</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">2</span><span class="p">:</span> <span class="n">putfield</span>      <span class="c1">#2                  // Field company:Ljava/lang/String;</span>
+</span></span><span class="line"><span class="cl">         <span class="mi">5</span><span class="p">:</span> <span class="k">return</span>
+</span></span><span class="line"><span class="cl">      <span class="n">LineNumberTable</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">line</span> <span class="mi">10</span><span class="p">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">        <span class="n">line</span> <span class="mi">11</span><span class="p">:</span> <span class="mi">5</span>
+</span></span><span class="line"><span class="cl">      <span class="n">LocalVariableTable</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Start</span>  <span class="n">Length</span>  <span class="n">Slot</span>  <span class="n">Name</span>   <span class="n">Signature</span>
+</span></span><span class="line"><span class="cl">            <span class="mi">0</span>       <span class="mi">6</span>     <span class="mi">0</span>  <span class="n">this</span>   <span class="n">Lcn</span><span class="o">/</span><span class="n">johnny</span><span class="o">/</span><span class="n">Company</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mi">0</span>       <span class="mi">6</span>     <span class="mi">1</span> <span class="n">company</span>   <span class="n">Ljava</span><span class="o">/</span><span class="n">lang</span><span class="o">/</span><span class="ne">String</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">SourceFile</span><span class="p">:</span> <span class="s2">&#34;Company.java&#34;</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><div class="post-reward">
@@ -1075,13 +1081,13 @@
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/jvm/">JVM</a>,&nbsp;<a href="/tags/class/">class</a></section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/jvm/">JVM</a>,&nbsp;<a href="/tags/class/">Class</a></section>
         <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/posts/redis/redis%E7%BF%BB%E9%A1%B5%E6%89%AB%E6%8F%8F%E4%B9%8Bscan/" class="prev" rel="prev" title="Redis翻页扫描之Scan"><i class="fas fa-angle-left fa-fw"></i>Redis翻页扫描之Scan</a>
+    <div class="post-nav"><a href="/posts/rule-engine/test/" class="prev" rel="prev" title="Test"><i class="fas fa-angle-left fa-fw"></i>Test</a>
             <a href="/posts/tools/arthas%E7%AE%80%E6%98%8E%E6%8C%87%E5%8D%97/" class="next" rel="next" title="arthas使用简明指南">arthas使用简明指南<i class="fas fa-angle-right fa-fw"></i></a></div>
 </div>
 <div id="comments"><div id="valine" class="comment"></div><noscript>
@@ -1091,8 +1097,8 @@
         <div class="footer-container">
 	    <div class="footer-line">
 		    	<span id="run-time"></span>
-	    </div><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.0-DEV">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/yongqiangG" target="_blank">johnny</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+	    </div><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.127.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2022 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/yongqiangG" target="_blank">johnny</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer>
         </div>
