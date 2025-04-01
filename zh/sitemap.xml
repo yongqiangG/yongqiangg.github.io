@@ -2,52 +2,44 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/zh/posts/tech/</loc>
+    <loc>https://yongqiangg.github.io/zh/posts/tech/</loc>
     <lastmod>2025-04-01T22:29:32+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/zh/posts/</loc>
+    <loc>https://yongqiangg.github.io/zh/posts/</loc>
     <lastmod>2025-04-01T22:29:32+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/zh/categories/</loc>
+    <loc>https://yongqiangg.github.io/zh/categories/</loc>
     <lastmod>2025-04-01T22:29:32+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/zh/</loc>
+    <loc>https://yongqiangg.github.io/zh/</loc>
     <lastmod>2025-04-01T22:29:32+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/zh/categories/mysql/</loc>
+    <loc>https://yongqiangg.github.io/zh/categories/mysql/</loc>
     <lastmod>2025-04-01T22:29:32+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/zh/tags/mysql/</loc>
+    <loc>https://yongqiangg.github.io/zh/tags/mysql/</loc>
     <lastmod>2025-04-01T22:29:32+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/zh/posts/tech/mysql%E7%B4%A2%E5%BC%95/</loc>
+    <loc>https://yongqiangg.github.io/zh/posts/tech/mysql%E7%B4%A2%E5%BC%95/</loc>
     <lastmod>2025-04-01T22:29:32+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/zh/tags/</loc>
+    <loc>https://yongqiangg.github.io/zh/tags/</loc>
     <lastmod>2025-04-01T22:29:32+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/zh/categories/%E7%B4%A2%E5%BC%95/</loc>
+    <loc>https://yongqiangg.github.io/zh/categories/%E7%B4%A2%E5%BC%95/</loc>
     <lastmod>2025-04-01T22:29:32+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/zh/tags/%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8/</loc>
+    <loc>https://yongqiangg.github.io/zh/tags/%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8/</loc>
     <lastmod>2025-04-01T22:29:32+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/zh/archives/</loc>
+    <loc>https://yongqiangg.github.io/zh/archives/</loc>
   </url><url>
-    <loc>http://localhost:1313/zh/posts/life/</loc>
+    <loc>https://yongqiangg.github.io/zh/posts/life/</loc>
   </url><url>
-    <loc>http://localhost:1313/zh/posts/read/</loc>
+    <loc>https://yongqiangg.github.io/zh/posts/read/</loc>
   </url><url>
-    <loc>http://localhost:1313/zh/search/</loc>
+    <loc>https://yongqiangg.github.io/zh/search/</loc>
   </url><url>
-    <loc>http://localhost:1313/zh/categories/category-1/</loc>
-  </url><url>
-    <loc>http://localhost:1313/zh/categories/category-2/</loc>
-  </url><url>
-    <loc>http://localhost:1313/zh/series/</loc>
-  </url><url>
-    <loc>http://localhost:1313/zh/tags/tag-1/</loc>
-  </url><url>
-    <loc>http://localhost:1313/zh/tags/tag-2/</loc>
+    <loc>https://yongqiangg.github.io/zh/series/</loc>
   </url>
 </urlset>
