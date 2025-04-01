@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  <url>
-    <loc>https://example.org/posts/first-blog/</loc>
-    <lastmod>2025-04-01T21:25:55+08:00</lastmod>
-  </url><url>
-    <loc>https://example.org/</loc>
-    <lastmod>2025-04-01T21:25:55+08:00</lastmod>
-  </url><url>
-    <loc>https://example.org/posts/</loc>
-    <lastmod>2025-04-01T21:25:55+08:00</lastmod>
-  </url><url>
-    <loc>https://example.org/categories/</loc>
-  </url><url>
-    <loc>https://example.org/tags/</loc>
-  </url>
-</urlset>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <sitemap>
+    <loc>https://yongqiangg.github.io/zh/sitemap.xml</loc>
+    
+      <lastmod>2025-04-01T21:25:55+08:00</lastmod>
+    
+  </sitemap>
+  
+</sitemapindex>
