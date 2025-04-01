@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Category 1 on johnny&#39;s blog</title>
+    <link>http://localhost:1313/zh/categories/category-1/</link>
+    <description>Recent content in Category 1 on johnny&#39;s blog</description>
+    <generator>Hugo -- 0.146.0-DEV</generator>
+    <language>zh</language>
+    <lastBuildDate>Tue, 01 Apr 2025 22:29:32 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/zh/categories/category-1/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MySQL索引</title>
+      <link>http://localhost:1313/zh/posts/tech/mysql%E7%B4%A2%E5%BC%95/</link>
+      <pubDate>Tue, 01 Apr 2025 22:29:32 +0800</pubDate>
+      <guid>http://localhost:1313/zh/posts/tech/mysql%E7%B4%A2%E5%BC%95/</guid>
+      <description>&lt;!-- more --&gt;</description>
+    </item>
+  </channel>
+</rss>
