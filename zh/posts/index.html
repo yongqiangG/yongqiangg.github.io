@@ -29,34 +29,6 @@
         }
 
     </style>
-    <style>
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --theme: rgb(29, 30, 32);
-                --entry: rgb(46, 46, 51);
-                --primary: rgb(218, 218, 219);
-                --secondary: rgb(155, 156, 157);
-                --tertiary: rgb(65, 66, 68);
-                --content: rgb(196, 196, 197);
-                --code-block-bg: rgb(46, 46, 51);
-                --code-bg: rgb(55, 56, 62);
-                --border: rgb(51, 51, 51);
-            }
-
-            .list {
-                background: var(--theme);
-            }
-
-            .list:not(.dark)::-webkit-scrollbar-track {
-                background: 0 0;
-            }
-
-            .list:not(.dark)::-webkit-scrollbar-thumb {
-                border-color: var(--theme);
-            }
-        }
-
-    </style>
 </noscript><meta property="og:url" content="https://yongqiangg.github.io/zh/posts/">
   <meta property="og:site_name" content="johnny&#39;s blog">
   <meta property="og:title" content="📚 文章">
@@ -84,14 +56,10 @@
 </script>
 </head>
 
-<body class="list" id="top">
+<body class="list dark" id="top">
 <script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.body.classList.add('dark');
-    } else if (localStorage.getItem("pref-theme") === "light") {
+    if (localStorage.getItem("pref-theme") === "light") {
         document.body.classList.remove('dark')
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark');
     }
 
 </script>
@@ -171,38 +139,38 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">📚 文tech
+    <h2 class="entry-hint-parent">💻技术
     </h2>
   </header>
   <div class="entry-content">
-    <p>学如逆水行舟，不进则退。
+    <p>众里寻他千百度。蓦然回首，那人却在，灯火阑珊处。
 </p>
   </div>
-  <a class="entry-link" aria-label="post link to 📚 文tech" href="https://yongqiangg.github.io/zh/posts/tech/"></a>
+  <a class="entry-link" aria-label="post link to 💻技术" href="https://yongqiangg.github.io/zh/posts/tech/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">📚 文life
+    <h2 class="entry-hint-parent">⚽生活
     </h2>
   </header>
   <div class="entry-content">
-    <p>学如逆水行舟，不进则退。
+    <p>衣带渐宽终不悔，为伊消得人憔悴。
 </p>
   </div>
-  <a class="entry-link" aria-label="post link to 📚 文life" href="https://yongqiangg.github.io/zh/posts/life/"></a>
+  <a class="entry-link" aria-label="post link to ⚽生活" href="https://yongqiangg.github.io/zh/posts/life/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">📚 文read
+    <h2 class="entry-hint-parent">📙阅读
     </h2>
   </header>
   <div class="entry-content">
-    <p>学如逆水行舟，不进则退。
+    <p>江畔何人初见月？江月何年初照人？
 </p>
   </div>
-  <a class="entry-link" aria-label="post link to 📚 文read" href="https://yongqiangg.github.io/zh/posts/read/"></a>
+  <a class="entry-link" aria-label="post link to 📙阅读" href="https://yongqiangg.github.io/zh/posts/read/"></a>
 </article>
     </main>
     

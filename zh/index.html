@@ -30,34 +30,6 @@
         }
 
     </style>
-    <style>
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --theme: rgb(29, 30, 32);
-                --entry: rgb(46, 46, 51);
-                --primary: rgb(218, 218, 219);
-                --secondary: rgb(155, 156, 157);
-                --tertiary: rgb(65, 66, 68);
-                --content: rgb(196, 196, 197);
-                --code-block-bg: rgb(46, 46, 51);
-                --code-bg: rgb(55, 56, 62);
-                --border: rgb(51, 51, 51);
-            }
-
-            .list {
-                background: var(--theme);
-            }
-
-            .list:not(.dark)::-webkit-scrollbar-track {
-                background: 0 0;
-            }
-
-            .list:not(.dark)::-webkit-scrollbar-thumb {
-                border-color: var(--theme);
-            }
-        }
-
-    </style>
 </noscript><meta property="og:url" content="https://yongqiangg.github.io/zh/">
   <meta property="og:site_name" content="johnny&#39;s blog">
   <meta property="og:title" content="johnny&#39;s blog">
@@ -77,20 +49,16 @@
   "description": "这是一个纯粹的博客......",
   "logo": "https://yongqiangg.github.io/img/logo.gif",
   "sameAs": [
-      "https://github.com/tianshaohan", "https://space.bilibili.com/395280439", "img/qq.jpg", "mailto:shaohan.tian@foxmail.com", "index.xml"
+      "https://github.com/yongqiangG", "https://bilibili.com", "img/qq.jpg", "mailto:874891756@qq.com", "index.xml"
   ]
 }
 </script>
 </head>
 
-<body class="list" id="top">
+<body class="list dark" id="top">
 <script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.body.classList.add('dark');
-    } else if (localStorage.getItem("pref-theme") === "light") {
+    if (localStorage.getItem("pref-theme") === "light") {
         document.body.classList.remove('dark')
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark');
     }
 
 </script>
@@ -162,7 +130,7 @@
             height="280" width="290" />
         <h1>独立之精神，自由之思想</h1>
         <span>👏🏼欢迎光临寒舍</br>👇联系方式</span><div class="social-icons" >
-    <a href="https://github.com/tianshaohan" target="_blank" rel="noopener noreferrer me"
+    <a href="https://github.com/yongqiangG" target="_blank" rel="noopener noreferrer me"
         title="Github">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
     stroke-linecap="round" stroke-linejoin="round">
@@ -171,7 +139,7 @@
     </path>
 </svg>
     </a>
-    <a href="https://space.bilibili.com/395280439" target="_blank" rel="noopener noreferrer me"
+    <a href="https://bilibili.com" target="_blank" rel="noopener noreferrer me"
         title="Bilibili">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
     stroke-linecap="round">
@@ -191,7 +159,7 @@
     </path>
 </svg>
     </a>
-    <a href="mailto:shaohan.tian@foxmail.com" target="_blank" rel="noopener noreferrer me"
+    <a href="mailto:874891756@qq.com" target="_blank" rel="noopener noreferrer me"
         title="Email">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" fill="none" stroke="currentColor" stroke-width="2"
     stroke-linecap="round" stroke-linejoin="round">
@@ -221,9 +189,9 @@
                     📕阅读
                 </span>
             </a>
-            <a class="button" href="posts/life" rel="noopener" title="🏖生活">
+            <a class="button" href="posts/life" rel="noopener" title="⚽生活">
                 <span class="button-inner">
-                    🏖生活
+                    ⚽生活
                 </span>
             </a>
         </div>
