@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>全链路追踪 on johnny&#39;s blog</title>
+    <link>https://yongqiangg.github.io/zh/tags/%E5%85%A8%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA/</link>
+    <description>Recent content in 全链路追踪 on johnny&#39;s blog</description>
+    <generator>Hugo -- 0.146.0-DEV</generator>
+    <language>zh</language>
+    <lastBuildDate>Mon, 07 Apr 2025 10:20:01 +0800</lastBuildDate>
+    <atom:link href="https://yongqiangg.github.io/zh/tags/%E5%85%A8%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>全链路id的实现</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E5%85%A8%E9%93%BE%E8%B7%AFid%E7%9A%84%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Mon, 07 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E5%85%A8%E9%93%BE%E8%B7%AFid%E7%9A%84%E5%AE%9E%E7%8E%B0/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;原本单个系统的交互中，单个request_id的实现没问题。&lt;/p&gt;
+&lt;p&gt;涉及多个系统的交互，一旦出问题，每个环境都要定位一遍请求。&lt;/p&gt;
+&lt;h2 id=&#34;问题&#34;&gt;问题&lt;/h2&gt;
+&lt;p&gt;如何更好的在分布式环境下追踪请求&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
