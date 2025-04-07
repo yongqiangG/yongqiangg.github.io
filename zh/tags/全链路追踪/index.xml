@@ -14,10 +14,14 @@
       <pubDate>Mon, 07 Apr 2025 10:20:01 +0800</pubDate>
       <guid>https://yongqiangg.github.io/zh/posts/tech/%E5%85%A8%E9%93%BE%E8%B7%AFid%E7%9A%84%E5%AE%9E%E7%8E%B0/</guid>
       <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
-&lt;p&gt;原本单个系统的交互中，单个request_id的实现没问题。&lt;/p&gt;
-&lt;p&gt;涉及多个系统的交互，一旦出问题，每个环境都要定位一遍请求。&lt;/p&gt;
-&lt;h2 id=&#34;问题&#34;&gt;问题&lt;/h2&gt;
-&lt;p&gt;如何更好的在分布式环境下追踪请求&lt;/p&gt;</description>
+&lt;p&gt;原本单个系统的交互中，当客户端需要查找问题时，可以拿着服务端生成的request_id来咨询。&lt;/p&gt;
+&lt;p&gt;实现方式：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;定义日志切面，环绕指定基类&lt;/li&gt;
+&lt;li&gt;生成uuid，放置到日志的mdc&lt;/li&gt;
+&lt;li&gt;返回给到客户端&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;在这种实现下，单个系统的问题排查没问题。但是一旦涉及多个系统的交互，一旦出问题，每个环境都要定位一遍请求，设置到问题的流转，人员的流转。&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>
