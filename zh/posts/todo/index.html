@@ -5,22 +5,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>MySQL索引 | johnny&#39;s blog</title>
-<meta name="keywords" content="MySQL索引使用">
-<meta name="description" content="讲讲MySQL索引的理解
-段落2
-段落3
-
-
-1
-
-
-code
-
+<title>📌还愿中... | johnny&#39;s blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="
+ 全链路id的实现
+ MySQL相关
 
 ">
-<meta name="author" content="johnny">
-<link rel="canonical" href="https://yongqiangg.github.io/zh/posts/tech/mysql%E7%B4%A2%E5%BC%95/">
+<meta name="author" content="Shaohan Tian">
+<link rel="canonical" href="https://yongqiangg.github.io/zh/posts/todo/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css" integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF&#43;13Dyqob6ASlTrTye8=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://yongqiangg.github.io/img/logo.gif">
 <link rel="icon" type="image/png" sizes="16x16" href="https://yongqiangg.github.io/img/logo.gif">
@@ -29,7 +22,8 @@ code
 <link rel="mask-icon" href="https://yongqiangg.github.io/logo.gif">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="https://yongqiangg.github.io/zh/posts/tech/mysql%E7%B4%A2%E5%BC%95/">
+<link rel="alternate" type="application/rss+xml" href="https://yongqiangg.github.io/zh/posts/todo/index.xml">
+<link rel="alternate" hreflang="zh" href="https://yongqiangg.github.io/zh/posts/todo/">
 <noscript>
     <style>
         #theme-toggle,
@@ -38,31 +32,15 @@ code
         }
 
     </style>
-</noscript><meta property="og:url" content="https://yongqiangg.github.io/zh/posts/tech/mysql%E7%B4%A2%E5%BC%95/">
+</noscript><meta property="og:url" content="https://yongqiangg.github.io/zh/posts/todo/">
   <meta property="og:site_name" content="johnny&#39;s blog">
-  <meta property="og:title" content="MySQL索引">
-  <meta property="og:description" content="讲讲MySQL索引的理解 段落2 段落3 1 code ">
+  <meta property="og:title" content="📌还愿中...">
+  <meta property="og:description" content=" 全链路id的实现 MySQL相关 ">
   <meta property="og:locale" content="zh">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2025-04-01T22:29:32+08:00">
-    <meta property="article:modified_time" content="2025-04-01T22:29:32+08:00">
-    <meta property="article:tag" content="MySQL">
-    <meta property="article:tag" content="索引使用">
+  <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MySQL索引">
-<meta name="twitter:description" content="讲讲MySQL索引的理解
-段落2
-段落3
-
-
-1
-
-
-code
-
-
-">
+<meta name="twitter:title" content="📌还愿中...">
+<meta name="twitter:description" content="这是一个纯粹的博客......">
 
 
 <script type="application/ld+json">
@@ -79,54 +57,15 @@ code
     {
       "@type": "ListItem",
       "position":  2 ,
-      "name": "💻技术",
-      "item": "https://yongqiangg.github.io/zh/posts/tech/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  3 ,
-      "name": "MySQL索引",
-      "item": "https://yongqiangg.github.io/zh/posts/tech/mysql%E7%B4%A2%E5%BC%95/"
+      "name": "📌还愿中...",
+      "item": "https://yongqiangg.github.io/zh/posts/todo/"
     }
   ]
 }
 </script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "MySQL索引",
-  "name": "MySQL索引",
-  "description": "讲讲MySQL索引的理解 段落2 段落3 1 code ",
-  "keywords": [
-    "MySQL索引使用"
-  ],
-  "articleBody": "讲讲MySQL索引的理解 段落2 段落3 1 code ",
-  "wordCount" : "20",
-  "inLanguage": "zh",
-  "datePublished": "2025-04-01T22:29:32+08:00",
-  "dateModified": "2025-04-01T22:29:32+08:00",
-  "author":[{
-    "@type": "Person",
-    "name": "johnny"
-  }],
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://yongqiangg.github.io/zh/posts/tech/mysql%E7%B4%A2%E5%BC%95/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "johnny's blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://yongqiangg.github.io/img/logo.gif"
-    }
-  }
-}
-</script>
 </head>
 
-<body class=" dark" id="top">
+<body class="list dark" id="top">
 <script>
     if (localStorage.getItem("pref-theme") === "light") {
         document.body.classList.remove('dark')
@@ -195,71 +134,31 @@ code
         </ul>
     </nav>
 </header>
-<main class="main">
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://yongqiangg.github.io/zh/">主页</a>&nbsp;»&nbsp;<a href="https://yongqiangg.github.io/zh/posts/">📚 文章</a></div>
+  <h1>
+    📌还愿中...
+  </h1>
+</header>
+<div class="post-content"><ul>
+<li><input disabled="" type="checkbox"> 全链路id的实现</li>
+<li><input disabled="" type="checkbox"> MySQL相关</li>
+</ul>
+<!-- more -->
 
-<article class="post-single">
-  <header class="post-header">
-    <div class="breadcrumbs"><a href="https://yongqiangg.github.io/zh/">主页</a>&nbsp;»&nbsp;<a href="https://yongqiangg.github.io/zh/posts/">📚 文章</a>&nbsp;»&nbsp;<a href="https://yongqiangg.github.io/zh/posts/tech/">💻技术</a></div>
-    <h1 class="post-title entry-hint-parent">
-      MySQL索引
-    </h1>
-    <div class="post-meta"><span title='2025-04-01 22:29:32 +0800 CST'>2025-04-01</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny
 
 </div>
-  </header> <div class="toc">
-    <details  open>
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">目录</span>
-        </summary>
 
-        <div class="inner"><ul>
-                <li>
-                    <a href="#%e8%ae%b2%e8%ae%b2mysql%e7%b4%a2%e5%bc%95%e7%9a%84%e7%90%86%e8%a7%a3" aria-label="讲讲MySQL索引的理解">讲讲MySQL索引的理解</a><ul>
-                        
-                <li>
-                    <a href="#%e6%ae%b5%e8%90%bd2" aria-label="段落2">段落2</a><ul>
-                        
-                <li>
-                    <a href="#%e6%ae%b5%e8%90%bd3" aria-label="段落3">段落3</a>
-                </li>
-            </ul>
-            </li>
-            </ul>
-            </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
-  <div class="post-content"><h1 id="讲讲mysql索引的理解">讲讲MySQL索引的理解<a hidden class="anchor" aria-hidden="true" href="#讲讲mysql索引的理解">#</a></h1>
-<h2 id="段落2">段落2<a hidden class="anchor" aria-hidden="true" href="#段落2">#</a></h2>
-<h3 id="段落3">段落3<a hidden class="anchor" aria-hidden="true" href="#段落3">#</a></h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">code
-</span></span></code></pre></td></tr></table>
-</div>
-</div>
-
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">MySQL索引
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>讲讲MySQL索引的理解 段落2 段落3 1 code </p>
   </div>
-
-  <footer class="post-footer">
-    <ul class="post-tags">
-      <li><a href="https://yongqiangg.github.io/zh/tags/mysql/">MySQL</a></li>
-      <li><a href="https://yongqiangg.github.io/zh/tags/%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8/">索引使用</a></li>
-    </ul>
-<nav class="paginav">
-  <a class="next" href="https://yongqiangg.github.io/zh/posts/todo/mysql%E7%B4%A2%E5%BC%95/">
-    <span class="title">下一页 »</span>
-    <br>
-    <span>MySQL索引</span>
-  </a>
-</nav>
-
-  </footer>
+  <footer class="entry-footer"><span title='2025-04-01 22:29:32 +0800 CST'>2025-04-01</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
+  <a class="entry-link" aria-label="post link to MySQL索引" href="https://yongqiangg.github.io/zh/posts/todo/mysql%E7%B4%A2%E5%BC%95/"></a>
 </article>
     </main>
     
@@ -331,53 +230,6 @@ code
         }
     })
 
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
-        const container = codeblock.parentNode.parentNode;
-
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = '复制';
-
-        function copyingDone() {
-            copybutton.innerHTML = '已复制！';
-            setTimeout(() => {
-                copybutton.innerHTML = '复制';
-            }, 2000);
-        }
-
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
-        });
-
-        if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
-        } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
-        } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
-        }
-    });
 </script>
 </body>
 
