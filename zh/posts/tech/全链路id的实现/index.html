@@ -97,8 +97,8 @@
   "keywords": [
     "全链路id"
   ],
-  "articleBody": "背景 原本单个系统的交互中，当客户端需要查找问题时，可以拿着服务端生成的request_id来咨询。\n实现方式：\n定义日志切面，环绕指定基类 生成uuid，放置到日志的mdc 返回给到客户端 在这种实现下，单个系统的问题排查没问题。但是一旦涉及多个系统的交互，一旦出问题，每个环境都要定位一遍请求，设置到问题的流转，人员的流转。\n问题 如何提供一个统一的方式，输入一个request_id即可输出整个链路的请求日志？\n方案 请求头传递request_id。\n逻辑：没有request_id就生成id，有的话直接获取。\n引入方式：starter\n总结 怎么在线程池中继续传递request_id?\n",
-  "wordCount" : "283",
+  "articleBody": "背景 原本单个系统的交互中，当客户端需要查找问题时，可以拿着服务端生成的request_id来咨询。\n实现方式：\n定义日志切面，环绕指定基类 生成uuid，放置到日志的mdc 返回给到客户端 在这种实现下，单个系统的问题排查没问题。但是一旦涉及多个系统的交互，一旦出问题，每个环境都要定位一遍请求，设置到问题的流转，人员的流转。\n问题 如何提供一个统一的方式，输入一个request_id即可输出整个链路的请求日志？\n方案 提供SDK，跨服务之间在请求头传递request_id。\n逻辑：没有request_id就生成id，有的话直接获取，request_id绑定threadLocal。\n引出新的问题：\n子线程中无法直接获取request_id，threadLocal与线程绑定。\n1 2 3 4 5 6 7 ThreadLocal\u003cString\u003e threadLocal = new ThreadLocal\u003c\u003e(); threadLocal.set(\"123\"); System.out.println(threadLocal.get()); new Thread(() -\u003e { System.out.println(threadLocal.get()); // 此处无法获取threadLocal }).start(); 解决：\n使用InheritableThreadLocal可以解决子线程继承数据的问题，但是项目中往往会使用线程池，而线程池中的线程是复用的，这时候InheritableThreadLocal就会导致数据错乱问题，因为InheritableThreadLocal只在线程创建初次复制数据。\n再次解决：\n使用TransmittableThreadLocal，由阿里开源的方案。将数据上下文传递的粒度从线程创建级别调整到任务执行前后，执行前设置，执行后清除。\n总结 跨服务之间通过请求头传递request_id。 由于request_id绑定在线程，在多线程环境下，子线程无法继承父线程的threadLocal。 通过加强版的threadLocal——TransmittableThreadLocal解决线程池中线程的上下文传递和清理 ",
+  "wordCount" : "723",
   "inLanguage": "zh",
   "datePublished": "2025-04-07T10:20:01+08:00",
   "dateModified": "2025-04-07T10:20:01+08:00",
@@ -199,7 +199,7 @@
     <h1 class="post-title entry-hint-parent">
       全链路id的实现
     </h1>
-    <div class="post-meta"><span title='2025-04-07 10:20:01 +0800 CST'>2025-04-07</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny
+    <div class="post-meta"><span title='2025-04-07 10:20:01 +0800 CST'>2025-04-07</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;johnny
 
 </div>
   </header> <div class="toc">
@@ -235,11 +235,40 @@
 <h2 id="问题">问题<a hidden class="anchor" aria-hidden="true" href="#问题">#</a></h2>
 <p>如何提供一个统一的方式，输入一个request_id即可输出整个链路的请求日志？</p>
 <h2 id="方案">方案<a hidden class="anchor" aria-hidden="true" href="#方案">#</a></h2>
-<p>请求头传递request_id。</p>
-<p>逻辑：没有request_id就生成id，有的话直接获取。</p>
-<p>引入方式：starter</p>
+<p>提供SDK，跨服务之间在请求头传递request_id。</p>
+<p>逻辑：没有request_id就生成id，有的话直接获取，request_id绑定threadLocal。</p>
+<p><strong>引出新的问题：</strong></p>
+<p>子线程中无法直接获取request_id，threadLocal与线程绑定。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="w">		</span><span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">threadLocal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ThreadLocal</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="n">threadLocal</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="s">&#34;123&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">threadLocal</span><span class="p">.</span><span class="na">get</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="k">new</span><span class="w"> </span><span class="n">Thread</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">threadLocal</span><span class="p">.</span><span class="na">get</span><span class="p">());</span><span class="w"> </span><span class="c1">// 此处无法获取threadLocal</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">}).</span><span class="na">start</span><span class="p">();</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>解决：</strong></p>
+<p>使用<strong>InheritableThreadLocal</strong>可以解决子线程继承数据的问题，但是项目中往往会使用线程池，而线程池中的线程是复用的，这时候InheritableThreadLocal就<strong>会导致数据错乱问题</strong>，因为InheritableThreadLocal<strong>只在线程创建初次复制数据</strong>。</p>
+<p><strong>再次解决：</strong></p>
+<p>使用<strong>TransmittableThreadLocal</strong>，由阿里开源的方案。将数据上下文传递的粒度从线程创建级别调整到任务执行前后，执行前设置，执行后清除。</p>
 <h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
-<p>怎么在线程池中继续传递request_id?</p>
+<ul>
+<li>跨服务之间通过请求头传递request_id。</li>
+<li>由于request_id绑定在线程，在多线程环境下，子线程无法继承父线程的threadLocal。</li>
+<li>通过加强版的threadLocal——TransmittableThreadLocal解决线程池中线程的上下文传递和清理</li>
+</ul>
 
 
   </div>
