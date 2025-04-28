@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>积分平台之一[整体架构] | johnny&#39;s blog</title>
+<meta name="keywords" content="积分平台, 整体架构">
+<meta name="description" content="一、业务架构
+处理会员积分、账户管理和第三方平台集成。
+1、账户管理
+
+区分普通账号和品牌账号，提供多维度的业务构建基础
+按照账号分库分表
+
+2、积分管理
+
+支持多种积分发放场景，单个、批量
+支持积分余额查询，明细查询
+实现积分风控，每日限额，大额告警
+实现积分过期
+
+3、用户管理
+
+用户基本信息查询
+用户合并、解绑
+用户积分同步
+
+4、第三方模块继承
+
+电商平台会员等级、积分打通
+下游品牌打通
+
+二、技术架构
+1、整体框架
+分层架构：采用经典的控制层、服务层、数据访问层设计">
+<meta name="author" content="johnny">
+<link rel="canonical" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%80%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css" integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF&#43;13Dyqob6ASlTrTye8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yongqiangg.github.io/img/logo.gif">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yongqiangg.github.io/img/logo.gif">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yongqiangg.github.io/img/logo.gif">
+<link rel="apple-touch-icon" href="https://yongqiangg.github.io/logo.gif">
+<link rel="mask-icon" href="https://yongqiangg.github.io/logo.gif">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%80%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%80%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/">
+  <meta property="og:site_name" content="johnny&#39;s blog">
+  <meta property="og:title" content="积分平台之一[整体架构]">
+  <meta property="og:description" content="一、业务架构 处理会员积分、账户管理和第三方平台集成。
+1、账户管理 区分普通账号和品牌账号，提供多维度的业务构建基础 按照账号分库分表 2、积分管理 支持多种积分发放场景，单个、批量 支持积分余额查询，明细查询 实现积分风控，每日限额，大额告警 实现积分过期 3、用户管理 用户基本信息查询 用户合并、解绑 用户积分同步 4、第三方模块继承 电商平台会员等级、积分打通 下游品牌打通 二、技术架构 1、整体框架 分层架构：采用经典的控制层、服务层、数据访问层设计">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-04-28T10:20:01+08:00">
+    <meta property="article:modified_time" content="2025-04-28T10:20:01+08:00">
+    <meta property="article:tag" content="积分平台">
+    <meta property="article:tag" content="整体架构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="积分平台之一[整体架构]">
+<meta name="twitter:description" content="一、业务架构
+处理会员积分、账户管理和第三方平台集成。
+1、账户管理
+
+区分普通账号和品牌账号，提供多维度的业务构建基础
+按照账号分库分表
+
+2、积分管理
+
+支持多种积分发放场景，单个、批量
+支持积分余额查询，明细查询
+实现积分风控，每日限额，大额告警
+实现积分过期
+
+3、用户管理
+
+用户基本信息查询
+用户合并、解绑
+用户积分同步
+
+4、第三方模块继承
+
+电商平台会员等级、积分打通
+下游品牌打通
+
+二、技术架构
+1、整体框架
+分层架构：采用经典的控制层、服务层、数据访问层设计">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "📚 文章",
+      "item": "https://yongqiangg.github.io/zh/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "💻技术",
+      "item": "https://yongqiangg.github.io/zh/posts/tech/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "积分平台之一[整体架构]",
+      "item": "https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%80%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "积分平台之一[整体架构]",
+  "name": "积分平台之一[整体架构]",
+  "description": "一、业务架构 处理会员积分、账户管理和第三方平台集成。\n1、账户管理 区分普通账号和品牌账号，提供多维度的业务构建基础 按照账号分库分表 2、积分管理 支持多种积分发放场景，单个、批量 支持积分余额查询，明细查询 实现积分风控，每日限额，大额告警 实现积分过期 3、用户管理 用户基本信息查询 用户合并、解绑 用户积分同步 4、第三方模块继承 电商平台会员等级、积分打通 下游品牌打通 二、技术架构 1、整体框架 分层架构：采用经典的控制层、服务层、数据访问层设计\n",
+  "keywords": [
+    "积分平台", "整体架构"
+  ],
+  "articleBody": "一、业务架构 处理会员积分、账户管理和第三方平台集成。\n1、账户管理 区分普通账号和品牌账号，提供多维度的业务构建基础 按照账号分库分表 2、积分管理 支持多种积分发放场景，单个、批量 支持积分余额查询，明细查询 实现积分风控，每日限额，大额告警 实现积分过期 3、用户管理 用户基本信息查询 用户合并、解绑 用户积分同步 4、第三方模块继承 电商平台会员等级、积分打通 下游品牌打通 二、技术架构 1、整体框架 分层架构：采用经典的控制层、服务层、数据访问层设计\n缓存架构：本地缓存+分布式缓存\n2、基础框架 核心框架：Spring Boot\nORM框架：JFinal\n数据库：MySQL\n缓存：Redis\n连接池：Hikari\n日志框架：logback\n其他工具：Guava、Apache Commons、Hutool\n",
+  "wordCount" : "328",
+  "inLanguage": "zh",
+  "datePublished": "2025-04-28T10:20:01+08:00",
+  "dateModified": "2025-04-28T10:20:01+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "johnny"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%80%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "johnny's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yongqiangg.github.io/img/logo.gif"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://yongqiangg.github.io/zh/" accesskey="h" title="johnny&#39;s blog (Alt + H)">johnny&#39;s blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://yongqiangg.github.io/zh/search" title="🔍搜索 (Alt &#43; /)" accesskey=/>
+                    <span>🔍搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yongqiangg.github.io/zh/" title="🏠主页">
+                    <span>🏠主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yongqiangg.github.io/zh/posts" title="📚文章">
+                    <span>📚文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yongqiangg.github.io/zh/archives" title="⏱时间轴">
+                    <span>⏱时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yongqiangg.github.io/zh/tags" title="🔖标签">
+                    <span>🔖标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yongqiangg.github.io/zh/about" title="🙋🏻‍♂️关于">
+                    <span>🙋🏻‍♂️关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://yongqiangg.github.io/zh/">主页</a>&nbsp;»&nbsp;<a href="https://yongqiangg.github.io/zh/posts/">📚 文章</a>&nbsp;»&nbsp;<a href="https://yongqiangg.github.io/zh/posts/tech/">💻技术</a></div>
+    <h1 class="post-title entry-hint-parent">
+      积分平台之一[整体架构]
+    </h1>
+    <div class="post-meta"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e4%b8%80%e4%b8%9a%e5%8a%a1%e6%9e%b6%e6%9e%84" aria-label="一、业务架构">一、业务架构</a><ul>
+                        
+                <li>
+                    <a href="#1%e8%b4%a6%e6%88%b7%e7%ae%a1%e7%90%86" aria-label="1、账户管理">1、账户管理</a></li>
+                <li>
+                    <a href="#2%e7%a7%af%e5%88%86%e7%ae%a1%e7%90%86" aria-label="2、积分管理">2、积分管理</a></li>
+                <li>
+                    <a href="#3%e7%94%a8%e6%88%b7%e7%ae%a1%e7%90%86" aria-label="3、用户管理">3、用户管理</a></li>
+                <li>
+                    <a href="#4%e7%ac%ac%e4%b8%89%e6%96%b9%e6%a8%a1%e5%9d%97%e7%bb%a7%e6%89%bf" aria-label="4、第三方模块继承">4、第三方模块继承</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e4%ba%8c%e6%8a%80%e6%9c%af%e6%9e%b6%e6%9e%84" aria-label="二、技术架构">二、技术架构</a><ul>
+                        
+                <li>
+                    <a href="#1%e6%95%b4%e4%bd%93%e6%a1%86%e6%9e%b6" aria-label="1、整体框架">1、整体框架</a></li>
+                <li>
+                    <a href="#2%e5%9f%ba%e7%a1%80%e6%a1%86%e6%9e%b6" aria-label="2、基础框架">2、基础框架</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="一业务架构">一、业务架构<a hidden class="anchor" aria-hidden="true" href="#一业务架构">#</a></h2>
+<p>处理会员积分、账户管理和第三方平台集成。</p>
+<h3 id="1账户管理">1、账户管理<a hidden class="anchor" aria-hidden="true" href="#1账户管理">#</a></h3>
+<ul>
+<li>区分普通账号和品牌账号，提供多维度的业务构建基础</li>
+<li>按照账号分库分表</li>
+</ul>
+<h3 id="2积分管理">2、积分管理<a hidden class="anchor" aria-hidden="true" href="#2积分管理">#</a></h3>
+<ul>
+<li>支持多种积分发放场景，单个、批量</li>
+<li>支持积分余额查询，明细查询</li>
+<li>实现积分风控，每日限额，大额告警</li>
+<li>实现积分过期</li>
+</ul>
+<h3 id="3用户管理">3、用户管理<a hidden class="anchor" aria-hidden="true" href="#3用户管理">#</a></h3>
+<ul>
+<li>用户基本信息查询</li>
+<li>用户合并、解绑</li>
+<li>用户积分同步</li>
+</ul>
+<h3 id="4第三方模块继承">4、第三方模块继承<a hidden class="anchor" aria-hidden="true" href="#4第三方模块继承">#</a></h3>
+<ul>
+<li>电商平台会员等级、积分打通</li>
+<li>下游品牌打通</li>
+</ul>
+<h2 id="二技术架构">二、技术架构<a hidden class="anchor" aria-hidden="true" href="#二技术架构">#</a></h2>
+<h3 id="1整体框架">1、整体框架<a hidden class="anchor" aria-hidden="true" href="#1整体框架">#</a></h3>
+<p>分层架构：采用经典的控制层、服务层、数据访问层设计</p>
+<p>缓存架构：本地缓存+分布式缓存</p>
+<h3 id="2基础框架">2、基础框架<a hidden class="anchor" aria-hidden="true" href="#2基础框架">#</a></h3>
+<p>核心框架：Spring Boot</p>
+<p>ORM框架：JFinal</p>
+<p>数据库：MySQL</p>
+<p>缓存：Redis</p>
+<p>连接池：Hikari</p>
+<p>日志框架：logback</p>
+<p>其他工具：Guava、Apache Commons、Hutool</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://yongqiangg.github.io/zh/tags/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0/">积分平台</a></li>
+      <li><a href="https://yongqiangg.github.io/zh/tags/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/">整体架构</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E7%A7%AF%E5%88%86%E5%8A%A0%E5%87%8F/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>积分平台之二[积分加减]</span>
+  </a>
+  <a class="next" href="https://yongqiangg.github.io/zh/posts/tech/%E5%85%A8%E9%93%BE%E8%B7%AFid%E7%9A%84%E5%AE%9E%E7%8E%B0/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>全链路id的实现</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://yongqiangg.github.io/zh/">johnny&#39;s blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
