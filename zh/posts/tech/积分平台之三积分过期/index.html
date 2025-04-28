@@ -5,43 +5,23 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>积分平台之二[积分加减] | johnny&#39;s blog</title>
+<title>积分平台之三[积分过期] | johnny&#39;s blog</title>
 <meta name="keywords" content="积分平台, 积分加减">
 <meta name="description" content="背景
-
-用于商家积分兑换商品活动
-订单送积分
-营销送积分
-
-实现
+积分过期是一个常见需求，常见的如先进先出模型，另外需要允许客户端传入过期时间
+设计
 要求
 
-不允许超扣
-需要幂等，应对网络问题和重复提交等情况
-需要高性能
-需要风控，避免薅羊毛
-针对锁单需要支持积分预扣
-针对退单需要积分回滚
+允许外部定义积分规则（相对时间和绝对时间）
+允许外部传入过期时间，如没有传入则默认采用规则计算
+过期积分不允许使用
+年末海量过期考虑性能
 
-步骤
+实现
 
-用户校验
-余额校验
-用户限额校验（基于redis累加，计算剩余可赠送积分值）
-调用存储过程
-
-用户余额校验
-加锁（MySQL lock 锁定用户id）
-写入积分日志（开启事务）
-更新用户余额
-
-
-
-其他要求
-如何避免超扣
-MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可以使用一定积分，后面再来归还积分。">
+过期积分实现">
 <meta name="author" content="johnny">
-<link rel="canonical" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E7%A7%AF%E5%88%86%E5%8A%A0%E5%87%8F/">
+<link rel="canonical" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%89%E7%A7%AF%E5%88%86%E8%BF%87%E6%9C%9F/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css" integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF&#43;13Dyqob6ASlTrTye8=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://yongqiangg.github.io/img/logo.gif">
 <link rel="icon" type="image/png" sizes="16x16" href="https://yongqiangg.github.io/img/logo.gif">
@@ -50,7 +30,7 @@ MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可�
 <link rel="mask-icon" href="https://yongqiangg.github.io/logo.gif">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E7%A7%AF%E5%88%86%E5%8A%A0%E5%87%8F/">
+<link rel="alternate" hreflang="zh" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%89%E7%A7%AF%E5%88%86%E8%BF%87%E6%9C%9F/">
 <noscript>
     <style>
         #theme-toggle,
@@ -59,10 +39,11 @@ MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可�
         }
 
     </style>
-</noscript><meta property="og:url" content="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E7%A7%AF%E5%88%86%E5%8A%A0%E5%87%8F/">
+</noscript><meta property="og:url" content="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%89%E7%A7%AF%E5%88%86%E8%BF%87%E6%9C%9F/">
   <meta property="og:site_name" content="johnny&#39;s blog">
-  <meta property="og:title" content="积分平台之二[积分加减]">
-  <meta property="og:description" content="背景 用于商家积分兑换商品活动 订单送积分 营销送积分 实现 要求 不允许超扣 需要幂等，应对网络问题和重复提交等情况 需要高性能 需要风控，避免薅羊毛 针对锁单需要支持积分预扣 针对退单需要积分回滚 步骤 用户校验 余额校验 用户限额校验（基于redis累加，计算剩余可赠送积分值） 调用存储过程 用户余额校验 加锁（MySQL lock 锁定用户id） 写入积分日志（开启事务） 更新用户余额 其他要求 如何避免超扣 MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可以使用一定积分，后面再来归还积分。">
+  <meta property="og:title" content="积分平台之三[积分过期]">
+  <meta property="og:description" content="背景 积分过期是一个常见需求，常见的如先进先出模型，另外需要允许客户端传入过期时间
+设计 要求 允许外部定义积分规则（相对时间和绝对时间） 允许外部传入过期时间，如没有传入则默认采用规则计算 过期积分不允许使用 年末海量过期考虑性能 实现 过期积分实现">
   <meta property="og:locale" content="zh">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -71,40 +52,20 @@ MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可�
     <meta property="article:tag" content="积分平台">
     <meta property="article:tag" content="积分加减">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="积分平台之二[积分加减]">
+<meta name="twitter:title" content="积分平台之三[积分过期]">
 <meta name="twitter:description" content="背景
-
-用于商家积分兑换商品活动
-订单送积分
-营销送积分
-
-实现
+积分过期是一个常见需求，常见的如先进先出模型，另外需要允许客户端传入过期时间
+设计
 要求
 
-不允许超扣
-需要幂等，应对网络问题和重复提交等情况
-需要高性能
-需要风控，避免薅羊毛
-针对锁单需要支持积分预扣
-针对退单需要积分回滚
+允许外部定义积分规则（相对时间和绝对时间）
+允许外部传入过期时间，如没有传入则默认采用规则计算
+过期积分不允许使用
+年末海量过期考虑性能
 
-步骤
+实现
 
-用户校验
-余额校验
-用户限额校验（基于redis累加，计算剩余可赠送积分值）
-调用存储过程
-
-用户余额校验
-加锁（MySQL lock 锁定用户id）
-写入积分日志（开启事务）
-更新用户余额
-
-
-
-其他要求
-如何避免超扣
-MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可以使用一定积分，后面再来归还积分。">
+过期积分实现">
 
 
 <script type="application/ld+json">
@@ -127,8 +88,8 @@ MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可�
     {
       "@type": "ListItem",
       "position":  3 ,
-      "name": "积分平台之二[积分加减]",
-      "item": "https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E7%A7%AF%E5%88%86%E5%8A%A0%E5%87%8F/"
+      "name": "积分平台之三[积分过期]",
+      "item": "https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%89%E7%A7%AF%E5%88%86%E8%BF%87%E6%9C%9F/"
     }
   ]
 }
@@ -137,14 +98,14 @@ MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可�
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "积分平台之二[积分加减]",
-  "name": "积分平台之二[积分加减]",
-  "description": "背景 用于商家积分兑换商品活动 订单送积分 营销送积分 实现 要求 不允许超扣 需要幂等，应对网络问题和重复提交等情况 需要高性能 需要风控，避免薅羊毛 针对锁单需要支持积分预扣 针对退单需要积分回滚 步骤 用户校验 余额校验 用户限额校验（基于redis累加，计算剩余可赠送积分值） 调用存储过程 用户余额校验 加锁（MySQL lock 锁定用户id） 写入积分日志（开启事务） 更新用户余额 其他要求 如何避免超扣 MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可以使用一定积分，后面再来归还积分。\n",
+  "headline": "积分平台之三[积分过期]",
+  "name": "积分平台之三[积分过期]",
+  "description": "背景 积分过期是一个常见需求，常见的如先进先出模型，另外需要允许客户端传入过期时间\n设计 要求 允许外部定义积分规则（相对时间和绝对时间） 允许外部传入过期时间，如没有传入则默认采用规则计算 过期积分不允许使用 年末海量过期考虑性能 实现 过期积分实现\n",
   "keywords": [
     "积分平台", "积分加减"
   ],
-  "articleBody": "背景 用于商家积分兑换商品活动 订单送积分 营销送积分 实现 要求 不允许超扣 需要幂等，应对网络问题和重复提交等情况 需要高性能 需要风控，避免薅羊毛 针对锁单需要支持积分预扣 针对退单需要积分回滚 步骤 用户校验 余额校验 用户限额校验（基于redis累加，计算剩余可赠送积分值） 调用存储过程 用户余额校验 加锁（MySQL lock 锁定用户id） 写入积分日志（开启事务） 更新用户余额 其他要求 如何避免超扣 MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可以使用一定积分，后面再来归还积分。\n如何实现幂等 允许外部传入唯一id，通过redis的不存在写入函数，并且在值记录结果\n值为空（执行中） 值不为空（执行成功） 执行失败清除值 高性能的实现设计 批量提交接口（异步处理） 分库分表（提高单表的并发能力） 幂等（快速成功或者失败） 积分日志同个库设计（避免跨库） tomcat线程数调优（原来200，调整至500） 数据库连接池调优（原来10，调整至20） redis连接池调优（原来200，调整为500） 风控设计 实时检测 允许商家设定每日单用户限额，达到额度后，再赠送积分无效\nredis缓存当前额度 每次扣减前判断额度 需要考虑用户id变更 每日检测 多维度（大额度，日总额度，频率）\n创建钉钉机器人，获取token 配置告警规则，例如通过nick分组查询单日赠送积分总值超过1w的 基于大数据实时检测 Flink+kafka进行监控\n执行环境 创建数据源 用户key分组 ",
-  "wordCount" : "601",
+  "articleBody": "背景 积分过期是一个常见需求，常见的如先进先出模型，另外需要允许客户端传入过期时间\n设计 要求 允许外部定义积分规则（相对时间和绝对时间） 允许外部传入过期时间，如没有传入则默认采用规则计算 过期积分不允许使用 年末海量过期考虑性能 实现 过期积分实现\n积分赠送时，通过外部传参或者计算得到积分过期时间，写入积分赚取明细。积分扣减时，默认按照过期时间、ID排序进行扣减。\n过期规则\n关联商家账号，两种过期类型，默认永久。\n防止过期积分被使用\n用户扣减前执行过期，相当于活跃用户实时保障积分过期。\n定时过期\n每天凌晨1点定时任务，按照表扫描过期积分并执行。\n海量过期\n针对表开启多线程过期，大概可以达到2000每秒的过期效率。\n假设存在两亿条数据需要过期，大概需要一天。\n总结 惰性+活跃用户实时的处理方式，类似redis的缓存过期。\n",
+  "wordCount" : "345",
   "inLanguage": "zh",
   "datePublished": "2025-04-28T10:20:01+08:00",
   "dateModified": "2025-04-28T10:20:01+08:00",
@@ -154,7 +115,7 @@ MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可�
   }],
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E7%A7%AF%E5%88%86%E5%8A%A0%E5%87%8F/"
+    "@id": "https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%89%E7%A7%AF%E5%88%86%E8%BF%87%E6%9C%9F/"
   },
   "publisher": {
     "@type": "Organization",
@@ -243,9 +204,9 @@ MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可�
   <header class="post-header">
     <div class="breadcrumbs"><a href="https://yongqiangg.github.io/zh/">主页</a>&nbsp;»&nbsp;<a href="https://yongqiangg.github.io/zh/posts/">📚 文章</a>&nbsp;»&nbsp;<a href="https://yongqiangg.github.io/zh/posts/tech/">💻技术</a></div>
     <h1 class="post-title entry-hint-parent">
-      积分平台之二[积分加减]
+      积分平台之三[积分过期]
     </h1>
-    <div class="post-meta"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;johnny
+    <div class="post-meta"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny
 
 </div>
   </header> <div class="toc">
@@ -258,112 +219,50 @@ MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可�
                 <li>
                     <a href="#%e8%83%8c%e6%99%af" aria-label="背景">背景</a></li>
                 <li>
-                    <a href="#%e5%ae%9e%e7%8e%b0" aria-label="实现">实现</a><ul>
+                    <a href="#%e8%ae%be%e8%ae%a1" aria-label="设计">设计</a><ul>
                         
                 <li>
                     <a href="#%e8%a6%81%e6%b1%82" aria-label="要求">要求</a></li>
                 <li>
-                    <a href="#%e6%ad%a5%e9%aa%a4" aria-label="步骤">步骤</a></li></ul>
+                    <a href="#%e5%ae%9e%e7%8e%b0" aria-label="实现">实现</a></li></ul>
                 </li>
                 <li>
-                    <a href="#%e5%85%b6%e4%bb%96%e8%a6%81%e6%b1%82" aria-label="其他要求">其他要求</a><ul>
-                        
-                <li>
-                    <a href="#%e5%a6%82%e4%bd%95%e9%81%bf%e5%85%8d%e8%b6%85%e6%89%a3" aria-label="如何避免超扣">如何避免超扣</a></li>
-                <li>
-                    <a href="#%e5%a6%82%e4%bd%95%e5%ae%9e%e7%8e%b0%e5%b9%82%e7%ad%89" aria-label="如何实现幂等">如何实现幂等</a></li>
-                <li>
-                    <a href="#%e9%ab%98%e6%80%a7%e8%83%bd%e7%9a%84%e5%ae%9e%e7%8e%b0%e8%ae%be%e8%ae%a1" aria-label="高性能的实现设计">高性能的实现设计</a></li>
-                <li>
-                    <a href="#%e9%a3%8e%e6%8e%a7%e8%ae%be%e8%ae%a1" aria-label="风控设计">风控设计</a><ul>
-                        
-                <li>
-                    <a href="#%e5%ae%9e%e6%97%b6%e6%a3%80%e6%b5%8b" aria-label="实时检测">实时检测</a></li>
-                <li>
-                    <a href="#%e6%af%8f%e6%97%a5%e6%a3%80%e6%b5%8b" aria-label="每日检测">每日检测</a></li>
-                <li>
-                    <a href="#%e5%9f%ba%e4%ba%8e%e5%a4%a7%e6%95%b0%e6%8d%ae%e5%ae%9e%e6%97%b6%e6%a3%80%e6%b5%8b" aria-label="基于大数据实时检测">基于大数据实时检测</a>
+                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a>
                 </li>
-            </ul>
-            </li>
-            </ul>
-            </li>
             </ul>
         </div>
     </details>
 </div>
 
   <div class="post-content"><h2 id="背景">背景<a hidden class="anchor" aria-hidden="true" href="#背景">#</a></h2>
-<ul>
-<li>用于商家积分兑换商品活动</li>
-<li>订单送积分</li>
-<li>营销送积分</li>
-</ul>
-<h2 id="实现">实现<a hidden class="anchor" aria-hidden="true" href="#实现">#</a></h2>
+<p>积分过期是一个常见需求，常见的如先进先出模型，另外需要允许客户端传入过期时间</p>
+<h2 id="设计">设计<a hidden class="anchor" aria-hidden="true" href="#设计">#</a></h2>
 <h3 id="要求">要求<a hidden class="anchor" aria-hidden="true" href="#要求">#</a></h3>
 <ul>
-<li>不允许超扣</li>
-<li>需要幂等，应对网络问题和重复提交等情况</li>
-<li>需要高性能</li>
-<li>需要风控，避免薅羊毛</li>
-<li>针对锁单需要支持积分预扣</li>
-<li>针对退单需要积分回滚</li>
+<li>允许外部定义积分规则（相对时间和绝对时间）</li>
+<li>允许外部传入过期时间，如没有传入则默认采用规则计算</li>
+<li>过期积分不允许使用</li>
+<li>年末海量过期考虑性能</li>
 </ul>
-<h3 id="步骤">步骤<a hidden class="anchor" aria-hidden="true" href="#步骤">#</a></h3>
-<ol>
-<li>用户校验</li>
-<li>余额校验</li>
-<li>用户限额校验（基于redis累加，计算剩余可赠送积分值）</li>
-<li>调用存储过程
-<ol>
-<li>用户余额校验</li>
-<li>加锁（MySQL lock 锁定用户id）</li>
-<li>写入积分日志（开启事务）</li>
-<li>更新用户余额</li>
-</ol>
-</li>
-</ol>
-<h2 id="其他要求">其他要求<a hidden class="anchor" aria-hidden="true" href="#其他要求">#</a></h2>
-<h3 id="如何避免超扣">如何避免超扣<a hidden class="anchor" aria-hidden="true" href="#如何避免超扣">#</a></h3>
-<p>MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可以使用一定积分，后面再来归还积分。</p>
-<h3 id="如何实现幂等">如何实现幂等<a hidden class="anchor" aria-hidden="true" href="#如何实现幂等">#</a></h3>
-<p>允许外部传入唯一id，通过redis的不存在写入函数，并且在值记录结果</p>
-<ul>
-<li>值为空（执行中）</li>
-<li>值不为空（执行成功）</li>
-<li>执行失败清除值</li>
-</ul>
-<h3 id="高性能的实现设计">高性能的实现设计<a hidden class="anchor" aria-hidden="true" href="#高性能的实现设计">#</a></h3>
-<ul>
-<li>批量提交接口（异步处理）</li>
-<li>分库分表（提高单表的并发能力）</li>
-<li>幂等（快速成功或者失败）</li>
-<li>积分日志同个库设计（避免跨库）</li>
-<li>tomcat线程数调优（原来200，调整至500）</li>
-<li>数据库连接池调优（原来10，调整至20）</li>
-<li>redis连接池调优（原来200，调整为500）</li>
-</ul>
-<h3 id="风控设计">风控设计<a hidden class="anchor" aria-hidden="true" href="#风控设计">#</a></h3>
-<h4 id="实时检测">实时检测<a hidden class="anchor" aria-hidden="true" href="#实时检测">#</a></h4>
-<p>允许商家设定每日单用户限额，达到额度后，再赠送积分无效</p>
-<ul>
-<li>redis缓存当前额度</li>
-<li>每次扣减前判断额度</li>
-<li>需要考虑用户id变更</li>
-</ul>
-<h4 id="每日检测">每日检测<a hidden class="anchor" aria-hidden="true" href="#每日检测">#</a></h4>
-<p>多维度（大额度，日总额度，频率）</p>
-<ol>
-<li>创建钉钉机器人，获取token</li>
-<li>配置告警规则，例如通过nick分组查询单日赠送积分总值超过1w的</li>
-</ol>
-<h4 id="基于大数据实时检测">基于大数据实时检测<a hidden class="anchor" aria-hidden="true" href="#基于大数据实时检测">#</a></h4>
-<p>Flink+kafka进行监控</p>
-<ol>
-<li>执行环境</li>
-<li>创建数据源</li>
-<li>用户key分组</li>
-</ol>
+<h3 id="实现">实现<a hidden class="anchor" aria-hidden="true" href="#实现">#</a></h3>
+<blockquote>
+<p>过期积分实现</p></blockquote>
+<p>积分赠送时，通过外部传参或者计算得到积分过期时间，写入积分赚取明细。积分扣减时，默认按照过期时间、ID排序进行扣减。</p>
+<blockquote>
+<p>过期规则</p></blockquote>
+<p>关联商家账号，两种过期类型，默认永久。</p>
+<blockquote>
+<p>防止过期积分被使用</p></blockquote>
+<p>用户扣减前执行过期，相当于活跃用户实时保障积分过期。</p>
+<blockquote>
+<p>定时过期</p></blockquote>
+<p>每天凌晨1点定时任务，按照表扫描过期积分并执行。</p>
+<blockquote>
+<p>海量过期</p></blockquote>
+<p>针对表开启多线程过期，大概可以达到2000每秒的过期效率。</p>
+<p>假设存在两亿条数据需要过期，大概需要一天。</p>
+<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>惰性+活跃用户实时的处理方式，类似redis的缓存过期。</p>
 
 
   </div>
@@ -374,10 +273,15 @@ MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可�
       <li><a href="https://yongqiangg.github.io/zh/tags/%E7%A7%AF%E5%88%86%E5%8A%A0%E5%87%8F/">积分加减</a></li>
     </ul>
 <nav class="paginav">
-  <a class="next" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%89%E7%A7%AF%E5%88%86%E8%BF%87%E6%9C%9F/">
+  <a class="prev" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E7%A7%AF%E5%88%86%E5%8A%A0%E5%87%8F/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>积分平台之二[积分加减]</span>
+  </a>
+  <a class="next" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%80%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/">
     <span class="title">下一页 »</span>
     <br>
-    <span>积分平台之三[积分过期]</span>
+    <span>积分平台之一[整体架构]</span>
   </a>
 </nav>
 
