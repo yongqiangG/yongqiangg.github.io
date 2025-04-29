@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>多模块构建 on johnny&#39;s blog</title>
+    <link>https://yongqiangg.github.io/zh/tags/%E5%A4%9A%E6%A8%A1%E5%9D%97%E6%9E%84%E5%BB%BA/</link>
+    <description>Recent content in 多模块构建 on johnny&#39;s blog</description>
+    <generator>Hugo -- 0.146.0-DEV</generator>
+    <language>zh</language>
+    <lastBuildDate>Mon, 28 Apr 2025 10:20:01 +0800</lastBuildDate>
+    <atom:link href="https://yongqiangg.github.io/zh/tags/%E5%A4%9A%E6%A8%A1%E5%9D%97%E6%9E%84%E5%BB%BA/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>会员平台之三[多模块构建]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E4%BC%9A%E5%91%98%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%89%E5%A4%9A%E6%A8%A1%E5%9D%97%E6%9E%84%E5%BB%BA/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E4%BC%9A%E5%91%98%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%89%E5%A4%9A%E6%A8%A1%E5%9D%97%E6%9E%84%E5%BB%BA/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;将项目拆分成多个子模块。&lt;/p&gt;
+&lt;p&gt;有以下好处：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;代码组织清晰&lt;/li&gt;
+&lt;li&gt;便于并行开发，便于维护&lt;/li&gt;
+&lt;li&gt;model和common一般可以复用&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;设计&#34;&gt;设计&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;实现方式&lt;/p&gt;&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;定义父模块，声明子模块，依赖管理，定义依赖版本。&lt;/li&gt;
+&lt;li&gt;创建子模块，例如common，通常不依赖其他模块。数据模块和服务模块。&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+  </channel>
+</rss>

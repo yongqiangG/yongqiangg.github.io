@@ -145,6 +145,50 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">会员平台之二[任务调度]
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>背景 项目中一般需要定时任务或者实时同步服务的部署
+设计 要求 支持定时任务 支持一次性任务 支持实时任务 任务支持中断（常见批量任务处理，可能出现异常） 实现 框架
+部署服务端，镜像方式部署，指定数据库地址，并初始化数据库脚本 部署执行器端，启动后自动注册到调度中心，可以配置多个执行器名称 注解指定任务handler 可以指定邮件告警，也可以稍微修改源码对接到钉钉告警 任务表
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
+  <a class="entry-link" aria-label="post link to 会员平台之二[任务调度]" href="https://yongqiangg.github.io/zh/posts/tech/%E4%BC%9A%E5%91%98%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">会员平台之三[多模块构建]
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>背景 将项目拆分成多个子模块。
+有以下好处：
+代码组织清晰 便于并行开发，便于维护 model和common一般可以复用 设计 实现方式
+定义父模块，声明子模块，依赖管理，定义依赖版本。 创建子模块，例如common，通常不依赖其他模块。数据模块和服务模块。 </p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
+  <a class="entry-link" aria-label="post link to 会员平台之三[多模块构建]" href="https://yongqiangg.github.io/zh/posts/tech/%E4%BC%9A%E5%91%98%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%89%E5%A4%9A%E6%A8%A1%E5%9D%97%E6%9E%84%E5%BB%BA/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">会员平台之一[整体架构]
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>一、业务架构 处理会员入会、账户管理和第三方平台集成。
+1、账户管理 支持创建账号和店铺绑定 按照账号分库分表 2、用户管理 用户基本信息查询 用户入会、退会、历史用户接入 3、第三方模块集成 电商平台会员等级、积分打通 下游品牌打通 二、技术架构 1、整体框架 多模块架构：基于Spring Boot的多模块架构
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
+  <a class="entry-link" aria-label="post link to 会员平台之一[整体架构]" href="https://yongqiangg.github.io/zh/posts/tech/%E4%BC%9A%E5%91%98%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%80%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">积分平台之八[链路追踪与监控告警]
     </h2>
   </header>
@@ -246,50 +290,6 @@ TeamCity。
   </div>
   <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
   <a class="entry-link" aria-label="post link to 积分平台之三[积分过期]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%89%E7%A7%AF%E5%88%86%E8%BF%87%E6%9C%9F/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">积分平台之十[分库分表]
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>背景 什么情况下需要分库分表
-数据量比较大，不要遇到数据库问题就考虑分库分表，优先考虑软件和硬件的优化。
-由于数据量较大，整体会达到几十个T。因此按照租户进行分库分表。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
-  <a class="entry-link" aria-label="post link to 积分平台之十[分库分表]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">积分平台之十八[微服务组件]
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>背景 使用过的微服务组件
-例子 网关
-Spring Gateway，用于路由。由于平台限制流量不允许直接出服务器，因此需要部署中间网关对流量进行转发。包含上行和下行的流量，拦截指定路径，并对路径进行重写即可
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
-  <a class="entry-link" aria-label="post link to 积分平台之十八[微服务组件]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%85%AB%E5%BE%AE%E6%9C%8D%E5%8A%A1/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">积分平台之十二[第三方网络问题]
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>背景 第三方客户往往容易存在调用失败的问题，在关键链路上如何应对这种问题。尤其是大促期间可能的调用超时，该如何处理。
-例如兑换礼品，调用后超时，如果只是简单的发起重试，容易造成业务的异常。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
-  <a class="entry-link" aria-label="post link to 积分平台之十二[第三方网络问题]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%BA%8C%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

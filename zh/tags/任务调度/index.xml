@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>任务调度 on johnny&#39;s blog</title>
+    <link>https://yongqiangg.github.io/zh/tags/%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/</link>
+    <description>Recent content in 任务调度 on johnny&#39;s blog</description>
+    <generator>Hugo -- 0.146.0-DEV</generator>
+    <language>zh</language>
+    <lastBuildDate>Mon, 28 Apr 2025 10:20:01 +0800</lastBuildDate>
+    <atom:link href="https://yongqiangg.github.io/zh/tags/%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>会员平台之二[任务调度]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E4%BC%9A%E5%91%98%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E4%BC%9A%E5%91%98%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;项目中一般需要定时任务或者实时同步服务的部署&lt;/p&gt;
+&lt;h2 id=&#34;设计&#34;&gt;设计&lt;/h2&gt;
+&lt;h3 id=&#34;要求&#34;&gt;要求&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;支持定时任务&lt;/li&gt;
+&lt;li&gt;支持一次性任务&lt;/li&gt;
+&lt;li&gt;支持实时任务&lt;/li&gt;
+&lt;li&gt;任务支持中断（常见批量任务处理，可能出现异常）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;实现&#34;&gt;实现&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;框架&lt;/p&gt;&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;部署服务端，镜像方式部署，指定数据库地址，并初始化数据库脚本&lt;/li&gt;
+&lt;li&gt;部署执行器端，启动后自动注册到调度中心，可以配置多个执行器名称&lt;/li&gt;
+&lt;li&gt;注解指定任务handler&lt;/li&gt;
+&lt;li&gt;可以指定邮件告警，也可以稍微修改源码对接到钉钉告警&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;任务表&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
