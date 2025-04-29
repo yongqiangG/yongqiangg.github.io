@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>线上问题排查 on johnny&#39;s blog</title>
+    <link>https://yongqiangg.github.io/zh/tags/%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/</link>
+    <description>Recent content in 线上问题排查 on johnny&#39;s blog</description>
+    <generator>Hugo -- 0.146.0-DEV</generator>
+    <language>zh</language>
+    <lastBuildDate>Mon, 28 Apr 2025 10:20:01 +0800</lastBuildDate>
+    <atom:link href="https://yongqiangg.github.io/zh/tags/%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>积分平台之十四[线上问题排查]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%9B%9B%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%9B%9B%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;线上问题排查是一名合格开发的必备技能。&lt;/p&gt;
+&lt;h2 id=&#34;设计&#34;&gt;设计&lt;/h2&gt;
+&lt;h3 id=&#34;要求&#34;&gt;要求&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;线上出现慢接口，如何定位问题&lt;/li&gt;
+&lt;li&gt;任务无法启动，频繁重启，如何定位，例如淘宝同步服务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;应对&#34;&gt;应对&lt;/h3&gt;
+&lt;h4 id=&#34;arthas&#34;&gt;arthas&lt;/h4&gt;
+&lt;p&gt;通过阿里开源诊断工具arthas可以进行处理&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>应用接口安全 on johnny&#39;s blog</title>
+    <link>https://yongqiangg.github.io/zh/tags/%E5%BA%94%E7%94%A8%E6%8E%A5%E5%8F%A3%E5%AE%89%E5%85%A8/</link>
+    <description>Recent content in 应用接口安全 on johnny&#39;s blog</description>
+    <generator>Hugo -- 0.146.0-DEV</generator>
+    <language>zh</language>
+    <lastBuildDate>Mon, 28 Apr 2025 10:20:01 +0800</lastBuildDate>
+    <atom:link href="https://yongqiangg.github.io/zh/tags/%E5%BA%94%E7%94%A8%E6%8E%A5%E5%8F%A3%E5%AE%89%E5%85%A8/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>积分平台之二十[应用接口安全]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E5%8D%81%E5%BA%94%E7%94%A8%E6%8E%A5%E5%8F%A3%E5%AE%89%E5%85%A8/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E5%8D%81%E5%BA%94%E7%94%A8%E6%8E%A5%E5%8F%A3%E5%AE%89%E5%85%A8/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;应用的接口往往需要多重的鉴权保证生产环境的安全，防止攻击&lt;/p&gt;
+&lt;h2 id=&#34;例子&#34;&gt;例子&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ip维度&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;配置ip白名单，限制访问ip&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;可信服务名&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;由于主要是对内部上游的业务平台，配置对应的可信服务名，允许跳过ip直接访问&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

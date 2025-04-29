@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>积分平台之六[限流] | johnny&#39;s blog</title>
+<meta name="keywords" content="积分平台, 限流">
+<meta name="description" content="背景
+当遇到如下场景需要考虑限流以保护整个系统不发生宕机
+
+暴露给品牌方接口，可能存在突发流量
+大促时，暴露给平台端的接口，可以由于品牌或者平台的活动，接收到大量的c端流量
+
+设计
+要求
+
+关键接口尽可能高性能
+当发生高频请求时，告警通知
+限流组件
+支持动态限流
+
+实现
+
+实例环境隔离，区分开平台流量和品牌流量，通过请求头方式隔离大查询（慢sql风险）
+统计网关层的tp99并对接钉钉告警，业务日志需要包含请求耗时
+限流组件使用sentinel
+结合guava封装限流注解实现单机限流
+
+扩展
+
+常见限流算法">
+<meta name="author" content="johnny">
+<link rel="canonical" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%85%AD%E9%99%90%E6%B5%81/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css" integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF&#43;13Dyqob6ASlTrTye8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yongqiangg.github.io/img/logo.gif">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yongqiangg.github.io/img/logo.gif">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yongqiangg.github.io/img/logo.gif">
+<link rel="apple-touch-icon" href="https://yongqiangg.github.io/logo.gif">
+<link rel="mask-icon" href="https://yongqiangg.github.io/logo.gif">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%85%AD%E9%99%90%E6%B5%81/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%85%AD%E9%99%90%E6%B5%81/">
+  <meta property="og:site_name" content="johnny&#39;s blog">
+  <meta property="og:title" content="积分平台之六[限流]">
+  <meta property="og:description" content="背景 当遇到如下场景需要考虑限流以保护整个系统不发生宕机
+暴露给品牌方接口，可能存在突发流量 大促时，暴露给平台端的接口，可以由于品牌或者平台的活动，接收到大量的c端流量 设计 要求 关键接口尽可能高性能 当发生高频请求时，告警通知 限流组件 支持动态限流 实现 实例环境隔离，区分开平台流量和品牌流量，通过请求头方式隔离大查询（慢sql风险） 统计网关层的tp99并对接钉钉告警，业务日志需要包含请求耗时 限流组件使用sentinel 结合guava封装限流注解实现单机限流 扩展 常见限流算法">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-04-28T10:20:01+08:00">
+    <meta property="article:modified_time" content="2025-04-28T10:20:01+08:00">
+    <meta property="article:tag" content="积分平台">
+    <meta property="article:tag" content="限流">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="积分平台之六[限流]">
+<meta name="twitter:description" content="背景
+当遇到如下场景需要考虑限流以保护整个系统不发生宕机
+
+暴露给品牌方接口，可能存在突发流量
+大促时，暴露给平台端的接口，可以由于品牌或者平台的活动，接收到大量的c端流量
+
+设计
+要求
+
+关键接口尽可能高性能
+当发生高频请求时，告警通知
+限流组件
+支持动态限流
+
+实现
+
+实例环境隔离，区分开平台流量和品牌流量，通过请求头方式隔离大查询（慢sql风险）
+统计网关层的tp99并对接钉钉告警，业务日志需要包含请求耗时
+限流组件使用sentinel
+结合guava封装限流注解实现单机限流
+
+扩展
+
+常见限流算法">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "📚 文章",
+      "item": "https://yongqiangg.github.io/zh/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "💻技术",
+      "item": "https://yongqiangg.github.io/zh/posts/tech/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "积分平台之六[限流]",
+      "item": "https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%85%AD%E9%99%90%E6%B5%81/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "积分平台之六[限流]",
+  "name": "积分平台之六[限流]",
+  "description": "背景 当遇到如下场景需要考虑限流以保护整个系统不发生宕机\n暴露给品牌方接口，可能存在突发流量 大促时，暴露给平台端的接口，可以由于品牌或者平台的活动，接收到大量的c端流量 设计 要求 关键接口尽可能高性能 当发生高频请求时，告警通知 限流组件 支持动态限流 实现 实例环境隔离，区分开平台流量和品牌流量，通过请求头方式隔离大查询（慢sql风险） 统计网关层的tp99并对接钉钉告警，业务日志需要包含请求耗时 限流组件使用sentinel 结合guava封装限流注解实现单机限流 扩展 常见限流算法\n",
+  "keywords": [
+    "积分平台", "限流"
+  ],
+  "articleBody": "背景 当遇到如下场景需要考虑限流以保护整个系统不发生宕机\n暴露给品牌方接口，可能存在突发流量 大促时，暴露给平台端的接口，可以由于品牌或者平台的活动，接收到大量的c端流量 设计 要求 关键接口尽可能高性能 当发生高频请求时，告警通知 限流组件 支持动态限流 实现 实例环境隔离，区分开平台流量和品牌流量，通过请求头方式隔离大查询（慢sql风险） 统计网关层的tp99并对接钉钉告警，业务日志需要包含请求耗时 限流组件使用sentinel 结合guava封装限流注解实现单机限流 扩展 常见限流算法\n漏桶 令牌桶，guava的rateLimiter，应对突发流量 滑动窗口，sentinel sentinel使用\n配置规则，指定流控规则（qps或并发线程数），指定限流参数，指定按照参数独立限流 加载规则 添加注解和降级规则 限流注解封装\n定义限流注解，包含令牌数，限流key可以直接采用方法名字，返回结果json 编写限流切面，按照注解切入，获取令牌，获取失败返回特定错误码 编写自动配置类 编写spring.factories 引入starter并使用 ",
+  "wordCount" : "448",
+  "inLanguage": "zh",
+  "datePublished": "2025-04-28T10:20:01+08:00",
+  "dateModified": "2025-04-28T10:20:01+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "johnny"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%85%AD%E9%99%90%E6%B5%81/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "johnny's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yongqiangg.github.io/img/logo.gif"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://yongqiangg.github.io/zh/" accesskey="h" title="johnny&#39;s blog (Alt + H)">johnny&#39;s blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://yongqiangg.github.io/zh/search" title="🔍搜索 (Alt &#43; /)" accesskey=/>
+                    <span>🔍搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yongqiangg.github.io/zh/" title="🏠主页">
+                    <span>🏠主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yongqiangg.github.io/zh/posts" title="📚文章">
+                    <span>📚文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yongqiangg.github.io/zh/archives" title="⏱时间轴">
+                    <span>⏱时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yongqiangg.github.io/zh/tags" title="🔖标签">
+                    <span>🔖标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yongqiangg.github.io/zh/about" title="🙋🏻‍♂️关于">
+                    <span>🙋🏻‍♂️关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://yongqiangg.github.io/zh/">主页</a>&nbsp;»&nbsp;<a href="https://yongqiangg.github.io/zh/posts/">📚 文章</a>&nbsp;»&nbsp;<a href="https://yongqiangg.github.io/zh/posts/tech/">💻技术</a></div>
+    <h1 class="post-title entry-hint-parent">
+      积分平台之六[限流]
+    </h1>
+    <div class="post-meta"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e8%83%8c%e6%99%af" aria-label="背景">背景</a></li>
+                <li>
+                    <a href="#%e8%ae%be%e8%ae%a1" aria-label="设计">设计</a><ul>
+                        
+                <li>
+                    <a href="#%e8%a6%81%e6%b1%82" aria-label="要求">要求</a></li>
+                <li>
+                    <a href="#%e5%ae%9e%e7%8e%b0" aria-label="实现">实现</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%89%a9%e5%b1%95" aria-label="扩展">扩展</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="背景">背景<a hidden class="anchor" aria-hidden="true" href="#背景">#</a></h2>
+<p>当遇到如下场景需要考虑限流以保护整个系统不发生宕机</p>
+<ul>
+<li>暴露给品牌方接口，可能存在突发流量</li>
+<li>大促时，暴露给平台端的接口，可以由于品牌或者平台的活动，接收到大量的c端流量</li>
+</ul>
+<h2 id="设计">设计<a hidden class="anchor" aria-hidden="true" href="#设计">#</a></h2>
+<h3 id="要求">要求<a hidden class="anchor" aria-hidden="true" href="#要求">#</a></h3>
+<ul>
+<li>关键接口尽可能高性能</li>
+<li>当发生高频请求时，告警通知</li>
+<li>限流组件</li>
+<li>支持动态限流</li>
+</ul>
+<h3 id="实现">实现<a hidden class="anchor" aria-hidden="true" href="#实现">#</a></h3>
+<ul>
+<li>实例环境隔离，区分开平台流量和品牌流量，通过请求头方式隔离大查询（慢sql风险）</li>
+<li>统计网关层的tp99并对接钉钉告警，业务日志需要包含请求耗时</li>
+<li>限流组件使用sentinel</li>
+<li>结合guava封装限流注解实现单机限流</li>
+</ul>
+<h2 id="扩展">扩展<a hidden class="anchor" aria-hidden="true" href="#扩展">#</a></h2>
+<blockquote>
+<p>常见限流算法</p></blockquote>
+<ul>
+<li>漏桶</li>
+<li>令牌桶，guava的rateLimiter，应对突发流量</li>
+<li>滑动窗口，sentinel</li>
+</ul>
+<blockquote>
+<p>sentinel使用</p></blockquote>
+<ol>
+<li>配置规则，指定流控规则（qps或并发线程数），指定限流参数，指定按照参数独立限流</li>
+<li>加载规则</li>
+<li>添加注解和降级规则</li>
+</ol>
+<blockquote>
+<p>限流注解封装</p></blockquote>
+<ol>
+<li>定义限流注解，包含令牌数，限流key可以直接采用方法名字，返回结果json</li>
+<li>编写限流切面，按照注解切入，获取令牌，获取失败返回特定错误码</li>
+<li>编写自动配置类</li>
+<li>编写spring.factories</li>
+<li>引入starter并使用</li>
+</ol>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://yongqiangg.github.io/zh/tags/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0/">积分平台</a></li>
+      <li><a href="https://yongqiangg.github.io/zh/tags/%E9%99%90%E6%B5%81/">限流</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B9%9Dcicd/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>积分平台之九[CI/CD]</span>
+  </a>
+  <a class="next" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%83%E7%A7%AF%E5%88%86%E5%9B%9E%E6%BB%9A%E4%B8%8E%E7%A7%AF%E5%88%86%E5%86%BB%E7%BB%93/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>积分平台之七[积分回滚和积分冻结]</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://yongqiangg.github.io/zh/">johnny&#39;s blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

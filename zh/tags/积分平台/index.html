@@ -118,6 +118,21 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">积分平台之八[链路追踪与监控告警]
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>背景 排查问题，系统之间往往需要定位到同一个链路请求，因此需要链路追踪。
+另外一些实时业务需要针对性监控时效性，并告警通知。
+设计 要求 需要提供全链路追踪id 需要监控同步进度 实现 版本一
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
+  <a class="entry-link" aria-label="post link to 积分平台之八[链路追踪与监控告警]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%85%AB%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%E4%B8%8E%E7%9B%91%E6%8E%A7%E5%91%8A%E8%AD%A6/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">积分平台之二[积分加减]
     </h2>
   </header>
@@ -127,6 +142,69 @@
   </div>
   <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;johnny</footer>
   <a class="entry-link" aria-label="post link to 积分平台之二[积分加减]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E7%A7%AF%E5%88%86%E5%8A%A0%E5%87%8F/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">积分平台之二十[应用接口安全]
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>背景 应用的接口往往需要多重的鉴权保证生产环境的安全，防止攻击
+例子 ip维度
+配置ip白名单，限制访问ip
+可信服务名
+由于主要是对内部上游的业务平台，配置对应的可信服务名，允许跳过ip直接访问
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
+  <a class="entry-link" aria-label="post link to 积分平台之二十[应用接口安全]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E5%8D%81%E5%BA%94%E7%94%A8%E6%8E%A5%E5%8F%A3%E5%AE%89%E5%85%A8/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">积分平台之九[CI/CD]
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>背景 工程项目需要持续的构建-发布能力
+实现 持续构建
+TeamCity。
+区分环境进行构建 可以构建代码包及镜像形式 可以配置触发器，代码提交时自动触发构建 发布
+聚石塔 or 阿里云k8s集群版
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
+  <a class="entry-link" aria-label="post link to 积分平台之九[CI/CD]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B9%9Dcicd/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">积分平台之六[限流]
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>背景 当遇到如下场景需要考虑限流以保护整个系统不发生宕机
+暴露给品牌方接口，可能存在突发流量 大促时，暴露给平台端的接口，可以由于品牌或者平台的活动，接收到大量的c端流量 设计 要求 关键接口尽可能高性能 当发生高频请求时，告警通知 限流组件 支持动态限流 实现 实例环境隔离，区分开平台流量和品牌流量，通过请求头方式隔离大查询（慢sql风险） 统计网关层的tp99并对接钉钉告警，业务日志需要包含请求耗时 限流组件使用sentinel 结合guava封装限流注解实现单机限流 扩展 常见限流算法
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
+  <a class="entry-link" aria-label="post link to 积分平台之六[限流]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%85%AD%E9%99%90%E6%B5%81/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">积分平台之七[积分回滚和积分冻结]
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>背景 积分回滚
+针对特定的积分操作回滚，避免用户使用回滚刷新积分有效期。例如积分加钱购买商品。
+之前发生退单时，需要重新赠送积分，会导致原来使用的积分重置有效期。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
+  <a class="entry-link" aria-label="post link to 积分平台之七[积分回滚和积分冻结]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%83%E7%A7%AF%E5%88%86%E5%9B%9E%E6%BB%9A%E4%B8%8E%E7%A7%AF%E5%88%86%E5%86%BB%E7%BB%93/"></a>
 </article>
 
 <article class="post-entry tag-entry"> 
@@ -145,17 +223,53 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">积分平台之一[整体架构]
+    <h2 class="entry-hint-parent">积分平台之十[分库分表]
     </h2>
   </header>
   <div class="entry-content">
-    <p>一、业务架构 处理会员积分、账户管理和第三方平台集成。
-1、账户管理 区分普通账号和品牌账号，提供多维度的业务构建基础 按照账号分库分表 2、积分管理 支持多种积分发放场景，单个、批量 支持积分余额查询，明细查询 实现积分风控，每日限额，大额告警 实现积分过期 3、用户管理 用户基本信息查询 用户合并、解绑 用户积分同步 4、第三方模块继承 电商平台会员等级、积分打通 下游品牌打通 二、技术架构 1、整体框架 分层架构：采用经典的控制层、服务层、数据访问层设计
+    <p>背景 什么情况下需要分库分表
+数据量比较大，不要遇到数据库问题就考虑分库分表，优先考虑软件和硬件的优化。
+由于数据量较大，整体会达到几十个T。因此按照租户进行分库分表。
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
-  <a class="entry-link" aria-label="post link to 积分平台之一[整体架构]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%80%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/"></a>
+  <a class="entry-link" aria-label="post link to 积分平台之十[分库分表]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/"></a>
 </article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">积分平台之十八[微服务组件]
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>背景 使用过的微服务组件
+例子 网关
+Spring Gateway，用于路由。由于平台限制流量不允许直接出服务器，因此需要部署中间网关对流量进行转发。包含上行和下行的流量，拦截指定路径，并对路径进行重写即可
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
+  <a class="entry-link" aria-label="post link to 积分平台之十八[微服务组件]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%85%AB%E5%BE%AE%E6%9C%8D%E5%8A%A1/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">积分平台之十二[第三方网络问题]
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>背景 第三方客户往往容易存在调用失败的问题，在关键链路上如何应对这种问题。尤其是大促期间可能的调用超时，该如何处理。
+例如兑换礼品，调用后超时，如果只是简单的发起重试，容易造成业务的异常。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-28 10:20:01 +0800 CST'>2025-04-28</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;johnny</footer>
+  <a class="entry-link" aria-label="post link to 积分平台之十二[第三方网络问题]" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%BA%8C%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="https://yongqiangg.github.io/zh/tags/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0/page/2/">下一页&nbsp;&nbsp;»
+    </a>
+  </nav>
+</footer>
     </main>
     
 <footer class="footer">

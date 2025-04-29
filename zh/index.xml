@@ -9,6 +9,24 @@
     <lastBuildDate>Mon, 28 Apr 2025 10:20:01 +0800</lastBuildDate>
     <atom:link href="https://yongqiangg.github.io/zh/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>积分平台之八[链路追踪与监控告警]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%85%AB%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%E4%B8%8E%E7%9B%91%E6%8E%A7%E5%91%8A%E8%AD%A6/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%85%AB%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%E4%B8%8E%E7%9B%91%E6%8E%A7%E5%91%8A%E8%AD%A6/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;排查问题，系统之间往往需要定位到同一个链路请求，因此需要链路追踪。&lt;/p&gt;
+&lt;p&gt;另外一些实时业务需要针对性监控时效性，并告警通知。&lt;/p&gt;
+&lt;h2 id=&#34;设计&#34;&gt;设计&lt;/h2&gt;
+&lt;h3 id=&#34;要求&#34;&gt;要求&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;需要提供全链路追踪id&lt;/li&gt;
+&lt;li&gt;需要监控同步进度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;实现&#34;&gt;实现&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;版本一&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>积分平台之二[积分加减]</title>
       <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E7%A7%AF%E5%88%86%E5%8A%A0%E5%87%8F/</link>
       <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
@@ -48,6 +66,82 @@
 &lt;p&gt;MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可以使用一定积分，后面再来归还积分。&lt;/p&gt;</description>
     </item>
     <item>
+      <title>积分平台之二十[应用接口安全]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E5%8D%81%E5%BA%94%E7%94%A8%E6%8E%A5%E5%8F%A3%E5%AE%89%E5%85%A8/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E5%8D%81%E5%BA%94%E7%94%A8%E6%8E%A5%E5%8F%A3%E5%AE%89%E5%85%A8/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;应用的接口往往需要多重的鉴权保证生产环境的安全，防止攻击&lt;/p&gt;
+&lt;h2 id=&#34;例子&#34;&gt;例子&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ip维度&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;配置ip白名单，限制访问ip&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;可信服务名&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;由于主要是对内部上游的业务平台，配置对应的可信服务名，允许跳过ip直接访问&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之九[CI/CD]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B9%9Dcicd/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B9%9Dcicd/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;工程项目需要持续的构建-发布能力&lt;/p&gt;
+&lt;h2 id=&#34;实现&#34;&gt;实现&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;持续构建&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;TeamCity。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;区分环境进行构建&lt;/li&gt;
+&lt;li&gt;可以构建代码包及镜像形式&lt;/li&gt;
+&lt;li&gt;可以配置触发器，代码提交时自动触发构建&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;发布&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;聚石塔 or 阿里云k8s集群版&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之六[限流]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%85%AD%E9%99%90%E6%B5%81/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%85%AD%E9%99%90%E6%B5%81/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;当遇到如下场景需要考虑限流以保护整个系统不发生宕机&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;暴露给品牌方接口，可能存在突发流量&lt;/li&gt;
+&lt;li&gt;大促时，暴露给平台端的接口，可以由于品牌或者平台的活动，接收到大量的c端流量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;设计&#34;&gt;设计&lt;/h2&gt;
+&lt;h3 id=&#34;要求&#34;&gt;要求&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;关键接口尽可能高性能&lt;/li&gt;
+&lt;li&gt;当发生高频请求时，告警通知&lt;/li&gt;
+&lt;li&gt;限流组件&lt;/li&gt;
+&lt;li&gt;支持动态限流&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;实现&#34;&gt;实现&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;实例环境隔离，区分开平台流量和品牌流量，通过请求头方式隔离大查询（慢sql风险）&lt;/li&gt;
+&lt;li&gt;统计网关层的tp99并对接钉钉告警，业务日志需要包含请求耗时&lt;/li&gt;
+&lt;li&gt;限流组件使用sentinel&lt;/li&gt;
+&lt;li&gt;结合guava封装限流注解实现单机限流&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;扩展&#34;&gt;扩展&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;常见限流算法&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之七[积分回滚和积分冻结]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%83%E7%A7%AF%E5%88%86%E5%9B%9E%E6%BB%9A%E4%B8%8E%E7%A7%AF%E5%88%86%E5%86%BB%E7%BB%93/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%83%E7%A7%AF%E5%88%86%E5%9B%9E%E6%BB%9A%E4%B8%8E%E7%A7%AF%E5%88%86%E5%86%BB%E7%BB%93/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;积分回滚&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;针对特定的积分操作回滚，避免用户使用回滚刷新积分有效期。例如积分加钱购买商品。&lt;/p&gt;
+&lt;p&gt;之前发生退单时，需要重新赠送积分，会导致原来使用的积分重置有效期。&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>积分平台之三[积分过期]</title>
       <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%89%E7%A7%AF%E5%88%86%E8%BF%87%E6%9C%9F/</link>
       <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
@@ -65,6 +159,176 @@
 &lt;h3 id=&#34;实现&#34;&gt;实现&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;过期积分实现&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之十[分库分表]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;什么情况下需要分库分表&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;数据量比较大，不要遇到数据库问题就考虑分库分表，优先考虑软件和硬件的优化。&lt;/p&gt;
+&lt;p&gt;由于数据量较大，整体会达到几十个T。因此按照租户进行分库分表。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之十八[微服务组件]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%85%AB%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%85%AB%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;使用过的微服务组件&lt;/p&gt;
+&lt;h2 id=&#34;例子&#34;&gt;例子&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;网关&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;Spring Gateway，用于路由。由于平台限制流量不允许直接出服务器，因此需要部署中间网关对流量进行转发。包含上行和下行的流量，拦截指定路径，并对路径进行重写即可&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之十二[第三方网络问题]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%BA%8C%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%BA%8C%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;第三方客户往往容易存在调用失败的问题，在关键链路上如何应对这种问题。尤其是大促期间可能的调用超时，该如何处理。&lt;/p&gt;
+&lt;p&gt;例如兑换礼品，调用后超时，如果只是简单的发起重试，容易造成业务的异常。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之十九[数据库死锁]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%B9%9D%E6%95%B0%E6%8D%AE%E5%BA%93%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%B9%9D%E6%95%B0%E6%8D%AE%E5%BA%93%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;数据库死锁常发生于两个事务，互相依赖对方的资源，在获取锁的时候形成互相等待。MySQL会自动检测死锁，并回滚较小的事务。&lt;/p&gt;
+&lt;h3 id=&#34;例子&#34;&gt;例子&lt;/h3&gt;
+&lt;p&gt;在用户查询积分的时候，触发了过期。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之十六[多线程使用]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%85%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%85%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;项目中的cpu使用率往往不高，使用多线程可以迅速提高cpu利用率，迅速提高任务处理效率。&lt;/p&gt;
+&lt;h2 id=&#34;例子&#34;&gt;例子&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;任务中的多线程设计&lt;/p&gt;&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;使用countdownLatch，将人群进行拆分，多线程进行处理，然后主线程阻塞等待下一批任务&lt;/li&gt;
+&lt;li&gt;使用最大线程数控制，原子类，判断线程数进行多线程开启，否则sleep，不占用cpu&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;接口中的多线程设计&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之十七[消息队列]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%B8%83%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%B8%83%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;消息队列是现代应用系统中应用非常广泛的组件。可以利用消息队列实现流量削峰，业务解耦。&lt;/p&gt;
+&lt;h2 id=&#34;例子&#34;&gt;例子&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;流量削峰&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;用户入会。大促时，往往会出现大量的用户引流入会，这时候快速的处理入会请求，不影响用户的活动参与就非常重要。这时候往往将用户入会请求直接标记为成功，再交由消费服务完成完整的入会过程，可能涉及历史的积分等级处理。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之十三[分布式id]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%B8%89%E5%88%86%E5%B8%83%E5%BC%8Fid/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%B8%89%E5%88%86%E5%B8%83%E5%BC%8Fid/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;很多系统中往往需要一个全局唯一的id，例如订单号，用户id。&lt;/p&gt;
+&lt;p&gt;现在在积分日志分库分表情况下需要唯一id。数据异构之间的同步，如果不是唯一id，可能发生冲突。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之十四[线上问题排查]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%9B%9B%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%9B%9B%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;线上问题排查是一名合格开发的必备技能。&lt;/p&gt;
+&lt;h2 id=&#34;设计&#34;&gt;设计&lt;/h2&gt;
+&lt;h3 id=&#34;要求&#34;&gt;要求&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;线上出现慢接口，如何定位问题&lt;/li&gt;
+&lt;li&gt;任务无法启动，频繁重启，如何定位，例如淘宝同步服务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;应对&#34;&gt;应对&lt;/h3&gt;
+&lt;h4 id=&#34;arthas&#34;&gt;arthas&lt;/h4&gt;
+&lt;p&gt;通过阿里开源诊断工具arthas可以进行处理&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之十五[数据库优化相关]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%BA%94%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96%E7%9B%B8%E5%85%B3/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%BA%94%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96%E7%9B%B8%E5%85%B3/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;数据库作为项目核心组件，常见的问题分析和优化&lt;/p&gt;
+&lt;h2 id=&#34;例子&#34;&gt;例子&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;积分日志查询慢&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;数据密度大，遇到深翻页问题，采用返回id进行数据过滤，需要客户端配合调整。&lt;/p&gt;
+&lt;p&gt;进一步，采用推模型来同步积分日志。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之十一[账号归档]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%B8%80%E8%B4%A6%E5%8F%B7%E5%BD%92%E6%A1%A3/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E4%B8%80%E8%B4%A6%E5%8F%B7%E5%BD%92%E6%A1%A3/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;不断增长的存储空间占用，需要降低存储，清理无效账号&lt;/p&gt;
+&lt;h2 id=&#34;设计&#34;&gt;设计&lt;/h2&gt;
+&lt;h3 id=&#34;要求&#34;&gt;要求&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;按照租户进行归档，挑选近三年没有积分日志新增且用户最大更新时间为三年前的租户&lt;/li&gt;
+&lt;li&gt;归档前需要确认&lt;/li&gt;
+&lt;li&gt;使用oss存储，支持还原&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;实现&#34;&gt;实现&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;按照租户进行筛选&lt;/li&gt;
+&lt;li&gt;进行二次运营确认&lt;/li&gt;
+&lt;li&gt;确认归档处理，按照数据行复制到文件后进行gzip压缩&lt;/li&gt;
+&lt;li&gt;上传到oss&lt;/li&gt;
+&lt;li&gt;删除数据（注意在业务低峰期）&lt;/li&gt;
+&lt;li&gt;如果需要还原，从oss下载文件解压，并导入&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之四[风控与安全]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%9B%9B%E9%A3%8E%E6%8E%A7%E4%B8%8E%E5%AE%89%E5%85%A8/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%9B%9B%E9%A3%8E%E6%8E%A7%E4%B8%8E%E5%AE%89%E5%85%A8/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;积分相当于用户的资产，往往需要当作金钱对待&lt;/p&gt;
+&lt;h2 id=&#34;设计&#34;&gt;设计&lt;/h2&gt;
+&lt;h3 id=&#34;要求&#34;&gt;要求&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;需要及时发现用户的薅羊毛行为&lt;/li&gt;
+&lt;li&gt;对于异常用户需要有黑名单机制&lt;/li&gt;
+&lt;li&gt;接口调用需要有相应的鉴权措施&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;实现&#34;&gt;实现&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如何及时发现用户的薅羊毛行为&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>积分平台之五[数据一致性]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%94%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%94%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;作为一套积分系统，数据一致性相当重要。例如积分日志和积分总值的对账一致。&lt;/p&gt;
+&lt;h2 id=&#34;设计&#34;&gt;设计&lt;/h2&gt;
+&lt;h3 id=&#34;要求&#34;&gt;要求&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;积分日志和积分总值对得上&lt;/li&gt;
+&lt;li&gt;支持按照积分日志回放积分值&lt;/li&gt;
+&lt;li&gt;支持按照业务系统、活动进行对账&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;实现&#34;&gt;实现&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;自身对账&lt;/p&gt;</description>
     </item>
     <item>
       <title>积分平台之一[整体架构]</title>

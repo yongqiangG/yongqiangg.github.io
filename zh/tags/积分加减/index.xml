@@ -47,24 +47,5 @@
 &lt;h3 id=&#34;如何避免超扣&#34;&gt;如何避免超扣&lt;/h3&gt;
 &lt;p&gt;MySQL层面的lock，也有遇到需要超扣的场景，用户一开始就可以使用一定积分，后面再来归还积分。&lt;/p&gt;</description>
     </item>
-    <item>
-      <title>积分平台之三[积分过期]</title>
-      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%89%E7%A7%AF%E5%88%86%E8%BF%87%E6%9C%9F/</link>
-      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
-      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%89%E7%A7%AF%E5%88%86%E8%BF%87%E6%9C%9F/</guid>
-      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
-&lt;p&gt;积分过期是一个常见需求，常见的如先进先出模型，另外需要允许客户端传入过期时间&lt;/p&gt;
-&lt;h2 id=&#34;设计&#34;&gt;设计&lt;/h2&gt;
-&lt;h3 id=&#34;要求&#34;&gt;要求&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;允许外部定义积分规则（相对时间和绝对时间）&lt;/li&gt;
-&lt;li&gt;允许外部传入过期时间，如没有传入则默认采用规则计算&lt;/li&gt;
-&lt;li&gt;过期积分不允许使用&lt;/li&gt;
-&lt;li&gt;年末海量过期考虑性能&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&#34;实现&#34;&gt;实现&lt;/h3&gt;
-&lt;blockquote&gt;
-&lt;p&gt;过期积分实现&lt;/p&gt;</description>
-    </item>
   </channel>
 </rss>

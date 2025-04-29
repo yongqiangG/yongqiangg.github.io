@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
 <title>积分平台之三[积分过期] | johnny&#39;s blog</title>
-<meta name="keywords" content="积分平台, 积分加减">
+<meta name="keywords" content="积分平台, 积分过期">
 <meta name="description" content="背景
 积分过期是一个常见需求，常见的如先进先出模型，另外需要允许客户端传入过期时间
 设计
@@ -50,7 +50,7 @@
     <meta property="article:published_time" content="2025-04-28T10:20:01+08:00">
     <meta property="article:modified_time" content="2025-04-28T10:20:01+08:00">
     <meta property="article:tag" content="积分平台">
-    <meta property="article:tag" content="积分加减">
+    <meta property="article:tag" content="积分过期">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="积分平台之三[积分过期]">
 <meta name="twitter:description" content="背景
@@ -102,7 +102,7 @@
   "name": "积分平台之三[积分过期]",
   "description": "背景 积分过期是一个常见需求，常见的如先进先出模型，另外需要允许客户端传入过期时间\n设计 要求 允许外部定义积分规则（相对时间和绝对时间） 允许外部传入过期时间，如没有传入则默认采用规则计算 过期积分不允许使用 年末海量过期考虑性能 实现 过期积分实现\n",
   "keywords": [
-    "积分平台", "积分加减"
+    "积分平台", "积分过期"
   ],
   "articleBody": "背景 积分过期是一个常见需求，常见的如先进先出模型，另外需要允许客户端传入过期时间\n设计 要求 允许外部定义积分规则（相对时间和绝对时间） 允许外部传入过期时间，如没有传入则默认采用规则计算 过期积分不允许使用 年末海量过期考虑性能 实现 过期积分实现\n积分赠送时，通过外部传参或者计算得到积分过期时间，写入积分赚取明细。积分扣减时，默认按照过期时间、ID排序进行扣减。\n过期规则\n关联商家账号，两种过期类型，默认永久。\n防止过期积分被使用\n用户扣减前执行过期，相当于活跃用户实时保障积分过期。\n定时过期\n每天凌晨1点定时任务，按照表扫描过期积分并执行。\n海量过期\n针对表开启多线程过期，大概可以达到2000每秒的过期效率。\n假设存在两亿条数据需要过期，大概需要一天。\n总结 惰性+活跃用户实时的处理方式，类似redis的缓存过期。\n",
   "wordCount" : "345",
@@ -270,18 +270,18 @@
   <footer class="post-footer">
     <ul class="post-tags">
       <li><a href="https://yongqiangg.github.io/zh/tags/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0/">积分平台</a></li>
-      <li><a href="https://yongqiangg.github.io/zh/tags/%E7%A7%AF%E5%88%86%E5%8A%A0%E5%87%8F/">积分加减</a></li>
+      <li><a href="https://yongqiangg.github.io/zh/tags/%E7%A7%AF%E5%88%86%E8%BF%87%E6%9C%9F/">积分过期</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%BA%8C%E7%A7%AF%E5%88%86%E5%8A%A0%E5%87%8F/">
+  <a class="prev" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%83%E7%A7%AF%E5%88%86%E5%9B%9E%E6%BB%9A%E4%B8%8E%E7%A7%AF%E5%88%86%E5%86%BB%E7%BB%93/">
     <span class="title">« 上一页</span>
     <br>
-    <span>积分平台之二[积分加减]</span>
+    <span>积分平台之七[积分回滚和积分冻结]</span>
   </a>
-  <a class="next" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E4%B8%80%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/">
+  <a class="next" href="https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/">
     <span class="title">下一页 »</span>
     <br>
-    <span>积分平台之一[整体架构]</span>
+    <span>积分平台之十[分库分表]</span>
   </a>
 </nav>
 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>微服务组件 on johnny&#39;s blog</title>
+    <link>https://yongqiangg.github.io/zh/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6/</link>
+    <description>Recent content in 微服务组件 on johnny&#39;s blog</description>
+    <generator>Hugo -- 0.146.0-DEV</generator>
+    <language>zh</language>
+    <lastBuildDate>Mon, 28 Apr 2025 10:20:01 +0800</lastBuildDate>
+    <atom:link href="https://yongqiangg.github.io/zh/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>积分平台之十八[微服务组件]</title>
+      <link>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%85%AB%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Mon, 28 Apr 2025 10:20:01 +0800</pubDate>
+      <guid>https://yongqiangg.github.io/zh/posts/tech/%E7%A7%AF%E5%88%86%E5%B9%B3%E5%8F%B0%E4%B9%8B%E5%8D%81%E5%85%AB%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
+      <description>&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;使用过的微服务组件&lt;/p&gt;
+&lt;h2 id=&#34;例子&#34;&gt;例子&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;网关&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;Spring Gateway，用于路由。由于平台限制流量不允许直接出服务器，因此需要部署中间网关对流量进行转发。包含上行和下行的流量，拦截指定路径，并对路径进行重写即可&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
